@@ -1,0 +1,6 @@
+---
+
+- hosts: all  # noqa: name[play]
+
+  roles:
+      - role: "{{ playbook_dir }}"
