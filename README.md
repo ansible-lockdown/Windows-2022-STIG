@@ -1,11 +1,11 @@
 Windows Server 2022 DISA STIG
-=========
+=============================
 
 ![Release](https://img.shields.io/github/v/release/ansible-lockdown/Windows-2022-STIG?style=plastic)
 
 Configure a Windows Server 2022 system to be DISA STIG compliant. All findings will be audited by default. Non-disruptive CAT I, CAT II, and CAT III findings will be corrected by default.
 
-This role is based on Windows Server 2022 DISA STIG: [Version 1, Rel 3 released on May 17, 2022](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V1R3_STIG.zip).
+This role is based on Windows Server 2022 DISA STIG: [Version 1, Rel 3 released on May 17, 2023](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V1R3_STIG.zip).
 
 Caution(s)
 -------
