@@ -1,0 +1,46 @@
+---
+
+- name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA)."
+  block:
+      - name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA). | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA)."
+
+      - name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA). | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-DC-000290'
+  when:
+      - wn19_dc_000290
+      - ansible_windows_domain_role == "Primary domain controller"
+  tags:
+      - WN22-DC-000290
+      - V-254413
+      - CAT1
+      - SRG-OS-000066-GPOS-00034
+      - SV-254413r849055_rule
+      - CCI-000185
+      - high
+
+# add some task/external variable for approved CAs, check for DoD and how to pull programatically
+- name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
+  block:
+      - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA). | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
+
+      - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA). | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-DC-000300'
+  when:
+      - wn19_dc_000300
+      - ansible_windows_domain_role == "Primary domain controller"
+  tags:
+      - WN22-DC-000300
+      - V-254414
+      - SRG-OS-000066-GPOS-00034
+      - SV-254414r849058_rule
+      - CCI-000185
+      - high
+      - CAT1

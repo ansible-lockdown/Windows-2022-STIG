@@ -7,7 +7,7 @@
   tags:
       - always
 
-- name: Gather distribution info
+- name: Gather Distribution Info
   ansible.builtin.setup:
       gather_subset: distribution,!all,!min
   when:
@@ -15,7 +15,7 @@
   tags:
       - always
 
-- name: Check OS version and family
+- name: Check OS Version and Family
   ansible.builtin.assert:
       that:
           - ansible_os_family == 'Windows'
@@ -25,14 +25,27 @@
   tags:
       - always
 
-- name: Check ansible version
+- name: Check Ansible Version
   ansible.builtin.assert:
       that: ansible_version.full is version_compare(win2022stig_min_ansible_version, '>=')
       msg: You must use Ansible {{ win2022stig_min_ansible_version }} or greater
   tags:
       - always
 
-- name: Include the preliminary tasks
+- name: Include the Preliminary Tasks
   ansible.builtin.import_tasks: prelim.yml
   tags:
       - prelim_tasks
+
+- name: Execute the Category 1 (Highest Severity) Tasks
+  ansible.builtin.import_tasks: cat1.yml
+  when: win2019stig_cat1_patch
+  tags:
+      - CAT1
+
+- name: If Warnings Found Output Count and Control IDs Affected
+  ansible.builtin.debug:
+      msg:
+          - "You have {{ warn_count }} Warning(s) that require investigation(s). Their ID's are listed below:"
+          - "{{ warn_control_list }}"
+  when: warn_count != 0
