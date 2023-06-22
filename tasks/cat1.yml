@@ -85,7 +85,7 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: WN22_00_000130_audit
+        register: wn22_00_000130_audit
 
       - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes. | Message out"
         debug:
@@ -96,7 +96,7 @@
         vars:
             warn_control_id: 'WN22-00-000130'
   when:
-      - WN22_00_000130
+      - wn22_00_000130
   tags:
       - WN22-00-000130
       - V-205663
