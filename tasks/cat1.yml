@@ -16,11 +16,11 @@
   tags:
       - WN22-DC-000290
       - V-254413
-      - CAT1
       - SRG-OS-000066-GPOS-00034
       - SV-254413r849055_rule
       - CCI-000185
       - high
+      - CAT1
 
 # add some task/external variable for approved CAs, check for DoD and how to pull programatically
 - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
@@ -42,5 +42,189 @@
       - SRG-OS-000066-GPOS-00034
       - SV-254414r849058_rule
       - CCI-000185
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-AC-000090 | PATCH | Windows Server 2022 reversible password encryption must be disabled."
+  community.windows.win_security_policy:
+      section: System Access
+      key: ClearTextPassword
+      value: "0"
+  when:
+      - wn22_ac_000090
+  tags:
+      - WN22-AC-000090
+      - V-254293
+      - SRG-OS-000073-GPOS-00041
+      - SV-254293r877397_rule
+      - CCI-000196
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-SO-000300 | PATCH | Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords."
+  ansible.windows.win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+      value: NoLMHash
+      data: 1
+      datatype: dword
+  when:
+      - wn22_so_000300
+  tags:
+      - WN22-SO-000300
+      - V-254474
+      - SRG-OS-000073-GPOS-00041
+      - SV-254474r877397_rule
+      - CCI-000196
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes."
+  block:
+      - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes."
+        ansible.windows.win_shell: Get-Volume
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: WN22_00_000130_audit
+
+      - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes. | Message out"
+        debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 local volumes must use a format that supports NTFS attributes."
+
+      - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes. | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-00-000130'
+  when:
+      - WN22_00_000130
+  tags:
+      - WN22-00-000130
+      - V-205663
+      - SRG-OS-000080-GPOS-00048
+      - SV-254250r848566_rule
+      - CCI-000213
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-CC-000470 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) client must not use Basic authentication."
+  ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
+      value: AllowBasic
+      data: 0
+      datatype: dword
+  when:
+      - wn22_cc_000470
+      - not win2022stig_skip_for_test
+  tags:
+      - WN22-CC-000470
+      - V-254378
+      - SRG-OS-000125-GPOS-00065
+      - SV-254378r877395_rule
+      - CCI-000877
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-CC-000500 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) service must not use Basic authentication."
+  ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service
+      value: AllowBasic
+      data: 0
+      datatype: dword
+  when:
+      - wn22_cc_000500
+      - not win2022stig_skip_for_test
+  tags:
+      - WN22-CC-000500
+      - V-254381
+      - SRG-OS-000125-GPOS-00065
+      - SV-254381r877395_rule
+      - CCI-000877
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-SO-000230 | PATCH | Windows Server 2022 must not allow anonymous enumeration of shares."
+  ansible.windows.win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+      value: RestrictAnonymous
+      data: 1
+      datatype: dword
+  when:
+      - wn22_so_000230
+  tags:
+      - WN22-SO-000230
+      - V-254467
+      - SRG-OS-000138-GPOS-00069
+      - SV-254467r849217_rule
+      - CCI-001090
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-SO-000250 | PATCH | Windows Server 2022 must restrict anonymous access to Named Pipes and Shares."
+  ansible.windows.win_regedit:
+      path: HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters
+      value: restrictnullsessaccess
+      data: 1
+      datatype: dword
+  when:
+      - wn22_so_000250
+  tags:
+      - WN22-SO-000250
+      - V-254469
+      - SRG-OS-000138-GPOS-00069
+      - SV-254469r849223_rule
+      - CCI-001090
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
+  block:
+      - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
+        ansible.windows.win_shell: get-localgroupmember administrators | Select name | Format-Table -HideTableHeaders
+        changed_when: false
+        failed_when: false
+        register: wn22_dc_000010_admin_usrs
+
+      - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
+        ansible.builtin.debug:
+            msg:
+                - "Alert! Below are the users in the administrators group. Please review and confirm all users should be in this group"
+                - "{{ wn22_dc_000010_admin_usrs.stdout_lines }}"
+
+      - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-DC-000010'
+  when:
+      - wn22_dc_000010
+      - ansible_windows_domain_role == "Primary domain controller"
+  tags:
+      - WN22-DC-000010
+      - V-254385
+      - SRG-OS-000324-GPOS-00125
+      - SV-254385r877392_rule
+      - CCI-002235
+      - notest
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-DC-000070 | AUDIT | Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access."
+  block:
+      - name: "HIGH | WN22-DC-000070 | AUDIT | Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access. | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access."
+
+      - name: "WN22-DC-000070 | AUDIT | Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access. | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-DC-000070'
+  when:
+      - wn22_dc_000070
+      - ansible_windows_domain_role == "Primary domain controller"
+  tags:
+      - WN22-DC-000070
+      - V-254391
+      - SRG-OS-000324-GPOS-00125
+      - SV-254391r877392_rule
+      - CCI-002235
       - high
       - CAT1
