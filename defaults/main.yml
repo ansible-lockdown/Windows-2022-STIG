@@ -1,2 +1,43 @@
 ---
+
 # defaults file for Windows-2022-STIG
+win2019stig_cat1_patch: true
+win2019stig_cat2_patch: true
+win2019stig_cat3_patch: true
+
+win2022stig_min_ansible_version: "2.10.1"
+
+# We've defined complexity-high to mean that we cannot automatically remediate
+# the rule in question.  In the future this might mean that the remediation
+# may fail in some cases.
+win2022stig_complexity_high: false
+
+# Show "changed" for complex items not remediated per complexity-high setting
+# to make them stand out.  "changed" items on a second run of the role would
+# indicate items requiring manual review.
+win2022stig_audit_complex: true
+
+# We've defined disruption-high to indicate items that are likely to cause
+# disruption in a normal workflow.  These items can be remediated automatically
+# but are disabled by default to avoid disruption.
+win2022stig_disruption_high: false
+
+# Show "changed" for disruptive items not remediated per disruption-high
+# setting to make them stand out.
+win2022stig_audit_disruptive: true
+
+# tweak role to run in a non-privileged container
+win2022stig_system_is_container: false
+
+# set to false to skip long running tasks
+long_running: false
+
+# win2022stig_skip_for_test is used in the playbook to skip over certain controls that
+# may cause breaking changes when running it for testing purposes.
+# Controls that will be skipped:
+# WN22-CC-000470 - CAT1
+# WN22-CC-000500 - CAT1
+# WN22-CC-000480 - CAT2
+# WN22-CC-000510 - CAT2
+# WN22-CC-000520 - CAT2
+win2022stig_skip_for_test: false
