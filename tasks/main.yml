@@ -39,7 +39,7 @@
 
 - name: Execute the Category 1 (Highest Severity) Tasks
   ansible.builtin.import_tasks: cat1.yml
-  when: win2019stig_cat1_patch
+  when: win2022stig_cat1_patch
   tags:
       - CAT1
 
