@@ -11,7 +11,7 @@
         vars:
             warn_control_id: 'WN22-DC-000290'
   when:
-      - wn19_dc_000290
+      - wn22_dc_000290
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000290
@@ -34,7 +34,7 @@
         vars:
             warn_control_id: 'WN22-DC-000300'
   when:
-      - wn19_dc_000300
+      - wn22_dc_000300
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000300
