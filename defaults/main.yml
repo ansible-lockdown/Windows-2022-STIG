@@ -54,8 +54,8 @@ wn22_cc_000220: true
 wn22_cc_000230: true
 wn22_cc_000430: true
 # WINRM CONTROL
-wn22_cc_000470: true
-wn22_cc_000500: true
+wn22_cc_000470: false
+wn22_cc_000500: false
 # WINRM CONTROL END
 wn22_dc_000010: true
 wn22_dc_000070: true
