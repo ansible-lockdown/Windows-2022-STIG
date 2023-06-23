@@ -400,3 +400,207 @@
       - CCI-002235
       - high
       - CAT1
+
+- name: "HIGH | WN22-CC-000430 | PATCH | Windows Server 2022 must disable the Windows Installer Always install with elevated privileges option."
+  ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer
+      state: present
+      value: AlwaysInstallElevated
+      data: 0
+      datatype: dword
+  when:
+      - wn22_cc_000430
+  tags:
+      - WN22-CC-000430
+      - V-254374
+      - SRG-OS-000362-GPOS-00149
+      - SV-254374r848938_rule
+      - CCI-001812
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-CC-000210 | PATCH | Windows Server 2022 AutoPlay must be turned off for non-volume devices."
+  ansible.windows.win_regedit:
+      path: HKLM:\Software\Policies\Microsoft\Windows\Explorer
+      value: NoAutoplayfornonVolume
+      data: 1
+      datatype: dword
+  when:
+      - wn22_cc_000210
+  tags:
+      - WN22-CC-000210
+      - V-254352
+      - SRG-OS-000368-GPOS-00154
+      - SV-254352r848872_rule
+      - CCI-001764
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-CC-000220 | PATCH | Windows Server 2022 default AutoRun behavior must be configured to prevent AutoRun commands."
+  ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
+      value: NoAutorun
+      data: 1
+      datatype: dword
+  when:
+      - wn22_cc_000220
+  tags:
+      - WN22-CC-000220
+      - V-254353
+      - SRG-OS-000368-GPOS-00154
+      - SV-254353r848875_rule
+      - CCI-001764
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-CC-000230 | PATCH | Windows Server 2022 AutoPlay must be disabled for all drives."
+  ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
+      name: NoDriveTypeAutoRun
+      data: 255
+      datatype: dword
+  when: wn22_cc_000230
+  tags:
+      - WN22-CC-000230
+      - V-254354
+      - SV-254354r848878_rule
+      - SRG-OS-000368-GPOS-00154
+      - CCI-001764
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email."
+  block:
+      - name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email. | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email."
+
+      - name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email. | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-00-000030'
+  when:
+      - wn22_00_000030
+  tags:
+      - WN22-00-000030
+      - V-254240
+      - SRG-OS-000480-GPOS-00227
+      - SV-254240r848536_rule
+      - CCI-000366
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
+  block:
+      - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access. | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
+
+      - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access. | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: 'WN22-DC-000150'
+  when:
+      - wn22_dc_000150
+      - ansible_windows_domain_role == "Primary domain controller"
+  tags:
+      - WN22-DC-000150
+      - V-254399
+      - SRG-OS-000480-GPOS-00227
+      - SV-254399r849013_rule
+      - CCI-000366
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-MS-000140 | PATCH | Windows Server 2022 must be running Credential Guard on domain-joined member servers."
+  ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard
+      value: "{{ item }}"
+      data: 1
+      datatype: dword
+  with_items:
+      - EnableVirtualizationBasedSecurity
+      - RequirePlatformSecurityFeatures
+      - HypervisorEnforcedCodeIntegrity
+      - HVCIMATRequired
+      - LsaCfgFlags
+  when:
+      - wn22_ms_000140
+      - ansible_windows_domain_role == "Member server"
+  tags:
+      - WN22-MS-000140
+      - V-254441
+      - SRG-OS-000480-GPOS-00227
+      - SV-254441r849139_rule
+      - CCI-000366
+      - NeedToTestMemberServer
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-SO-000020 | PATCH | Windows Server 2022 must prevent local accounts with blank passwords from being used from the network."
+  ansible.windows.win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+      value: LimitBlankPasswordUse
+      data: 1
+      datatype: string
+  when:
+      - wn22_so_000020
+  tags:
+      - WN22-SO-000020
+      - V-254446
+      - SV-254446r849154_rule
+      - SRG-OS-000480-GPOS-00227
+      - CCI-000366
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-SO-000210 | PATCH | Windows Server 2022 must not allow anonymous SID/Name translation."
+  community.windows.win_security_policy:
+      section: System Access
+      key: LSAAnonymousNameLookup
+      value: 0
+  when:
+      - wn22_so_000210
+  tags:
+      - WN22-SO-000210
+      - V-254465
+      - SRG-OS-000480-GPOS-00227
+      - SV-254465r849211_rule
+      - CCI-000366
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-SO-000220 | PATCH | Windows Server 2022 must not allow anonymous enumeration of Security Account Manager (SAM) accounts."
+  ansible.windows.win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+      value: RestrictAnonymousSAM
+      data: 1
+      datatype: dword
+  when:
+      - wn22_so_000220
+      - ansible_windows_domain_role != "Primary domain controller"
+  tags:
+      - WN22-SO-000220
+      - V-254466
+      - SRG-OS-000480-GPOS-00227
+      - SV-254466r849214_rule
+      - CCI-000366
+      - high
+      - CAT1
+
+- name: "HIGH | WN22-SO-000310 | PATCH | Windows Server 2022 LAN Manager authentication level must be configured to send NTLMv2 response only and to refuse LM and NTLM."
+  ansible.windows.win_regedit:
+      path: HKLM:\System\CurrentControlSet\Control\Lsa
+      value: LmCompatibilityLevel
+      data: 5
+      datatype: dword
+  when:
+      - wn22_so_000310
+  tags:
+      - WN22-SO-000310
+      - V-254467
+      - SRG-OS-000480-GPOS-00227
+      - SV-254467r849217_rule
+      - CCI-000366
+      - high
+      - CAT1
