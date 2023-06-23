@@ -15,7 +15,7 @@
 # https://github.com/ansible/ansible/blob/905131fc76a07cf89dbc8d33e7a4910da3f10a16/lib/ansible/module_utils/facts/virtual/linux.py#L205
 - name: Set Fact If Cloud Based System.
   ansible.builtin.set_fact:
-      win19stig_cloud_based_system: true
+      win22stig_cloud_based_system: true
   when:
       - ansible_virtualization_type == 'Hyper-V' or
         ansible_virtualization_type == 'hvm' or
