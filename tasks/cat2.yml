@@ -879,7 +879,7 @@
             - wn22stig_lockoutbadcount <= 3
   when:
       - wn22_ac_000020
-      - not win19stig_cloud_based_system
+      - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000020
       - V-205629
@@ -915,7 +915,7 @@
             - wn22stig_resetlockoutcount >= 15
   when:
       - wn22_ac_000030
-      - not win19stig_cloud_based_system
+      - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000030
       - V-205630
@@ -955,7 +955,7 @@
               wn22stig_lockoutduration >= 15
   when:
       - wn22_ac_000010
-      - not win19stig_cloud_based_system
+      - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000010
       - V-205795
