@@ -75,3 +75,8 @@
           - "You have {{ warn_count }} Warning(s) that require investigation(s). Their ID's are listed below:"
           - "{{ warn_control_list }}"
   when: warn_count != 0
+
+- name: Reboot Now
+  ansible.windows.win_shell: shutdown -r -t 1
+  changed_when: false
+  check_mode: false
