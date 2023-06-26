@@ -888,43 +888,6 @@
       - CCI-000044
       - CAT2
 
-# below task is dependent on WN16-AC-000020, maybe custom fail when known error if WN16-AC-000020 not set? "The key 'ResetLockoutCount' in section 'System Access' is not a valid key, cannot set this value"
-- name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater."
-  block:
-      - name: MEDIUM | WN22-AC-000030 | AUDIT | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater."
-        ansible.builtin.debug:
-            msg:
-                - "Warning!! You have a invalid number of days set for wn22stig_resetlockoutcount please read"
-                - "the notes for the variable and make the necessary change to the variable to be in compliance."
-        when:
-            - wn22stig_resetlockoutcount < 15
-
-      - name: MEDIUM | WN22-AC-000030 | AUDIT | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater. | Warn Count."
-        ansible.builtin.import_tasks: warning_facts.yml
-        vars:
-            warn_control_id: 'WN22-AC-000030'
-        when:
-            - wn22stig_resetlockoutcount < 15
-
-      - name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater. | Apply Variable"
-        community.windows.win_security_policy:
-            section: System Access
-            key: ResetLockoutCount
-            value: "{{ wn22stig_resetlockoutcount }}"
-        when:
-            - wn22stig_resetlockoutcount >= 15
-  when:
-      - wn22_ac_000030
-      - not win22stig_cloud_based_system
-  tags:
-      - WN22-AC-000030
-      - V-205630
-      - SRG-OS-000021-GPOS-00005
-      - SV-205630r569188_rule
-      - CCI-000044
-      - CCI-002238
-      - CAT2
-
 # below task is dependent on WN22-AC-000020 and WN22-AC-000030, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'LockoutDuration' in section 'System Access' is not a valid key, cannot set this value"
 - name: "MEDIUM | WN22-AC-000010 | PATCH | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater."
   block:
@@ -961,6 +924,43 @@
       - V-205795
       - SRG-OS-000329-GPOS-00128
       - SV-205795r569188_rule
+      - CCI-002238
+      - CAT2
+
+# below task is dependent on WN16-AC-000020, maybe custom fail when known error if WN16-AC-000020 not set? "The key 'ResetLockoutCount' in section 'System Access' is not a valid key, cannot set this value"
+- name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater."
+  block:
+      - name: MEDIUM | WN22-AC-000030 | AUDIT | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! You have a invalid number of days set for wn22stig_resetlockoutcount please read"
+                - "the notes for the variable and make the necessary change to the variable to be in compliance."
+        when:
+            - wn22stig_resetlockoutcount < 15
+
+      - name: MEDIUM | WN22-AC-000030 | AUDIT | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-AC-000030'
+        when:
+            - wn22stig_resetlockoutcount < 15
+
+      - name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater. | Apply Variable"
+        community.windows.win_security_policy:
+            section: System Access
+            key: ResetLockoutCount
+            value: "{{ wn22stig_resetlockoutcount }}"
+        when:
+            - wn22stig_resetlockoutcount >= 15
+  when:
+      - wn22_ac_000030
+      - not win22stig_cloud_based_system
+  tags:
+      - WN22-AC-000030
+      - V-205630
+      - SRG-OS-000021-GPOS-00005
+      - SV-205630r569188_rule
+      - CCI-000044
       - CCI-002238
       - CAT2
 
