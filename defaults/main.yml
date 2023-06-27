@@ -32,15 +32,16 @@ win2022stig_system_is_container: false
 # set to false to skip long running tasks
 long_running: false
 
-# win2022stig_skip_for_test is used in the playbook to skip over certain controls that
-# may cause breaking changes when running it for testing purposes.
-# Controls that will be skipped:
+# win2022stig_skip_for_test is used in the playbook to skip over WINRM based controls that
+# may cause WINRM Basic Connection Type to be disabled.
+# Setting win2022stig_skip_for_test to 'false' will enable Secure Connection types only.
+# WINRM Controls that will be skipped:
 # WN22-CC-000470 - CAT1
 # WN22-CC-000500 - CAT1
 # WN22-CC-000480 - CAT2
 # WN22-CC-000510 - CAT2
 # WN22-CC-000520 - CAT2
-win2022stig_skip_for_test: false
+win2022stig_skip_for_test: true
 
 # CAT 1 rules
 wn22_00_000010: true
@@ -54,8 +55,8 @@ wn22_cc_000220: true
 wn22_cc_000230: true
 wn22_cc_000430: true
 # WINRM CONTROL
-wn22_cc_000470: false
-wn22_cc_000500: false
+wn22_cc_000470: true
+wn22_cc_000500: true
 # WINRM CONTROL END
 wn22_dc_000010: true
 wn22_dc_000070: true

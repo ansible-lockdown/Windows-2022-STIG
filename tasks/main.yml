@@ -48,11 +48,7 @@
 # for cloud based systems
 - name: Execute the category 2 (medium severity) tasks for cloud based system
   ansible.builtin.import_tasks: cat2_cloud.yml
-  when:
-      - win22stig_cloud_based_system
-      - wn22_ac_000010 or
-        wn22_ac_000020 or
-        wn22_ac_000030
+  when: ansible_virtualization_type == 'Hyper-V' or ansible_virtualization_type == 'hvm' or ansible_virtualization_type == 'kvm'
   tags:
       - CAT2_CLOUD2
 
