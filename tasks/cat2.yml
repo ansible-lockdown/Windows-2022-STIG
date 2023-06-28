@@ -1,5 +1,25 @@
 ---
 
+- name: "MEDIUM | WN22-00-000010 | AUDIT |  Windows Server 2022 users with Administrative privileges must have separate accounts for administrative duties and normal operational tasks."
+  block:
+      - name: "MEDIUM | WN22-00-000010 | AUDIT |  Windows Server 2022 users with Administrative privileges must have separate accounts for administrative duties and normal operational tasks. | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task.  Windows Server 2022 users with Administrative privileges must have separate accounts for administrative duties and normal operational tasks."
+
+      - name: "MEDIUM | WN22-00-000010 | AUDIT |  Windows Server 2022 users with Administrative privileges must have separate accounts for administrative duties and normal operational tasks. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-00-000010'
+  when:
+      - wn22_00_000010
+  tags:
+      - WN22-00-000010
+      - V-254238
+      - SRG-OS-000480-GPOS-00227
+      - SV-254238r848530_rule
+      - CCI-000366
+      - CAT2
+
 # enumerating on DC is different than standalone
 - name: "MEDIUM | WN22-00-000020 | AUDIT | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age }} days."
   block:
@@ -48,9 +68,9 @@
       - wn22_00_000020
   tags:
       - WN22-00-000020
-      - V-205657
+      - V-254239
       - CCI-000199
-      - SV-205657r857286_rule
+      - SV-254239r915618_rule
       - SRG-OS-000076-GPOS-00044
       - NeedToTestDomainController
       - audit
@@ -86,9 +106,9 @@
       - "'controller' not in ansible_windows_domain_role"
   tags:
       - WN22-00-000040
-      - V-205846
+      - V-254241
       - SRG-OS-000480-GPOS-00227
-      - SV-205846r569188_rule
+      - SV-254241r848539_rule
       - CCI-000366
       - audit
       - CAT2
@@ -107,9 +127,9 @@
       - wn22_00_000050
   tags:
       - WN22-00-000050
-      - V-205661
+      - V-254242
       - SRG-OS-000078-GPOS-00046
-      - SV-205661r569188_rule
+      - SV-254242r848542_rule
       - CCI-000205
       - CAT2
 
@@ -127,9 +147,9 @@
       - wn22_00_000060
   tags:
       - WN22-00-000060
-      - V-205847
+      - V-254243
       - SRG-OS-000480-GPOS-00227
-      - SV-205847r857288_rule
+      - SV-254243r848545_rule
       - CCI-000366
       - CAT2
       # how to make this list?
@@ -148,9 +168,9 @@
       - wn22_00_000070
   tags:
       - WN22-00-000070
-      - V-205699
+      - V-254244
       - SRG-OS-000104-GPOS-00051
-      - SV-205699r569188_rule
+      - SV-254244r848548_rule
       - CCI-000764
       - CAT2
 
@@ -168,35 +188,75 @@
       - wn22_00_000080
   tags:
       - WN22-00-000080
-      - V-205807
+      - V-254245
       - SRG-OS-000370-GPOS-00155
-      - SV-205807r569188_rule
+      - SV-254245r890536_rule
       - CCI-001774
       - CAT2
       # Get-AppLockerPolicy -Effective
 
 # Current hardware and virtual environments may not support virtualization-based security features, including Credential Guard, due to specific supporting requirements including a TPM, UEFI with Secure Boot, and the capability to run the Hyper-V feature within a virtual machine.
-- name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use."
+- name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level."
   block:
-      - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Message out"
+      - name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level. | Message out"
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use."
+            msg: "Warning!! This is a manual task. Windows Server 2022 must be maintained at a supported servicing level."
 
-      - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | import reuseable task."
+      - name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
-            warn_control_id: 'WN22-00-000090'
+            warn_control_id: 'WN22-00-000100'
   when:
-      - wn22_00_000090
+      - wn22_00_000100
   tags:
-      - WN22-00-000090
-      - V-205848
+      - WN22-00-000100
+      - V-254246
       - SRG-OS-000480-GPOS-00227
-      - SV-205848r857290_rule
+      - SV-254246r848554_rule
       - CCI-000366
       - CAT2
       # wmic /namespace:\\root\cimv2\security\microsofttpm path win32_tpm get *
       # if not enabled see "No Instance(s) Available." ?
+
+- name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level."
+  block:
+      - name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level. | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 must be maintained at a supported servicing level."
+
+      - name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level. | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-00-000100'
+  when:
+      - wn22_00_000100
+  tags:
+      - WN22-00-000100
+      - V-254247
+      - SRG-OS-000480-GPOS-00227
+      - SV-254247r848557_rule
+      - CCI-000366
+      - CAT2
+
+- name: "MEDIUM | WN22-00-000110 | AUDIT | Windows Server 2022 must use an antivirus program."
+  block:
+      - name: "MEDIUM | WN22-00-000110 | AUDIT | Windows Server 2022 must use an antivirus program. | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 must use an antivirus program."
+
+      - name: "MEDIUM | WN22-00-000110 | AUDIT | Windows Server 2022 must use an antivirus program. | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-00-000110'
+  when:
+      - wn22_00_000110
+  tags:
+      - WN22-00-000110
+      - V-254248
+      - SRG-OS-000480-GPOS-00227
+      - SV-254248r848560_rule
+      - CCI-000366
+      - CAT2
 
 - name: "MEDIUM | WN22-00-000120 | AUDIT | Windows Server 2022 must have a host-based intrusion detection or prevention system."
   block:
@@ -212,9 +272,9 @@
       - wn22_00_000120
   tags:
       - WN22-00-000120
-      - V-205851
+      - V-254249
       - SRG-OS-000480-GPOS-00227
-      - SV-205851r793214_rule
+      - SV-254249r848563_rule
       - CCI-000366
       - CAT2
       # think this is mcafee but need install and figure out paths for AV vs HIDS and/or running services?
@@ -233,9 +293,9 @@
       - wn22_00_000140
   tags:
       - WN22-00-000140
-      - V-205734
+      - V-254251
       - SRG-OS-000312-GPOS-00122
-      - SV-205734r569188_rule
+      - SV-254251r848569_rule
       - CCI-002165
       - CAT2
 
@@ -1274,22 +1334,22 @@
       - CCI-000172
       - CAT2
 
-- name: "MEDIUM | WN22-AU-000090 | PATCH | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
+- name: "MEDIUM | WN22-AU-000100 | PATCH | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
   block:
-      - name: "MEDIUM | WN22-AU-000090 | AUDIT | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
+      - name: "MEDIUM | WN22-AU-000100 | AUDIT | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
         ansible.windows.win_shell: AuditPol /get /subcategory:"Other Account Management Events" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
         changed_when: false
         failed_when: false
         check_mode: false
-        register: wn22_au_000090_audit
+        register: wn22_au_000100_audit
 
-      - name: "MEDIUM | WN22-AU-000090 | PATCH | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
+      - name: "MEDIUM | WN22-AU-000100 | PATCH | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
         ansible.windows.win_shell: AuditPol /set /subcategory:"Other Account Management Events" /success:enable
-        when: "'Success' not in wn22_au_000090_audit.stdout"
+        when: "'Success' not in wn22_au_000100_audit.stdout"
   when:
-      - wn22_au_000090
+      - wn22_au_000100
   tags:
-      - WN22-AU-000090
+      - WN22-AU-000100
       - V-205769
       - SRG-OS-000327-GPOS-00127
       - SV-205769r569188_rule
@@ -1992,16 +2052,16 @@
       - CCI-000366
       - CAT2
 
-- name: "MEDIUM | WN22-CC-000090 | PATCH | Windows Server 2022 command line data must be included in process creation events."
+- name: "MEDIUM | WN22-CC-000100 | PATCH | Windows Server 2022 command line data must be included in process creation events."
   ansible.windows.win_regedit:
       path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit
       value: ProcessCreationIncludeCmdLine_Enabled
       data: 1
       datatype: dword
   when:
-      - wn22_cc_000090
+      - wn22_cc_000100
   tags:
-      - WN22-CC-000090
+      - WN22-CC-000100
       - V-205638
       - SRG-OS-000042-GPOS-00020
       - SV-205638r569188_rule
@@ -3461,9 +3521,9 @@
       - CAT2
       - NeedToTestMemberServer
 
-- name: "MEDIUM | WN22-MS-000090 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+- name: "MEDIUM | WN22-MS-000100 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
   block:
-      - name: "MEDIUM | WN22-MS-000090 | PATCH | DOMAIN MEMBER | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+      - name: "MEDIUM | WN22-MS-000100 | PATCH | DOMAIN MEMBER | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
         ansible.windows.win_user_right:
             name: SeDenyBatchLogonRight
             users:
@@ -3473,7 +3533,7 @@
             action: set
         when: ansible_windows_domain_role == "Member server"
 
-      - name: "MEDIUM | WN22-MS-000090 | PATCH | STAND-ALONE | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+      - name: "MEDIUM | WN22-MS-000100 | PATCH | STAND-ALONE | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
         ansible.windows.win_user_right:
             name: SeDenyBatchLogonRight
             users:
@@ -3481,9 +3541,9 @@
             action: set
         when: not ansible_windows_domain_member
   when:
-      - wn22_ms_000090
+      - wn22_ms_000100
   tags:
-      - WN22-MS-000090
+      - WN22-MS-000100
       - V-205673
       - SRG-OS-000080-GPOS-00048
       - SV-205673r857335_rule
@@ -3796,16 +3856,16 @@
       - CAT2
       - NeedToTestMemberServer
 
-- name: "MEDIUM | WN22-SO-000090 | PATCH | Windows Server 2022 computer account password must not be prevented from being reset."
+- name: "MEDIUM | WN22-SO-000100 | PATCH | Windows Server 2022 computer account password must not be prevented from being reset."
   ansible.windows.win_regedit:
       path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
       value: DisablePasswordChange
       data: 0
       datatype: dword
   when:
-      - wn22_so_000090
+      - wn22_so_000100
   tags:
-      - WN22-SO-000090
+      - WN22-SO-000100
       - V-205815
       - SRG-OS-000379-GPOS-00164
       - SV-205815r569188_rule
@@ -4388,15 +4448,15 @@
       - CCI-002235
       - CAT2
 
-- name: "MEDIUM | WN22-UR-000090 | PATCH | Windows Server 2022 Create symbolic links user right must only be assigned to the Administrators group."
+- name: "MEDIUM | WN22-UR-000100 | PATCH | Windows Server 2022 Create symbolic links user right must only be assigned to the Administrators group."
   ansible.windows.win_user_right:
       name: SeCreateSymbolicLinkPrivilege
       users: Administrators
       action: set
   when:
-      - wn22_ur_000090
+      - wn22_ur_000100
   tags:
-      - WN22-UR-000090
+      - WN22-UR-000100
       - V-205756
       - SRG-OS-000324-GPOS-00125
       - SV-205756r569188_rule

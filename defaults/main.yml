@@ -44,10 +44,7 @@ long_running: false
 win2022stig_skip_secure_winrm: true
 
 # CAT 1 rules
-wn22_00_000010: true
 wn22_00_000030: true
-wn22_00_000100: true
-wn22_00_000110: true
 wn22_00_000130: true
 wn22_ac_000090: true
 wn22_cc_000210: true
@@ -81,6 +78,7 @@ wn22_ur_000060: true
 wn22_ur_000100: true
 
 # CAT 2 rules
+wn22_00_000010: true
 wn22_00_000020: true
 wn22_00_000040: true
 wn22_00_000050: true
@@ -88,6 +86,8 @@ wn22_00_000060: true
 wn22_00_000070: true
 wn22_00_000080: true
 wn22_00_000090: true
+wn22_00_000100: true
+wn22_00_000110: true
 wn22_00_000120: true
 wn22_00_000140: true
 wn22_00_000150: true
