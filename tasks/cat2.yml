@@ -195,21 +195,22 @@
       - CAT2
       # Get-AppLockerPolicy -Effective
 
-# Current hardware and virtual environments may not support virtualization-based security features, including Credential Guard, due to specific supporting requirements including a TPM, UEFI with Secure Boot, and the capability to run the Hyper-V feature within a virtual machine.
-- name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level."
+# Current hardware and virtual environments may not support virtualization-based security features, including Credential Guard, due to specific supporting
+# requirements including a TPM, UEFI with Secure Boot, and the capability to run the Hyper-V feature within a virtual machine.
+- name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use."
   block:
-      - name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level. | Message out"
+      - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Message out"
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must be maintained at a supported servicing level."
+            msg: "Warning!! This is a manual task. Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use."
 
-      - name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level. | import reuseable task."
+      - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
-            warn_control_id: 'WN22-00-000100'
+            warn_control_id: 'WN22-00-000090'
   when:
-      - wn22_00_000100
+      - wn22_00_000090
   tags:
-      - WN22-00-000100
+      - WN22-00-000090
       - V-254246
       - SRG-OS-000480-GPOS-00227
       - SV-254246r848554_rule
@@ -313,9 +314,9 @@
       - wn22_00_000150
   tags:
       - WN22-00-000150
-      - V-205735
+      - V-254252
       - SRG-OS-000312-GPOS-00122
-      - SV-205735r569188_rule
+      - SV-254252r848572_rule
       - CCI-002165
       - CAT2
 
@@ -333,9 +334,9 @@
       - wn22_00_000160
   tags:
       - WN22-00-000160
-      - V-205736
+      - V-254253
       - SRG-OS-000312-GPOS-00122
-      - SV-205736r569188_rule
+      - SV-254253r848575_rule
       - CCI-002165
       - CAT2
 
@@ -353,9 +354,9 @@
       - wn22_00_000170
   tags:
       - WN22-00-000170
-      - V-205737
+      - V-254254
       - SRG-OS-000324-GPOS-00125
-      - SV-205737r793220_rule
+      - SV-254254r877392_rule
       - CCI-002235
       - CAT2
 
@@ -373,9 +374,9 @@
       - wn22_00_000190
   tags:
       - WN22-00-000190
-      - V-205707
+      - V-254256
       - SRG-OS-000118-GPOS-00060
-      - SV-205707r857292_rule
+      - SV-254256r848584_rule
       - CCI-000795
       - CAT2
 
@@ -428,9 +429,9 @@
       - wn22_00_000200
   tags:
       - WN22-00-000200
-      - V-205700
+      - V-254257
       - SRG-OS-000104-GPOS-00051
-      - SV-205700r857294_rule
+      - SV-254257r848587_rule
       - CCI-000764
       - audit
       - CAT2
@@ -459,9 +460,9 @@
       - wn22_00_000210
   tags:
       - WN22-00-000210
-      - V-205658
+      - V-254258
       - SRG-OS-000076-GPOS-00044
-      - SV-205658r857297_rule
+      - SV-254258r848590_rule
       - CAT2
       - CCI-000199
 
@@ -479,9 +480,9 @@
       - wn22_00_000220
   tags:
       - WN22-00-000220
-      - V-205803
+      - V-254259
       - SRG-OS-000363-GPOS-00150
-      - SV-205803r860026_rule
+      - SV-254259r890538_rule
       - CCI-001744
       - CAT2
       # Some third party software to monitor files
@@ -507,9 +508,9 @@
       - wn22_00_000230
   tags:
       - WN22-00-000230
-      - V-205721
+      - V-254260
       - SRG-OS-000138-GPOS-00069
-      - SV-205721r569188_rule
+      - SV-254260r848596_rule
       - CCI-001090
       - CAT2
 
@@ -539,9 +540,9 @@
       - wn22_00_000240
   tags:
       - WN22-00-000240
-      - V-205852
+      - V-254261
       - SRG-OS-000480-GPOS-00227
-      - SV-205852r569188_rule
+      - SV-254261r848599_rule
       - CCI-000366
       - CAT2
       # do we need async; its very long running to search filesystems
@@ -561,9 +562,9 @@
       - wn22_00_000250
   tags:
       - WN22-00-000250
-      - V-205727
+      - V-254262
       - SRG-OS-000185-GPOS-00079
-      - SV-205727r569188_rule
+      - SV-254262r848602_rule
       - CCI-001199
       - CCI-002475
       - CCI-002476
@@ -583,9 +584,9 @@
       - wn22_00_000260
   tags:
       - WN22-00-000260
-      - V-205829
+      - V-254263
       - SRG-OS-000425-GPOS-00189
-      - SV-205829r790513_rule
+      - SV-254263r848605_rule
       - CCI-002420
       - CCI-002422
       - CAT2
@@ -611,9 +612,9 @@
       - wn22_00_000270
   tags:
       - WN22-00-000270
-      - V-205677
+      - V-254264
       - SRG-OS-000095-GPOS-00049
-      - SV-205677r569188_rule
+      - SV-254264r848608_rule
       - CCI-000381
       - CAT2
 
@@ -631,9 +632,9 @@
       - wn22_00_000280
   tags:
       - WN22-00-000280
-      - V-214936
+      - V-254265
       - SRG-OS-000480-GPOS-00227
-      - SV-214936r569188_rule
+      - SV-254265r848611_rule
       - CCI-000366
       - CCI-002080
       - CAT2
@@ -652,9 +653,9 @@
       - wn22_00_000290
   tags:
       - WN22-00-000290
-      - V-205728
+      - V-254266
       - SRG-OS-000191-GPOS-00080
-      - SV-205728r793217_rule
+      - SV-254266r849353_rule
       - CCI-001233
       - CAT2
 
@@ -672,9 +673,9 @@
       - wn22_00_000300
   tags:
       - WN22-00-000300
-      - V-205624
+      - V-254267
       - SRG-OS-000002-GPOS-00002
-      - SV-205624r857301_rule
+      - SV-254267r848617_rule
       - CCI-000016
       - CAT2
 
@@ -692,9 +693,9 @@
       - wn22_00_000310
   tags:
       - WN22-00-000310
-      - V-205710
+      - V-254268
       - SRG-OS-000123-GPOS-00064
-      - SV-205710r857303_rule
+      - SV-254268r848620_rule
       - CCI-001682
       - CAT2
 
@@ -707,9 +708,9 @@
       - wn22_00_000320
   tags:
       - WN22-00-000320
-      - V-205678
+      - V-254269
       - SRG-OS-000095-GPOS-00049
-      - SV-205678r569188_rule
+      - SV-254269r848623_rule
       - CCI-000381
       - CAT2
 
@@ -722,9 +723,9 @@
       - wn22_00_000330
   tags:
       - WN22-00-000330
-      - V-205697
+      - V-254270
       - SRG-OS-000096-GPOS-00050
-      - SV-205697r569188_rule
+      - SV-254270r848626_rule
       - CCI-000382
       - CAT2
 
@@ -737,9 +738,9 @@
       - wn22_00_000340
   tags:
       - WN22-00-000340
-      - V-205679
+      - V-254271
       - SRG-OS-000095-GPOS-00049
-      - SV-205679r569188_rule
+      - SV-254271r848629_rule
       - CCI-000381
       - CAT2
 
@@ -751,9 +752,9 @@
       - wn22_00_000350
   tags:
       - WN22-00-000350
-      - V-205680
+      - V-254272
       - SRG-OS-000095-GPOS-00049
-      - SV-205680r569188_rule
+      - SV-254272r848632_rule
       - CCI-000381
       - CAT2
 
@@ -765,9 +766,9 @@
       - wn22_00_000360
   tags:
       - WN22-00-000360
-      - V-205698
+      - V-254273
       - SRG-OS-000096-GPOS-00050
-      - SV-205698r569188_rule
+      - SV-254273r848635_rule
       - CCI-000382
       - CAT2
 
@@ -779,9 +780,9 @@
       - wn22_00_000370
   tags:
       - WN22-00-000370
-      - V-205681
+      - V-254274
       - SRG-OS-000095-GPOS-00049
-      - SV-205681r569188_rule
+      - SV-254274r848638_rule
       - CCI-000381
       - CAT2
 
@@ -794,10 +795,10 @@
       - wn22_00_000380
   tags:
       - WN22-00-000380
-      - V-205682
+      - V-254275
       - CAT2
       - SRG-OS-000095-GPOS-00049
-      - SV-205682r819711_rule
+      - SV-254275r848641_rule
       - CCI-000381
 
 - name: "MEDIUM | WN22-00-000390 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server."
@@ -811,9 +812,9 @@
       - wn22_00_000390
   tags:
       - WN22-00-000390
-      - V-205683
+      - V-254276
       - SRG-OS-000095-GPOS-00049
-      - SV-205683r569188_rule
+      - SV-254276r848644_rule
       - CCI-000381
       - CAT2
 
@@ -828,9 +829,9 @@
       - wn22_00_000400
   tags:
       - WN22-00-000400
-      - V-205684
+      - V-254277
       - SRG-OS-000095-GPOS-00049
-      - SV-205684r569188_rule
+      - SV-254277r848647_rule
       - CCI-000381
       - CAT2
 
@@ -842,9 +843,9 @@
       - wn22_00_000410
   tags:
       - WN22-00-000410
-      - V-205685
+      - V-254278
       - SRG-OS-000095-GPOS-00049
-      - SV-205685r569188_rule
+      - SV-254278r848650_rule
       - CCI-000381
       - CAT2
 
@@ -862,9 +863,9 @@
       - wn22_00_000420
   tags:
       - WN22-00-000420
-      - V-205853
+      - V-254279
       - SRG-OS-000480-GPOS-00227
-      - SV-205853r569188_rule
+      - SV-254279r848653_rule
       - CCI-000366
       - CAT2
 
@@ -882,9 +883,9 @@
       - wn22_00_000430
   tags:
       - WN22-00-000430
-      - V-205854
+      - V-254280
       - SRG-OS-000480-GPOS-00227
-      - SV-205854r569188_rule
+      - SV-254280r848656_rule
       - CCI-000366
       - CAT2
 
@@ -902,9 +903,9 @@
       - wn22_00_000450
   tags:
       - WN22-00-000450
-      - V-205800
+      - V-254282
       - SRG-OS-000480-GPOS-00227
-      - SV-205855r569188_rule
+      - SV-254282r848662_rule
       - CCI-000366
       - CAT2
       # https://www.stigviewer.com/stig/windows_server_2016/2022-01-16/finding/V-78127
@@ -942,9 +943,9 @@
       - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000020
-      - V-205629
+      - V-254286
       - SRG-OS-000021-GPOS-00005
-      - SV-205629r569188_rule
+      - SV-254286r848674_rule
       - CCI-000044
       - CAT2
 
@@ -981,9 +982,9 @@
       - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000010
-      - V-205795
+      - V-254285
       - SRG-OS-000329-GPOS-00128
-      - SV-205795r569188_rule
+      - SV-254285r848671_rule
       - CCI-002238
       - CAT2
 
@@ -1017,9 +1018,9 @@
       - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000030
-      - V-205630
+      - V-254287
       - SRG-OS-000021-GPOS-00005
-      - SV-205630r569188_rule
+      - SV-254287r848677_rule
       - CCI-000044
       - CCI-002238
       - CAT2
@@ -1033,9 +1034,9 @@
       - wn22_ac_000040
   tags:
       - WN22-AC-000040
-      - V-205660
+      - V-254288
       - SRG-OS-000077-GPOS-00045
-      - SV-205660r569188_rule
+      - SV-254288r848680_rule
       - CCI-000200
       - CAT2
 
@@ -1070,9 +1071,9 @@
       - wn22_ac_000050
   tags:
       - WN22-AC-000050
-      - V-205659
+      - V-254289
       - SRG-OS-000076-GPOS-00044
-      - SV-205659r569188_rule
+      - SV-254289r848683_rule
       - CCI-000199
       - CAT2
 
@@ -1104,9 +1105,9 @@
       - wn22_ac_000060
   tags:
       - WN22-AC-000060
-      - V-205656
+      - V-254290
       - SRG-OS-000075-GPOS-00043
-      - SV-205656r569188_rule
+      - SV-254290r848686_rule
       - CCI-000198
       - CAT2
 
@@ -1138,9 +1139,9 @@
       - wn22_ac_000070
   tags:
       - WN22-AC-000070
-      - V-205662
+      - V-254291
       - SRG-OS-000078-GPOS-00046
-      - SV-205662r569188_rule
+      - SV-254291r890539_rule
       - CCI-000205
       - CAT2
 
@@ -1153,9 +1154,9 @@
       - wn22_ac_000080
   tags:
       - WN22-AC-000080
-      - V-205652
+      - V-254292
       - SRG-OS-000069-GPOS-00037
-      - SV-205652r569188_rule
+      - SV-254292r848692_rule
       - CCI-000192
       - CCI-000193
       - CCI-000194
@@ -1176,9 +1177,9 @@
       - wn22_au_000010
   tags:
       - WN22-AU-000010
-      - V-205799
+      - V-254294
       - SRG-OS-000342-GPOS-00133
-      - SV-205799r569188_rule
+      - SV-254294r877390_rule
       - CCI-001851
       - CAT2
 
@@ -1196,9 +1197,9 @@
       - wn22_au_000020
   tags:
       - WN22-AU-000020
-      - V-205843
+      - V-254295
       - SRG-OS-000479-GPOS-00224
-      - SV-205843r860027_rule
+      - SV-254295r848701_rule
       - CCI-001851
       - CAT2
       # hard one, either need to standardize on say log shipping like splunk or other is set?
@@ -1217,9 +1218,9 @@
       - wn22_au_000030
   tags:
       - WN22-AU-000030
-      - V-205640
+      - V-254296
       - SRG-OS-000057-GPOS-00027
-      - SV-205640r569188_rule
+      - SV-254296r848704_rule
       - CCI-000162
       - CCI-000163
       - CCI-000164
@@ -1239,9 +1240,9 @@
       - wn22_au_000040
   tags:
       - WN22-AU-000040
-      - V-205641
+      - V-254297
       - SRG-OS-000057-GPOS-00027
-      - SV-205641r569188_rule
+      - SV-254297r848707_rule
       - CCI-000162
       - CCI-000163
       - CCI-000164
@@ -1261,9 +1262,9 @@
       - wn22_au_000050
   tags:
       - WN22-AU-000050
-      - V-205642
+      - V-254298
       - SRG-OS-000057-GPOS-00027
-      - SV-205642r569188_rule
+      - SV-254298r848710_rule
       - CCI-000162
       - CCI-000163
       - CCI-000164
