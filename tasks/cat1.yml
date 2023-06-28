@@ -114,7 +114,7 @@
       datatype: dword
   when:
       - wn22_cc_000470
-      - not win2022stig_skip_for_test
+      - not win2022stig_skip_secure_winrm
   tags:
       - WN22-CC-000470
       - V-254378
@@ -132,7 +132,7 @@
       datatype: dword
   when:
       - wn22_cc_000500
-      - not win2022stig_skip_for_test
+      - not win2022stig_skip_secure_winrm
   tags:
       - WN22-CC-000500
       - V-254381
