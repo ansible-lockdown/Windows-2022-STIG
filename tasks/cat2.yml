@@ -1284,9 +1284,9 @@
       - wn22_au_000060
   tags:
       - WN22-AU-000060
-      - V-205731
+      - V-254299
       - SRG-OS-000257-GPOS-00098
-      - SV-205731r569188_rule
+      - SV-254299r848713_rule
       - CCI-001494
       - CCI-001495
       - CAT2
@@ -1307,9 +1307,9 @@
       - wn22_au_000070
   tags:
       - WN22-AU-000070
-      - V-205832
+      - V-254300
       - SRG-OS-000470-GPOS-00214
-      - SV-205832r569188_rule
+      - SV-254300r848716_rule
       - CCI-000172
       - CAT2
 
@@ -1329,33 +1329,87 @@
       - wn22_au_000080
   tags:
       - WN22-AU-000080
-      - V-205833
+      - V-254301
       - SRG-OS-000470-GPOS-00214
-      - SV-205833r569188_rule
+      - SV-254301r848719_rule
       - CCI-000172
       - CAT2
 
-- name: "MEDIUM | WN22-AU-000100 | PATCH | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
+- name: "MEDIUM | WN22-AU-000090 | PATCH | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
   block:
-      - name: "MEDIUM | WN22-AU-000100 | AUDIT | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
+      - name: "MEDIUM | WN22-AU-000090 | AUDIT | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
         ansible.windows.win_shell: AuditPol /get /subcategory:"Other Account Management Events" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: wn22_au_000090_audit
+
+      - name: "MEDIUM | WN22-AU-000090 | PATCH | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
+        ansible.windows.win_shell: AuditPol /set /subcategory:"Other Account Management Events" /failure:enable
+        when: "'Failure' not in wn22_au_000090_audit.stdout"
+  when:
+      - wn22_au_000090
+  tags:
+      - WN22-AU-000090
+      - V-254302
+      - SRG-OS-000327-GPOS-00127
+      - SV-254302r848722_rule
+      - CCI-000172
+      - CCI-002234
+      - CAT2
+
+- name: "MEDIUM | WN22-AU-000100 | PATCH | Windows Server 2022 must be configured to audit Account Management - User Account Management successes."
+  block:
+      - name: "MEDIUM | WN22-AU-000100 | AUDIT | Windows Server 2022 must be configured to audit Account Management - User Account Management successes."
+        ansible.windows.win_shell: AuditPol /get /subcategory:"Security Group Management" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
         changed_when: false
         failed_when: false
         check_mode: false
         register: wn22_au_000100_audit
 
-      - name: "MEDIUM | WN22-AU-000100 | PATCH | Windows Server 2022 must be configured to audit Account Management - Other Account Management Events successes."
-        ansible.windows.win_shell: AuditPol /set /subcategory:"Other Account Management Events" /success:enable
+      - name: "MEDIUM | WN22-AU-000100 | PATCH | Windows Server 2022 must be configured to audit Account Management - User Account Management successes."
+        ansible.windows.win_shell: AuditPol /set /subcategory:"Security Group Management" /success:enable
         when: "'Success' not in wn22_au_000100_audit.stdout"
   when:
       - wn22_au_000100
   tags:
       - WN22-AU-000100
-      - V-205769
-      - SRG-OS-000327-GPOS-00127
-      - SV-205769r569188_rule
+      - V-254303
+      - SRG-OS-000004-GPOS-00004
+      - SV-254303r848725_rule
+      - CCI-000018
       - CCI-000172
-      - CCI-002234
+      - CCI-001403
+      - CCI-001404
+      - CCI-001405
+      - CCI-002130
+      - CAT2
+
+- name: "MEDIUM | WN22-AU-000110 | PATCH | Windows Server 2022 must be configured to audit Account Management - User Account Management successes."
+  block:
+      - name: "MEDIUM | WN22-AU-000110 | AUDIT | Windows Server 2022 must be configured to audit Account Management - User Account Management successes."
+        ansible.windows.win_shell: AuditPol /get /subcategory:"User Account Management" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: wn22_au_000110_audit
+
+      - name: "MEDIUM | WN22-AU-000110 | PATCH | Windows Server 2022 must be configured to audit Account Management - User Account Management successes."
+        ansible.windows.win_shell: AuditPol /set /subcategory:"User Account Management" /success:enable
+        when: "'Success' not in wn22_au_000110_audit.stdout"
+  when:
+      - wn22_au_000110
+  tags:
+      - WN22-AU-000110
+      - V-254304
+      - SRG-OS-000004-GPOS-00004
+      - SV-254304r848728_rule
+      - CCI-000018
+      - CCI-000172
+      - CCI-001403
+      - CCI-001404
+      - CCI-001405
+      - CCI-002130
       - CAT2
 
 - name: "MEDIUM | WN22-AU-000120 | PATCH | Windows Server 2022 must be configured to audit Account Management - User Account Management failures."
@@ -1374,9 +1428,9 @@
       - wn22_au_000120
   tags:
       - WN22-AU-000120
-      - V-205627
+      - V-254305
       - SRG-OS-000004-GPOS-00004
-      - SV-205627r569188_rule
+      - SV-254305r848731_rule
       - CCI-000018
       - CCI-000172
       - CCI-001403
@@ -1401,9 +1455,9 @@
       - wn22_au_000130
   tags:
       - WN22-AU-000130
-      - V-205839
+      - V-254306
       - SRG-OS-000474-GPOS-00219
-      - SV-205839r569188_rule
+      - SV-254306r848734_rule
       - CCI-000172
       - CAT2
 
@@ -1423,9 +1477,9 @@
       - wn22_au_000140
   tags:
       - WN22-AU-000140
-      - V-205770
+      - V-254307
       - SRG-OS-000327-GPOS-00127
-      - SV-205770r569188_rule
+      - SV-254307r848737_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1438,20 +1492,6 @@
         failed_when: false
         check_mode: false
         register: wn22_au_000150_audit
-
-      - name: "MEDIUM | WN22-AU-000150 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff - Account Lockout successes."
-        ansible.windows.win_shell: AuditPol /set /subcategory:"Account Lockout" /success:enable
-        when: "'Success' not in wn22_au_000150_audit.stdout"
-  when:
-      - wn22_au_000150
-  tags:
-      - WN22-AU-000150
-      - V-205729
-      - SRG-OS-000240-GPOS-00090
-      - SV-205729r569188_rule
-      - CCI-000172
-      - CCI-001404
-      - CAT2
 
 - name: "MEDIUM | WN22-AU-000160 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff - Account Lockout failures."
   block:
@@ -1469,9 +1509,9 @@
       - wn22_au_000160
   tags:
       - WN22-AU-000160
-      - V-205730
+      - V-254309
       - SRG-OS-000240-GPOS-00090
-      - SV-205730r569188_rule
+      - SV-254309r848743_rule
       - CCI-000172
       - CCI-001404
       - CAT2
@@ -1492,9 +1532,9 @@
       - wn22_au_000170
   tags:
       - WN22-AU-000170
-      - V-205834
+      - V-254310
       - SRG-OS-000470-GPOS-00214
-      - SV-205834r569188_rule
+      - SV-254310r848746_rule
       - CCI-000172
       - CAT2
 
@@ -1514,11 +1554,10 @@
       - wn22_au_000180
   tags:
       - WN22-AU-000180
-      - V-205838
+      - V-254311
       - SRG-OS-000472-GPOS-00217
-      - SV-205838r569188_rule
+      - SV-254311r848749_rule
       - CCI-000172
-      - CCI-000366
       - CAT2
 
 - name: "MEDIUM | WN22-AU-000190 | PATCH | Windows Server 2022 must be configured to audit logon successes."
@@ -1537,9 +1576,9 @@
       - wn22_au_000190
   tags:
       - WN22-AU-000190
-      - V-205634
+      - V-254312
       - SRG-OS-000032-GPOS-00013
-      - SV-205634r569188_rule
+      - SV-254312r848752_rule
       - CCI-000067
       - CCI-000172
       - CAT2
@@ -1560,9 +1599,9 @@
       - wn22_au_000200
   tags:
       - WN22-AU-000200
-      - V-205635
+      - V-254313
       - SRG-OS-000032-GPOS-00013
-      - SV-205635r569188_rule
+      - SV-254313r848755_rule
       - CCI-000067
       - CCI-000172
       - CAT2
@@ -1583,9 +1622,9 @@
       - wn22_au_000210
   tags:
       - WN22-AU-000210
-      - V-205835
+      - V-254314
       - SRG-OS-000470-GPOS-00214
-      - SV-205835r569188_rule
+      - SV-254314r848758_rule
       - CCI-000172
       - CAT2
 
@@ -1597,9 +1636,9 @@
       - wn22_au_000220
   tags:
       - WN22-AU-000220
-      - V-205836
+      - V-254315
       - SRG-OS-000470-GPOS-00214
-      - SV-205836r569188_rule
+      - SV-254315r848761_rule
       - CCI-000172
       - CAT2
 
@@ -1611,9 +1650,9 @@
       - wn22_au_000230
   tags:
       - WN22-AU-000230
-      - V-205837
+      - V-254316
       - SRG-OS-000470-GPOS-00214
-      - SV-205837r569188_rule
+      - SV-254316r848764_rule
       - CCI-000172
       - CAT2
 
@@ -1633,9 +1672,9 @@
       - wn22_au_000240
   tags:
       - WN22-AU-000240
-      - V-205840
+      - V-254317
       - SRG-OS-000474-GPOS-00219
-      - SV-205840r569188_rule
+      - SV-254317r848767_rule
       - CCI-000172
       - CAT2
 
@@ -1655,9 +1694,9 @@
       - wn22_au_000250
   tags:
       - WN22-AU-000250
-      - V-205841
+      - V-254318
       - SRG-OS-000474-GPOS-00219
-      - SV-205841r569188_rule
+      - SV-254318r848770_rule
       - CCI-000172
       - CAT2
 
@@ -1677,9 +1716,9 @@
       - wn22_au_000260
   tags:
       - WN22-AU-000260
-      - V-205771
+      - V-254319
       - SRG-OS-000327-GPOS-00127
-      - SV-205771r569188_rule
+      - SV-254319r848773_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1700,9 +1739,9 @@
       - wn22_au_000270
   tags:
       - WN22-AU-000270
-      - V-205772
+      - V-254320
       - SRG-OS-000327-GPOS-00127
-      - SV-205772r569188_rule
+      - SV-254320r848776_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1723,9 +1762,9 @@
       - wn22_au_000280
   tags:
       - WN22-AU-000280
-      - V-205773
+      - V-254321
       - SRG-OS-000327-GPOS-00127
-      - SV-205773r569188_rule
+      - SV-254321r848779_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1746,9 +1785,9 @@
       - wn22_au_000290
   tags:
       - WN22-AU-000290
-      - V-205774
+      - V-254322
       - SRG-OS-000327-GPOS-00127
-      - SV-205774r569188_rule
+      - SV-254322r848782_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1769,9 +1808,9 @@
       - wn22_au_000300
   tags:
       - WN22-AU-000300
-      - V-205775
+      - V-254323
       - SRG-OS-000327-GPOS-00127
-      - SV-205775r569188_rule
+      - SV-254323r848785_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1792,9 +1831,9 @@
       - wn22_au_000310
   tags:
       - WN22-AU-000310
-      - V-205776
+      - V-254324
       - SRG-OS-000327-GPOS-00127
-      - SV-205776r569188_rule
+      - SV-254324r848788_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1815,9 +1854,9 @@
       - wn22_au_000320
   tags:
       - WN22-AU-000320
-      - V-205777
+      - V-254325
       - SRG-OS-000327-GPOS-00127
-      - SV-205777r569188_rule
+      - SV-254325r848791_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1838,9 +1877,9 @@
       - wn22_au_000330
   tags:
       - WN22-AU-000330
-      - V-205778
+      - V-254326
       - SRG-OS-000327-GPOS-00127
-      - SV-205778r569188_rule
+      - SV-254326r848794_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1861,9 +1900,9 @@
       - wn22_au_000340
   tags:
       - WN22-AU-000340
-      - V-205779
+      - V-254327
       - SRG-OS-000327-GPOS-00127
-      - SV-205779r569188_rule
+      - SV-254327r848797_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1884,9 +1923,9 @@
       - wn22_au_000350
   tags:
       - WN22-AU-000350
-      - V-205780
+      - V-254328
       - SRG-OS-000327-GPOS-00127
-      - SV-205780r569188_rule
+      - SV-254328r848800_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1907,9 +1946,9 @@
       - wn22_au_000360
   tags:
       - WN22-AU-000360
-      - V-205781
+      - V-254329
       - SRG-OS-000327-GPOS-00127
-      - SV-205781r569188_rule
+      - SV-254329r848803_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1930,9 +1969,9 @@
       - wn22_au_000370
   tags:
       - WN22-AU-000370
-      - V-205782
+      - V-254330
       - SRG-OS-000327-GPOS-00127
-      - SV-205782r569188_rule
+      - SV-254330r848806_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1953,9 +1992,9 @@
       - wn22_au_000380
   tags:
       - WN22-AU-000380
-      - V-205783
+      - V-254331
       - SRG-OS-000327-GPOS-00127
-      - SV-205783r569188_rule
+      - SV-254331r848809_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -1976,9 +2015,9 @@
       - wn22_au_000390
   tags:
       - WN22-AU-000390
-      - V-205784
+      - V-254332
       - SRG-OS-000327-GPOS-00127
-      - SV-205784r569188_rule
+      - SV-254332r848812_rule
       - CCI-000172
       - CCI-002234
       - CAT2
