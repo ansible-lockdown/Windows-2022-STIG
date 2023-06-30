@@ -2267,9 +2267,9 @@
       - wn22_cc_000240
   tags:
       - WN22-CC-000240
-      - V-205714
+      - V-254355
       - SRG-OS-000134-GPOS-00068
-      - SV-205714r569188_rule
+      - SV-254355r848881_rule
       - CCI-001084
       - CAT2
 
@@ -2283,9 +2283,9 @@
       - wn22_cc_000250
   tags:
       - WN22-CC-000250
-      - V-205869
+      - V-254356
       - SRG-OS-000480-GPOS-00227
-      - SV-205869r569188_rule
+      - SV-254356r916220_rule
       - CCI-000366
       - CAT2
 
@@ -2311,9 +2311,9 @@
       - wn22_cc_000270
   tags:
       - WN22-CC-000270
-      - V-205796
+      - V-254358
       - SRG-OS-000341-GPOS-00132
-      - SV-205796r569188_rule
+      - SV-254358r877391_rule
       - CCI-001849
       - CAT2
 
@@ -2339,9 +2339,9 @@
       - wn22_cc_000280
   tags:
       - WN22-CC-000280
-      - V-205797
+      - V-254359
       - SRG-OS-000341-GPOS-00132
-      - SV-205797r569188_rule
+      - SV-254359r877391_rule
       - CCI-001849
       - CAT2
 
@@ -2367,10 +2367,11 @@
       - wn22_cc_000290
   tags:
       - WN22-CC-000290
-      - V-93181
+      - V-254360
       - SRG-OS-000341-GPOS-00132
-      - SV-103269r1
+      - SV-254360r877391_rule
       - CCI-001849
+      - CAT2
 
 - name: "MEDIUM | WN22-CC-000300 | PATCH | Windows Server 2022 Windows Defender SmartScreen must be enabled."
   ansible.windows.win_regedit:
@@ -2382,9 +2383,9 @@
       - wn22_cc_000300
   tags:
       - WN22-CC-000300
-      - V-205798
+      - V-254361
       - SRG-OS-000095-GPOS-00049
-      - SV-205798r569188_rule
+      - SV-254361r848899_rule
       - CCI-000381
       - CAT2
 
@@ -2398,9 +2399,9 @@
       - wn22_cc_000310
   tags:
       - WN22-CC-000310
-      - V-205830
+      - V-254362
       - SRG-OS-000433-GPOS-00192
-      - SV-205830r569188_rule
+      - SV-254362r848902_rule
       - CCI-002824
       - CAT2
 
@@ -2414,9 +2415,9 @@
       - wn22_cc_000330
   tags:
       - WN22-CC-000330
-      - V-205872
+      - V-254364
       - SRG-OS-000480-GPOS-00227
-      - SV-205872r569188_rule
+      - SV-254364r848908_rule
       - CCI-000366
       - CAT2
 
@@ -2430,9 +2431,9 @@
       - wn22_cc_000340
   tags:
       - WN22-CC-000340
-      - V-205808
-      - SRG-OS-000373-GPOS-00157
-      - SV-205808r569188_rule
+      - V-254365
+      - SRG-OS-000373-GPOS-00156
+      - SV-254365r848911_rule
       - CCI-002038
       - CAT2
 
@@ -2446,9 +2447,9 @@
       - wn22_cc_000350
   tags:
       - WN22-CC-000350
-      - V-205722
+      - V-254366
       - SRG-OS-000138-GPOS-00069
-      - SV-205722r569188_rule
+      - SV-254366r848914_rule
       - CCI-001090
       - CAT2
 
@@ -2462,9 +2463,9 @@
       - wn22_cc_000360
   tags:
       - WN22-CC-000360
-      - V-205809
-      - SRG-OS-000373-GPOS-00157
-      - SV-205809r569188_rule
+      - V-254367
+      - SRG-OS-000373-GPOS-00156
+      - SV-254367r848917_rule
       - CCI-002038
       - CAT2
 
@@ -2478,9 +2479,9 @@
       - wn22_cc_000370
   tags:
       - WN22-CC-000370
-      - V-92971
+      - V-254368
       - SRG-OS-000033-GPOS-00014
-      - SV-103059r1
+      - SV-254368r877398_rule
       - CCI-000068
       - CCI-001453
       - CAT2
@@ -2495,10 +2496,10 @@
       - wn22_cc_000380
   tags:
       - WN22-CC-000380
-      - V-205636
+      - V-254369
       - SRG-OS-000033-GPOS-00014
       - SRG-OS-000250-GPOS-00093
-      - SV-205636r569188_rule
+      - SV-254369r877398_rule
       - CCI-000068
       - CCI-001453
       - CAT2
@@ -2513,9 +2514,9 @@
       - wn22_cc_000390
   tags:
       - WN22-CC-000390
-      - V-205873
+      - V-254370
       - SRG-OS-000480-GPOS-00227
-      - SV-205873r569188_rule
+      - SV-254370r848926_rule
       - CCI-000366
       - CAT2
 
@@ -2529,9 +2530,9 @@
       - wn22_cc_000400
   tags:
       - WN22-CC-000400
-      - V-205693
+      - V-254371
       - SRG-OS-000095-GPOS-00049
-      - SV-205693r569188_rule
+      - SV-254371r848929_rule
       - CCI-000381
       - CAT2
 
@@ -2545,9 +2546,9 @@
       - wn22_cc_000410
   tags:
       - WN22-CC-000410
-      - V-205694
+      - V-254372
       - SRG-OS-000095-GPOS-00049
-      - SV-205694r569188_rule
+      - SV-254372r848932_rule
       - CCI-000381
       - CAT2
 
@@ -2561,9 +2562,9 @@
       - wn22_cc_000420
   tags:
       - WN22-CC-000420
-      - V-205801
+      - V-254373
       - SRG-OS-000362-GPOS-00149
-      - SV-205801r569188_rule
+      - SV-254373r848935_rule
       - CCI-001812
       - CAT2
 
@@ -2577,9 +2578,9 @@
       - wn22_cc_000440
   tags:
       - WN22-CC-000440
-      - V-205874
+      - V-254375
       - SRG-OS-000480-GPOS-00227
-      - SV-205874r569188_rule
+      - SV-254375r848941_rule
       - CCI-000366
       - CAT2
 
@@ -2593,25 +2594,9 @@
       - wn22_cc_000450
   tags:
       - WN22-CC-000450
-      - V-205925
+      - V-254376
       - SRG-OS-000480-GPOS-00229
-      - SV-205925r569188_rule
-      - CCI-000366
-      - CAT2
-
-- name: "MEDIUM | WN22-CC-000451 | PATCH | The Windows Explorer Preview pane must be disabled for Windows Server 2022."
-  ansible.windows.win_regedit:
-      path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
-      value: NoPreviewPane
-      data: 1
-      datatype: dword
-  when:
-      - wn22_cc_000451
-  tags:
-      - WN22-CC-000451
-      - V-236001
-      - SRG-OS-000095-GPOS-00049
-      - SV-236001r641821_rule
+      - SV-254376r877377_rule
       - CCI-000366
       - CAT2
 
@@ -2625,9 +2610,9 @@
       - wn22_cc_000460
   tags:
       - WN22-CC-000460
-      - V-205639
+      - V-254377
       - SRG-OS-000042-GPOS-00020
-      - SV-205639r569188_rule
+      - SV-254377r848947_rule
       - CCI-000135
       - CAT2
 
@@ -2642,9 +2627,9 @@
       - not win2022stig_skip_secure_winrm
   tags:
       - WN22-CC-000480
-      - V-205816
+      - V-254379
       - SRG-OS-000393-GPOS-00173
-      - SV-205816r569188_rule
+      - SV-254379r877382_rule
       - CCI-002890
       - CCI-003123
       - CAT2
@@ -2659,9 +2644,9 @@
       - wn22_cc_000490
   tags:
       - WN22-CC-000490
-      - V-205712
+      - V-254380
       - SRG-OS-000125-GPOS-00065
-      - SV-205712r569188_rule
+      - SV-254380r877395_rule
       - CCI-000877
       - CAT2
 
@@ -2676,9 +2661,9 @@
       - not win2022stig_skip_secure_winrm
   tags:
       - WN22-CC-000510
-      - V-205817
+      - V-254382
       - SRG-OS-000393-GPOS-00173
-      - SV-205817r569188_rule
+      - SV-254382r877382_rule
       - CCI-002890
       - CCI-003123
       - CAT2
@@ -2694,10 +2679,26 @@
       - not win2022stig_skip_secure_winrm
   tags:
       - WN22-CC-000520
-      - V-205810
-      - SRG-OS-000373-GPOS-00157
-      - SV-205810r569188_rule
+      - V-254383
+      - SRG-OS-000373-GPOS-00156
+      - SV-254383r848965_rule
       - CCI-002038
+      - CAT2
+
+- name: "MEDIUM | WN22-CC-000530 | PATCH | Windows Server 2022 must have PowerShell Transcription enabled."
+  ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\Transcription\
+      value: EnableTranscripting
+      data: 1
+      datatype: dword
+  when:
+      - wn22_cc_000530
+  tags:
+      - WN22-CC-000530
+      - V-254384
+      - SRG-OS-000041-GPOS-00019
+      - SV-254384r848968_rule
+      - CCI-000134
       - CAT2
 
 - name: "MEDIUM | WN22-DC-000020 | AUDIT | Windows Server 2022 Kerberos user logon restrictions must be enforced."
@@ -2715,9 +2716,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000020
-      - V-205702
+      - V-254386
       - SRG-OS-000112-GPOS-00057
-      - SV-205702r569188_rule
+      - SV-254386r848974_rule
       - CCI-001941
       - CCI-001942
       - CAT2
@@ -2737,9 +2738,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000030
-      - V-205703
+      - V-254387
       - SRG-OS-000112-GPOS-00057
-      - SV-205703r569188_rule
+      - SV-254387r848977_rule
       - CCI-001941
       - CCI-001942
       - CAT2
@@ -2759,9 +2760,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000040
-      - V-205704
+      - V-254388
       - SRG-OS-000112-GPOS-00057
-      - SV-205704r569188_rule
+      - SV-254388r848980_rule
       - CCI-001941
       - CCI-001942
       - CAT2
@@ -2781,9 +2782,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000050
-      - V-205705
+      - V-254389
       - SRG-OS-000112-GPOS-00057
-      - SV-205705r569188_rule
+      - SV-254389r848983_rule
       - CCI-001941
       - CCI-001942
       - CAT2
@@ -2803,9 +2804,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000060
-      - V-205706
+      - V-254390
       - SRG-OS-000112-GPOS-00057
-      - SV-205706r569188_rule
+      - SV-254390r848986_rule
       - CCI-001941
       - CCI-001942
       - CAT2
@@ -2825,9 +2826,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000120
-      - V-205723
+      - V-254396
       - SRG-OS-000138-GPOS-00069
-      - SV-205723r569188_rule
+      - SV-254396r849004_rule
       - CCI-001090
       - CAT2
 
@@ -2846,9 +2847,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000130
-      - V-205695
+      - V-254397
       - SRG-OS-000095-GPOS-00049
-      - SV-205695r569188_rule
+      - SV-254397r849007_rule
       - CCI-000381
       - CAT2
 
@@ -2867,9 +2868,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000140
-      - V-205818
+      - V-254398
       - SRG-OS-000396-GPOS-00176
-      - SV-205818r569188_rule
+      - SV-254398r877380_rule
       - CCI-002450
       - CAT2
 
@@ -2888,9 +2889,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000170
-      - V-205785
+      - V-254401
       - SRG-OS-000327-GPOS-00127
-      - SV-205785r569188_rule
+      - SV-254401r849019_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -2910,9 +2911,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000180
-      - V-205786
+      - V-254402
       - SRG-OS-000327-GPOS-00127
-      - SV-205786r569188_rule
+      - SV-254402r849022_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -2932,9 +2933,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000190
-      - V-205787
+      - V-254403
       - SRG-OS-000327-GPOS-00127
-      - SV-205787r569188_rule
+      - SV-254403r849025_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -2954,9 +2955,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000200
-      - V-205788
+      - V-254404
       - SRG-OS-000327-GPOS-00127
-      - SV-205788r569188_rule
+      - SV-254404r849028_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -2976,9 +2977,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000210
-      - V-205789
+      - V-254405
       - SRG-OS-000327-GPOS-00127
-      - WN22-DC-000210
+      - SV-254405r849031_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -2998,9 +2999,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000220
-      - V-205790
+      - V-254406
       - SRG-OS-000327-GPOS-00127
-      - SV-205790r569188_rule
+      - SV-254406r849034_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -3022,14 +3023,14 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000230
-      - V-205628
+      - V-254407
       - SRG-OS-000004-GPOS-00004
       - SRG-OS-000239-GPOS-00089
       - SRG-OS-000240-GPOS-00090
       - SRG-OS-000241-GPOS-00091
       - SRG-OS-000303-GPOS-00120
       - SRG-OS-000476-GPOS-00221
-      - SV-205628r569188_rule
+      - SV-254407r849037_rule
       - CCI-000018
       - CCI-000172
       - CCI-001403
@@ -3055,12 +3056,12 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000240
-      - V-205791
+      - V-254408
       - SRG-OS-000327-GPOS-00127
       - SRG-OS-000458-GPOS-00203
       - SRG-OS-000463-GPOS-00207
       - SRG-OS-000468-GPOS-00212
-      - SV-205791r569188_rule
+      - SV-254408r849040_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -3083,9 +3084,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000250
-      - V-205792
+      - V-254409
       - SRG-OS-000327-GPOS-00127
-      - SV-205792r569188_rule
+      - SV-254409r849043_rule
       - SRG-OS-000458-GPOS-00203
       - SRG-OS-000463-GPOS-00207
       - SRG-OS-000468-GPOS-00212
@@ -3111,40 +3112,12 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000260
-      - V-205793
+      - V-254410
       - SRG-OS-000327-GPOS-00127
       - SRG-OS-000458-GPOS-00203
       - SRG-OS-000463-GPOS-00207
       - SRG-OS-000468-GPOS-00212
-      - SV-205793r569188_rule
-      - CCI-000172
-      - CCI-002234
-      - CAT2
-      - NeedToTestDomainController
-
-- name: "MEDIUM | WN22-DC-000270 | PATCH | Windows Server 2022 must be configured to audit DS Access - Directory Service Changes failures."
-  block:
-      - name: "MEDIUM | WN22-DC-000270 | AUDIT | Windows Server 2022 must be configured to audit DS Access - Directory Service Changes failures."
-        ansible.windows.win_shell: AuditPol /get /subcategory:"Directory Service Changes" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: wn22_dc_000270_audit
-
-      - name: "MEDIUM | WN22-DC-000270 | PATCH | Windows Server 2022 must be configured to audit DS Access - Directory Service Changes failures."
-        ansible.windows.win_shell: AuditPol /set /subcategory:"Directory Service Changes" /failure:enable
-        when: "'Failure' not in wn22_dc_000270_audit.stdout"
-  when:
-      - wn22_dc_000270
-      - ansible_windows_domain_role == "Primary domain controller"
-  tags:
-      - WN22-DC-000270
-      - V-205794
-      - SRG-OS-000327-GPOS-00127
-      - SRG-OS-000458-GPOS-00203
-      - SRG-OS-000463-GPOS-00207
-      - SRG-OS-000468-GPOS-00212
-      - SV-205794r569188_rule
+      - SV-254410r849046_rule
       - CCI-000172
       - CCI-002234
       - CAT2
@@ -3165,9 +3138,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000280
-      - V-205645
+      - V-254412
       - SRG-OS-000066-GPOS-00034
-      - SV-205645r569188_rule
+      - SV-254412r849052_rule
       - CCI-000185
       - CAT2
 
@@ -3186,13 +3159,13 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000310
-      - V-205701
+      - V-254415
       - SRG-OS-000105-GPOS-00052
       - SRG-OS-000106-GPOS-00053
       - SRG-OS-000107-GPOS-00054
       - SRG-OS-000108-GPOS-00055
       - SRG-OS-000375-GPOS-00160
-      - SV-205701r569188_rule
+      - SV-254415r849355_rule
       - CCI-000765
       - CCI-000766
       - CCI-000767
@@ -3211,10 +3184,10 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000320
-      - V-205820
+      - V-254416
       - SRG-OS-000423-GPOS-00187
       - SRG-OS-000424-GPOS-00188
-      - SV-205820r569188_rule
+      - SV-254416r849064_rule
       - CCI-002418
       - CCI-002421
       - CAT2
@@ -3231,9 +3204,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000330
-      - V-205876
+      - V-254417
       - SRG-OS-000480-GPOS-00227
-      - SV-205876r569188_rule
+      - SV-254417r849067_rule
       - CCI-000366
       - CAT2
       - NeedToTestDomainController
@@ -3251,9 +3224,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000340
-      - V-205665
+      - V-254418
       - SRG-OS-000080-GPOS-00048
-      - SV-205665r569188_rule
+      - SV-254418r849070_rule
       - CCI-000213
       - CAT2
       - NeedToTestDomainController
@@ -3268,9 +3241,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000350
-      - V-205744
+      - V-254419
       - SRG-OS-000324-GPOS-00125
-      - SV-205744r569188_rule
+      - SV-254419r877392_rule
       - CCI-002235
       - CAT2
       - NeedToTestDomainController
@@ -3285,9 +3258,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000360
-      - V-205666
+      - V-254420
       - SRG-OS-000080-GPOS-00048
-      - SV-205666r569188_rule
+      - SV-254420r849076_rule
       - CCI-000213
       - CAT2
       - NeedToTestDomainController
@@ -3302,9 +3275,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000370
-      - V-205667
+      - V-254421
       - SRG-OS-000080-GPOS-00048
-      - SV-205667r569188_rule
+      - SV-254421r849079_rule
       - CCI-000213
       - CAT2
       - NeedToTestDomainController
@@ -3319,9 +3292,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000380
-      - V-205668
+      - V-254422
       - SRG-OS-000080-GPOS-00048
-      - SV-205668r569188_rule
+      - SV-254422r849082_rule
       - CCI-000213
       - CAT2
       - NeedToTestDomainController
@@ -3336,9 +3309,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000390
-      - V-205669
+      - V-254423
       - SRG-OS-000080-GPOS-00048
-      - SV-205669r569188_rule
+      - SV-254423r849085_rule
       - CCI-000213
       - CAT2
       - NeedToTestDomainController
@@ -3353,9 +3326,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000400
-      - V-205670
+      - V-254424
       - SRG-OS-000080-GPOS-00048
-      - SV-205670r569188_rule
+      - SV-254424r849088_rule
       - CCI-000213
       - CAT2
       - NeedToTestDomainController
@@ -3370,9 +3343,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000410
-      - V-205732
+      - V-254425
       - SRG-OS-000297-GPOS-00115
-      - SV-205732r569188_rule
+      - SV-254425r849091_rule
       - CCI-002314
       - CAT2
       - NeedToTestDomainController
@@ -3387,9 +3360,9 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000420
-      - V-205745
+      - V-254426
       - SRG-OS-000324-GPOS-00125
-      - SV-205745r569188_rule
+      - SV-254426r877392_rule
       - CCI-002235
       - CAT2
       - NeedToTestDomainController
@@ -3417,9 +3390,9 @@
       - win2022stig_complexity_high
   tags:
       - WN22-DC-000430
-      - V-205877
+      - V-254427
       - SRG-OS-000480-GPOS-00227
-      - SV-205877r857315_rule
+      - SV-254427r849097_rule
       - CCI-000366
       - NeedToTestDomainController
       - CAT2
@@ -3435,9 +3408,9 @@
       - ansible_windows_domain_role == "Member server"
   tags:
       - WN22-MS-000020
-      - V-205715
+      - V-254429
       - SRG-OS-000134-GPOS-00068
-      - SV-205715r857320_rule
+      - SV-254429r849103_rule
       - CCI-001084
       - CAT2
       - NeedToTestMemberServer
@@ -3453,9 +3426,9 @@
       - ansible_windows_domain_role == "Member server"
   tags:
       - WN22-MS-000030
-      - V-205696
+      - V-254430
       - SRG-OS-000095-GPOS-00049
-      - SV-205696r857322_rule
+      - SV-254430r849106_rule
       - CCI-000381
       - CAT2
       - NeedToTestMemberServer
@@ -3471,9 +3444,9 @@
       - not ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-MS-000040
-      - V-205814
+      - V-254431
       - SRG-OS-000379-GPOS-00164
-      - SV-205814r860031_rule
+      - SV-254431r877039_rule
       - CCI-001967
       - CAT2
 
@@ -3488,9 +3461,9 @@
       - ansible_windows_domain_role == "Member server"
   tags:
       - WN22-MS-000050
-      - V-205906
+      - V-254432
       - SRG-OS-000480-GPOS-00227
-      - SV-205906r857326_rule
+      - SV-254432r849112_rule
       - CCI-000366
       - CAT2
 
@@ -3505,9 +3478,9 @@
       - not ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-MS-000060
-      - V-205747
+      - V-254433
       - SRG-OS-000324-GPOS-00125
-      - SV-205747r860032_rule
+      - SV-254433r877392_rule
       - CCI-002235
       - CAT2
 
@@ -3523,9 +3496,9 @@
       - not ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-MS-000070
-      - V-205671
+      - V-254434
       - SRG-OS-000080-GPOS-00048
-      - SV-205671r857331_rule
+      - SV-254434r849118_rule
       - CCI-000213
       - CAT2
 
@@ -3554,9 +3527,38 @@
       - not ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-MS-000080
-      - V-205672
+      - V-254435
       - SRG-OS-000080-GPOS-00048
-      - SV-205672r857333_rule
+      - SV-254435r849121_rule
+      - CCI-000213
+      - CAT2
+      - NeedToTestMemberServer
+
+- name: "MEDIUM | WN22-MS-000090 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+  block:
+      - name: "MEDIUM | WN22-MS-000090 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+        ansible.windows.win_user_right:
+            name: SeDenyBatchLogonRight
+            users:
+                - Enterprise Admins
+                - Domain Admins
+            action: set
+        when: ansible_windows_domain_role == "Member server"
+
+      - name: "MEDIUM | WN22-MS-000090 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+        ansible.windows.win_user_right:
+            name: SeDenyBatchLogonRight
+            users: Guests
+            action: set
+        when: not ansible_windows_domain_member
+  when:
+      - wn22_ms_000090
+      - not ansible_windows_domain_role == "Primary domain controller"
+  tags:
+      - WN22-MS-000090
+      - V-254436
+      - SRG-OS-000080-GPOS-00048
+      - SV-254436r849124_rule
       - CCI-000213
       - CAT2
       - NeedToTestMemberServer

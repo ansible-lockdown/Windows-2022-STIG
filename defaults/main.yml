@@ -198,8 +198,8 @@ wn22_cc_000410: true
 wn22_cc_000420: true
 wn22_cc_000440: true
 wn22_cc_000450: true
-wn22_cc_000451: true
 wn22_cc_000460: true
+wn22_cc_000530: true
 # WINRM CONTROL
 wn22_cc_000480: true
 wn22_cc_000490: true
@@ -224,7 +224,6 @@ wn22_dc_000230: true
 wn22_dc_000240: true
 wn22_dc_000250: true
 wn22_dc_000260: true
-wn22_dc_000270: true
 wn22_dc_000280: true
 wn22_dc_000310: true
 wn22_dc_000320: true
