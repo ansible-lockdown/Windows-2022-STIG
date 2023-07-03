@@ -4192,9 +4192,9 @@
       - wn22_so_000320
   tags:
       - WN22-SO-000320
-      - V-205920
+      - V-254476
       - SRG-OS-000480-GPOS-00227
-      - SV-205920r569188_rule
+      - SV-254476r849244_rule
       - CCI-000366
       - CAT2
 
@@ -4208,9 +4208,9 @@
       - wn22_so_000330
   tags:
       - WN22-SO-000330
-      - V-205921
+      - V-254477
       - SRG-OS-000480-GPOS-00227
-      - SV-205921r569188_rule
+      - SV-254477r849247_rule
       - CCI-000366
       - CAT2
 
@@ -4224,9 +4224,9 @@
       - wn22_so_000340
   tags:
       - WN22-SO-000340
-      - V-205922
+      - V-254478
       - SRG-OS-000480-GPOS-00227
-      - SV-205922r569188_rule
+      - SV-254478r849250_rule
       - CCI-000366
       - CAT2
 
@@ -4240,9 +4240,9 @@
       - wn22_so_000350
   tags:
       - WN22-SO-000350
-      - V-205651
+      - V-254479
       - SRG-OS-000067-GPOS-00035
-      - SV-205651r569188_rule
+      - SV-254479r849253_rule
       - CCI-000186
       - CAT2
 
@@ -4256,9 +4256,9 @@
       - wn22_so_000360
   tags:
       - WN22-SO-000360
-      - V-205842
-      - SRG-OS-000480-GPOS-00227
-      - SV-205842r569188_rule
+      - V-254480
+      - SRG-OS-000478-GPOS-00223
+      - SV-254480r877466_rule
       - CCI-002450
       - CAT2
 
@@ -4272,9 +4272,9 @@
       - wn22_so_000380
   tags:
       - WN22-SO-000380
-      - V-205811
-      - SRG-OS-000373-GPOS-00157
-      - SV-205811r569188_rule
+      - V-254482
+      - SRG-OS-000373-GPOS-00156
+      - SV-254482r849262_rule
       - CCI-002038
       - CAT2
       # - exclusions for server core? think its NA there
@@ -4289,9 +4289,9 @@
       - wn22_so_000390
   tags:
       - WN22-SO-000390
-      - V-205716
+      - V-254483
       - SRG-OS-000134-GPOS-00068
-      - SV-205716r569188_rule
+      - SV-254483r849265_rule
       - CCI-001084
       - CAT2
 
@@ -4305,9 +4305,9 @@
       - wn22_so_000400
   tags:
       - WN22-SO-000400
-      - V-205717
+      - V-254484
       - SRG-OS-000134-GPOS-00068
-      - SV-205717r569188_rule
+      - SV-254484r849268_rule
       - CCI-001084
       - CAT2
 
@@ -4322,9 +4322,10 @@
       - wn22_so_000410
   tags:
       - WN22-SO-000410
-      - V-205812
+      - V-254485
       - SRG-OS-000373-GPOS-00157
-      - SV-205812r569188_rule
+      - SRG-OS-000373-GPOS-00156
+      - SV-254485r849271_rule
       - CCI-002038
       - CAT2
 
@@ -4338,9 +4339,9 @@
       - wn22_so_000420
   tags:
       - WN22-SO-000420
-      - V-205718
+      - V-254486
       - SRG-OS-000134-GPOS-00068
-      - SV-205718r569188_rule
+      - SV-254486r849274_rule
       - CCI-001084
       - CAT2
 
@@ -4354,9 +4355,9 @@
       - wn22_so_000430
   tags:
       - WN22-SO-000430
-      - V-205719
+      - V-254487
       - SRG-OS-000134-GPOS-00068
-      - SV-205719r569188_rule
+      - SV-254487r849277_rule
       - CCI-001084
       - CAT2
 
@@ -4370,9 +4371,10 @@
       - wn22_so_000440
   tags:
       - WN22-SO-000440
-      - V-205813
+      - V-254488
       - SRG-OS-000373-GPOS-00157
-      - SV-205813r569188_rule
+      - SRG-OS-000373-GPOS-00156
+      - SV-254488r849280_rule
       - CCI-002038
       - CAT2
 
@@ -4386,9 +4388,9 @@
       - wn22_so_000450
   tags:
       - WN22-SO-000450
-      - V-205720
+      - V-254489
       - SRG-OS-000134-GPOS-00068
-      - SV-205720r569188_rule
+      - SV-254489r849283_rule
       - CCI-001084
       - CAT2
 
@@ -4402,9 +4404,9 @@
       - wn22_uc_000010
   tags:
       - WN22-UC-000010
-      - V-205924
+      - V-254490
       - SRG-OS-000480-GPOS-00227
-      - SV-205924r569188_rule
+      - SV-254490r849286_rule
       - CCI-000366
       - CAT2
 
@@ -4418,9 +4420,9 @@
       - wn22_ur_000010
   tags:
       - WN22-UR-000010
-      - V-205749
+      - V-254491
       - SRG-OS-000324-GPOS-00125
-      - SV-205749r569188_rule
+      - SV-254491r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4433,9 +4435,9 @@
       - wn22_ur_000030
   tags:
       - WN22-UR-000030
-      - V-205676
+      - V-254493
       - SRG-OS-000080-GPOS-00048
-      - SV-205676r569188_rule
+      - SV-254493r849295_rule
       - CCI-000213
       - CAT2
 
@@ -4448,9 +4450,9 @@
       - wn22_ur_000040
   tags:
       - WN22-UR-000040
-      - V-205751
+      - V-254494
       - SRG-OS-000324-GPOS-00125
-      - SV-205751r569188_rule
+      - SV-254494r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4463,9 +4465,9 @@
       - wn22_ur_000050
   tags:
       - WN22-UR-000050
-      - V-205752
+      - V-254495
       - SRG-OS-000324-GPOS-00125
-      - SV-205752r569188_rule
+      - SV-254495r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4482,9 +4484,9 @@
       - wn22_ur_000070
   tags:
       - WN22-UR-000070
-      - V-205754
+      - V-254497
       - SRG-OS-000324-GPOS-00125
-      - SV-205754r569188_rule
+      - SV-254497r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4497,24 +4499,24 @@
       - wn22_ur_000080
   tags:
       - WN22-UR-000080
-      - V-205755
+      - V-254498
       - SRG-OS-000324-GPOS-00125
-      - SV-205755r569188_rule
+      - SV-254498r877392_rule
       - CCI-002235
       - CAT2
 
-- name: "MEDIUM | WN22-UR-000100 | PATCH | Windows Server 2022 Create symbolic links user right must only be assigned to the Administrators group."
+- name: "MEDIUM | WN22-UR-000090 | PATCH | Windows Server 2022 Create symbolic links user right must only be assigned to the Administrators group."
   ansible.windows.win_user_right:
       name: SeCreateSymbolicLinkPrivilege
       users: Administrators
       action: set
   when:
-      - wn22_ur_000100
+      - wn22_ur_000090
   tags:
-      - WN22-UR-000100
-      - V-205756
+      - WN22-UR-000090
+      - V-254499
       - SRG-OS-000324-GPOS-00125
-      - SV-205756r569188_rule
+      - SV-254499r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4527,9 +4529,9 @@
       - wn22_ur_000110
   tags:
       - WN22-UR-000110
-      - V-205758
+      - V-254501
       - SRG-OS-000324-GPOS-00125
-      - SV-205758r569188_rule
+      - SV-254501r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4544,9 +4546,9 @@
       - wn22_ur_000120
   tags:
       - WN22-UR-000120
-      - V-205759
+      - V-254502
       - SRG-OS-000324-GPOS-00125
-      - SV-205759r569188_rule
+      - SV-254502r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4563,9 +4565,9 @@
       - wn22_ur_000130
   tags:
       - WN22-UR-000130
-      - V-205760
+      - V-254503
       - SRG-OS-000324-GPOS-00125
-      - SV-205760r569188_rule
+      - SV-254503r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4578,9 +4580,9 @@
       - wn22_ur_000140
   tags:
       - WN22-UR-000140
-      - V-205761
+      - V-254504
       - SRG-OS-000324-GPOS-00125
-      - SV-205761r569188_rule
+      - SV-254504r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4593,9 +4595,9 @@
       - wn22_ur_000150
   tags:
       - WN22-UR-000150
-      - V-205762
+      - V-254505
       - SRG-OS-000324-GPOS-00125
-      - SV-205762r569188_rule
+      - SV-254505r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4608,10 +4610,11 @@
       - wn22_ur_000160
   tags:
       - WN22-UR-000160
-      - V-205763
+      - V-254506
       - SRG-OS-000324-GPOS-00125
-      - SV-205763r569188_rule
+      - SV-254506r877392_rule
       - CCI-002235
+      - CCI-002824
       - CAT2
 
 - name: "MEDIUM | WN22-UR-000170 | PATCH | Windows Server 2022 Manage auditing and security log user right must only be assigned to the Administrators group."
@@ -4623,9 +4626,9 @@
       - wn22_ur_000170
   tags:
       - WN22-UR-000170
-      - V-205643
+      - V-254507
       - SRG-OS-000057-GPOS-00027
-      - SV-205643r569188_rule
+      - SV-254507r849337_rule
       - CCI-000162
       - CCI-000163
       - CCI-000164
@@ -4642,9 +4645,9 @@
       - wn22_ur_000180
   tags:
       - WN22-UR-000180
-      - V-205764
+      - V-254508
       - SRG-OS-000324-GPOS-00125
-      - SV-205764r569188_rule
+      - SV-254508r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4657,9 +4660,9 @@
       - wn22_ur_000190
   tags:
       - WN22-UR-000190
-      - V-205765
+      - V-254509
       - SRG-OS-000324-GPOS-00125
-      - SV-205765r569188_rule
+      - SV-254509r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4672,9 +4675,9 @@
       - wn22_ur_000200
   tags:
       - WN22-UR-000200
-      - V-205766
+      - V-254510
       - SRG-OS-000324-GPOS-00125
-      - SV-205766r569188_rule
+      - SV-254510r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4687,9 +4690,9 @@
       - wn22_ur_000210
   tags:
       - WN22-UR-000210
-      - V-205767
+      - V-254511
       - SRG-OS-000324-GPOS-00125
-      - SV-205767r569188_rule
+      - SV-254511r877392_rule
       - CCI-002235
       - CAT2
 
@@ -4702,8 +4705,8 @@
       - wn22_ur_000220
   tags:
       - WN22-UR-000220
-      - V-205768
+      - V-254512
       - SRG-OS-000324-GPOS-00125
-      - SV-205768r569188_rule
+      - SV-254512r877392_rule
       - CCI-002235
       - CAT2
