@@ -278,7 +278,6 @@
       - SV-254249r848563_rule
       - CCI-000366
       - CAT2
-      # think this is mcafee but need install and figure out paths for AV vs HIDS and/or running services?
 
 - name: "MEDIUM | WN22-00-000140 | AUDIT | Windows Server 2022 permissions for the system drive root directory usually C:\ must conform to minimum requirements."
   block:
@@ -908,7 +907,46 @@
       - SV-254282r848662_rule
       - CCI-000366
       - CAT2
-      # https://www.stigviewer.com/stig/windows_server_2016/2022-01-16/finding/V-78127
+
+- name: "MEDIUM | WN22-00-000460 | AUDIT | Windows Server 2022 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS."
+  block:
+      - name: "MEDIUM | WN22-00-000460 | AUDIT | Windows Server 2022 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS."
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS."
+
+      - name: "MEDIUM | WN22-00-000460 | AUDIT | Windows Server 2022 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS. | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-00-000460'
+  when:
+      - wn22_00_000460
+  tags:
+      - WN22-00-000460
+      - V-254283
+      - SRG-OS-000480-GPOS-00227
+      - SV-254283r848665_rule
+      - CCI-000366
+      - CAT2
+
+- name: "MEDIUM | WN22-00-000470 | AUDIT | Windows Server 2022 must have Secure Boot enabled."
+  block:
+      - name: "MEDIUM | WN22-00-000470 | AUDIT | Windows Server 2022 must have Secure Boot enabled."
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 must have Secure Boot enabled. "
+
+      - name: "MEDIUM | WN22-00-000470 | AUDIT | Windows Server 2022 must have Secure Boot enabled. | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-00-000470'
+  when:
+      - wn22_00_000470
+  tags:
+      - WN22-00-000470
+      - V-254284
+      - SRG-OS-000480-GPOS-00227
+      - SV-254284r848668_rule
+      - CCI-000366
+      - CAT2
 
 # THE FOLLOWING 3 CONTROLS WILL FAIL UNLESS THEY ARE IN THE FOLLOWING ORDER FOR LOCAL BASED SYSTEMS.
 - name: "MEDIUM | WN22-AC-000020 | PATCH | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less."

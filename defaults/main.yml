@@ -119,6 +119,8 @@ wn22_00_000410: true
 wn22_00_000420: true
 wn22_00_000430: true
 wn22_00_000450: true
+wn22_00_000460: true
+wn22_00_000470: true
 wn22_ac_000020: true
 wn22_ac_000030: wn22_ac_000020
 wn22_ac_000010: wn22_ac_000030
@@ -313,8 +315,6 @@ wn22_ur_000220: true
 # CAT 3 rules
 wn22_00_000180: true
 wn22_00_000440: true
-wn22_00_000460: true
-wn22_00_000470: true
 wn22_cc_000030: true
 wn22_cc_000040: true
 wn22_cc_000050: true
