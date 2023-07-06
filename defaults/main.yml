@@ -344,8 +344,6 @@ wn22stig_lockoutduration: 15
 # and may not be set to 0.
 wn22stig_lockoutbadcount: 3
 
-win22stig_cloud_based_system: true
-
 # WN22-AC-000030
 # Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater.
 # wn22stig_resetlockoutcount is the Reset account lockout counter after value in mintues.
