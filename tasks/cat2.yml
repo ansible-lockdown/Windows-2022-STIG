@@ -1240,7 +1240,6 @@
       - SV-254295r848701_rule
       - CCI-001851
       - CAT2
-      # hard one, either need to standardize on say log shipping like splunk or other is set?
 
 - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows Server 2022 permissions for the Application event log must prevent access by non-privileged accounts."
   block:
