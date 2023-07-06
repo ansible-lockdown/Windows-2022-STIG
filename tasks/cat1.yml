@@ -19,7 +19,6 @@
       - SRG-OS-000066-GPOS-00034
       - SV-254413r849055_rule
       - CCI-000185
-      - high
       - CAT1
 
 # add some task/external variable for approved CAs, check for DoD and how to pull programatically
@@ -42,7 +41,6 @@
       - SRG-OS-000066-GPOS-00034
       - SV-254414r849058_rule
       - CCI-000185
-      - high
       - CAT1
 
 - name: "HIGH | WN22-AC-000090 | PATCH | Windows Server 2022 reversible password encryption must be disabled."
@@ -58,7 +56,6 @@
       - SRG-OS-000073-GPOS-00041
       - SV-254293r877397_rule
       - CCI-000226
-      - high
       - CAT1
 
 - name: "HIGH | WN22-SO-000300 | PATCH | Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords."
@@ -75,7 +72,6 @@
       - SRG-OS-000073-GPOS-00041
       - SV-254474r877397_rule
       - CCI-000226
-      - high
       - CAT1
 
 - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes."
@@ -103,7 +99,6 @@
       - SRG-OS-000080-GPOS-00048
       - SV-254250r848566_rule
       - CCI-000213
-      - high
       - CAT1
 
 - name: "HIGH | WN22-CC-000470 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) client must not use Basic authentication."
@@ -121,7 +116,6 @@
       - SRG-OS-000125-GPOS-00065
       - SV-254378r877395_rule
       - CCI-000877
-      - high
       - CAT1
 
 - name: "HIGH | WN22-CC-000500 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) service must not use Basic authentication."
@@ -139,7 +133,6 @@
       - SRG-OS-000125-GPOS-00065
       - SV-254381r877395_rule
       - CCI-000877
-      - high
       - CAT1
 
 - name: "HIGH | WN22-SO-000230 | PATCH | Windows Server 2022 must not allow anonymous enumeration of shares."
@@ -156,7 +149,6 @@
       - SRG-OS-000138-GPOS-00069
       - SV-254467r849217_rule
       - CCI-001090
-      - high
       - CAT1
 
 - name: "HIGH | WN22-SO-000250 | PATCH | Windows Server 2022 must restrict anonymous access to Named Pipes and Shares."
@@ -173,7 +165,6 @@
       - SRG-OS-000138-GPOS-00069
       - SV-254469r849223_rule
       - CCI-001090
-      - high
       - CAT1
 
 - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
@@ -204,7 +195,6 @@
       - SV-254385r877392_rule
       - CCI-002235
       - notest
-      - high
       - CAT1
 
 - name: "HIGH | WN22-DC-000070 | AUDIT | Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access."
@@ -226,7 +216,6 @@
       - SRG-OS-000324-GPOS-00125
       - SV-254391r877392_rule
       - CCI-002235
-      - high
       - CAT1
 
 - name: "HIGH | WN22-DC-000080 | AUDIT | Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions."
@@ -248,7 +237,6 @@
       - SRG-OS-000324-GPOS-00125
       - SV-254392r877392_rule
       - CCI-002235
-      - high
       - CAT1
 
 - name: "HIGH | WN22-DC-000090 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must have proper access control permissions."
@@ -270,7 +258,6 @@
       - SRG-OS-000324-GPOS-00125
       - SV-205741r569188_rule
       - CCI-002235
-      - high
       - CAT1
 
 - name: "HIGH | WN22-DC-000100 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must have the proper access control permissions."
@@ -292,7 +279,6 @@
       - SRG-OS-000324-GPOS-00125
       - SV-254394r877392_rule
       - CCI-002235
-      - high
       - CAT1
 
 - name: "HIGH | WN22-DC-000110 | AUDIT | Windows Server 2022 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions."
@@ -314,7 +300,6 @@
       - SV-254395r877392_rule
       - SRG-OS-000324-GPOS-00125
       - CCI-002235
-      - high
       - CAT1
 
 # populate a dictionary/list from customer
@@ -347,7 +332,6 @@
       - SV-254428r877392_rule
       - CCI-002235
       - audit
-      - high
       - CAT1
 
 - name: "HIGH | WN22-UR-000020 | PATCH | Windows Server 2022 Act as part of the operating system user right must not be assigned to any groups or accounts."
@@ -363,7 +347,6 @@
       - SRG-OS-000324-GPOS-00125
       - SV-254492r877392_rule
       - CCI-002235
-      - high
       - CAT1
 
 - name: "HIGH | WN22-UR-000060 | PATCH | Windows Server 2022 Create a token object user right must not be assigned to any groups or accounts."
@@ -398,7 +381,6 @@
       - SRG-OS-000324-GPOS-00125
       - SV-254500r877392_rule
       - CCI-002235
-      - high
       - CAT1
 
 - name: "HIGH | WN22-CC-000430 | PATCH | Windows Server 2022 must disable the Windows Installer Always install with elevated privileges option."
@@ -416,7 +398,6 @@
       - SRG-OS-000362-GPOS-00149
       - SV-254374r848938_rule
       - CCI-001812
-      - high
       - CAT1
 
 - name: "HIGH | WN22-CC-000210 | PATCH | Windows Server 2022 AutoPlay must be turned off for non-volume devices."
@@ -433,7 +414,6 @@
       - SRG-OS-000368-GPOS-00154
       - SV-254352r848872_rule
       - CCI-001764
-      - high
       - CAT1
 
 - name: "HIGH | WN22-CC-000220 | PATCH | Windows Server 2022 default AutoRun behavior must be configured to prevent AutoRun commands."
@@ -450,7 +430,6 @@
       - SRG-OS-000368-GPOS-00154
       - SV-254353r848875_rule
       - CCI-001764
-      - high
       - CAT1
 
 - name: "HIGH | WN22-CC-000230 | PATCH | Windows Server 2022 AutoPlay must be disabled for all drives."
@@ -466,7 +445,6 @@
       - SV-254354r848878_rule
       - SRG-OS-000368-GPOS-00154
       - CCI-001764
-      - high
       - CAT1
 
 - name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email."
@@ -487,7 +465,6 @@
       - SRG-OS-000480-GPOS-00227
       - SV-254240r848536_rule
       - CCI-000366
-      - high
       - CAT1
 
 - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
@@ -509,7 +486,6 @@
       - SRG-OS-000480-GPOS-00227
       - SV-254399r849013_rule
       - CCI-000366
-      - high
       - CAT1
 
 - name: "HIGH | WN22-MS-000140 | PATCH | Windows Server 2022 must be running Credential Guard on domain-joined member servers."
@@ -534,7 +510,6 @@
       - SV-254441r849139_rule
       - CCI-000366
       - NeedToTestMemberServer
-      - high
       - CAT1
 
 - name: "HIGH | WN22-SO-000020 | PATCH | Windows Server 2022 must prevent local accounts with blank passwords from being used from the network."
@@ -551,7 +526,6 @@
       - SV-254446r849154_rule
       - SRG-OS-000480-GPOS-00227
       - CCI-000366
-      - high
       - CAT1
 
 - name: "HIGH | WN22-SO-000210 | PATCH | Windows Server 2022 must not allow anonymous SID/Name translation."
@@ -567,7 +541,6 @@
       - SRG-OS-000480-GPOS-00227
       - SV-254465r849211_rule
       - CCI-000366
-      - high
       - CAT1
 
 - name: "HIGH | WN22-SO-000220 | PATCH | Windows Server 2022 must not allow anonymous enumeration of Security Account Manager (SAM) accounts."
@@ -585,7 +558,6 @@
       - SRG-OS-000480-GPOS-00227
       - SV-254466r849214_rule
       - CCI-000366
-      - high
       - CAT1
 
 - name: "HIGH | WN22-SO-000310 | PATCH | Windows Server 2022 LAN Manager authentication level must be configured to send NTLMv2 response only and to refuse LM and NTLM."
@@ -602,5 +574,4 @@
       - SRG-OS-000480-GPOS-00227
       - SV-254467r849217_rule
       - CCI-000366
-      - high
       - CAT1
