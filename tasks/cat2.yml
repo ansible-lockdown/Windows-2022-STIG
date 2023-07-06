@@ -976,6 +976,10 @@
         when:
             - wn22stig_lockoutbadcount > 0
             - wn22stig_lockoutbadcount <= 3
+
+            - name: Pause for 3 minutes to finsh WN22-AC-000020
+              ansible.builtin.pause:
+                  minutes: '3'
   when:
       - wn22_ac_000020
       - not win22stig_cloud_based_system
@@ -985,6 +989,25 @@
       - SRG-OS-000021-GPOS-00005
       - SV-254286r848674_rule
       - CCI-000044
+      - CAT2
+
+- name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater. | Apply Variable"
+  community.windows.win_security_policy:
+      section: System Access
+      key: ResetLockoutCount
+      value: "{{ wn22stig_resetlockoutcount }}"
+      when:
+          - wn22stig_resetlockoutcount >= 15
+  when:
+      - wn22_ac_000030
+      - not win22stig_cloud_based_system
+  tags:
+      - WN22-AC-000030
+      - V-254287
+      - SRG-OS-000021-GPOS-00005
+      - SV-254287r848677_rule
+      - CCI-000044
+      - CCI-002238
       - CAT2
 
 # below task is dependent on WN22-AC-000020 and WN22-AC-000030, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'LockoutDuration' in section 'System Access' is not a valid key, cannot set this value"
@@ -1043,25 +1066,6 @@
             warn_control_id: 'WN22-AC-000030'
         when:
             - wn22stig_resetlockoutcount < 15
-
-      - name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater. | Apply Variable"
-        community.windows.win_security_policy:
-            section: System Access
-            key: ResetLockoutCount
-            value: "{{ wn22stig_resetlockoutcount }}"
-        when:
-            - wn22stig_resetlockoutcount >= 15
-  when:
-      - wn22_ac_000030
-      - not win22stig_cloud_based_system
-  tags:
-      - WN22-AC-000030
-      - V-254287
-      - SRG-OS-000021-GPOS-00005
-      - SV-254287r848677_rule
-      - CCI-000044
-      - CCI-002238
-      - CAT2
 
 - name: "MEDIUM | WN22-AC-000040 | PATCH | Windows Server 2022 password history must be configured to 24 passwords remembered."
   community.windows.win_security_policy:
