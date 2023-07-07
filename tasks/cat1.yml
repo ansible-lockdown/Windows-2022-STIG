@@ -1,77 +1,23 @@
 ---
 
-- name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA)."
+- name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email."
   block:
-      - name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA). | Message out"
+      - name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email. | Message out"
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA)."
+            msg: "Warning!! This is a manual task. Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email."
 
-      - name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA). | import reuseable task."
+      - name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
-            warn_control_id: 'WN22-DC-000290'
+            warn_control_id: 'WN22-00-000030'
   when:
-      - wn22_dc_000290
-      - ansible_windows_domain_role == "Primary domain controller"
+      - wn22_00_000030
   tags:
-      - WN22-DC-000290
-      - V-254413
-      - SRG-OS-000066-GPOS-00034
-      - SV-254413r849055_rule
-      - CCI-000185
-      - CAT1
-
-# add some task/external variable for approved CAs, check for DoD and how to pull programatically
-- name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
-  block:
-      - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA). | Message out"
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
-
-      - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA). | import reuseable task."
-        ansible.builtin.import_tasks: warning_facts.yml
-        vars:
-            warn_control_id: 'WN22-DC-000300'
-  when:
-      - wn22_dc_000300
-      - ansible_windows_domain_role == "Primary domain controller"
-  tags:
-      - WN22-DC-000300
-      - V-254414
-      - SRG-OS-000066-GPOS-00034
-      - SV-254414r849058_rule
-      - CCI-000185
-      - CAT1
-
-- name: "HIGH | WN22-AC-000090 | PATCH | Windows Server 2022 reversible password encryption must be disabled."
-  community.windows.win_security_policy:
-      section: System Access
-      key: ClearTextPassword
-      value: "0"
-  when:
-      - wn22_ac_000090
-  tags:
-      - WN22-AC-000090
-      - V-254293
-      - SRG-OS-000073-GPOS-00041
-      - SV-254293r877397_rule
-      - CCI-000226
-      - CAT1
-
-- name: "HIGH | WN22-SO-000300 | PATCH | Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords."
-  ansible.windows.win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
-      value: NoLMHash
-      data: 1
-      datatype: dword
-  when:
-      - wn22_so_000300
-  tags:
-      - WN22-SO-000300
-      - V-254474
-      - SRG-OS-000073-GPOS-00041
-      - SV-254474r877397_rule
-      - CCI-000226
+      - WN22-00-000030
+      - V-254240
+      - SRG-OS-000480-GPOS-00227
+      - SV-254240r848536_rule
+      - CCI-000366
       - CAT1
 
 - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes."
@@ -99,6 +45,85 @@
       - SRG-OS-000080-GPOS-00048
       - SV-254250r848566_rule
       - CCI-000213
+      - CAT1
+
+- name: "HIGH | WN22-AC-000090 | PATCH | Windows Server 2022 reversible password encryption must be disabled."
+  community.windows.win_security_policy:
+      section: System Access
+      key: ClearTextPassword
+      value: "0"
+  when:
+      - wn22_ac_000090
+  tags:
+      - WN22-AC-000090
+      - V-254293
+      - SRG-OS-000073-GPOS-00041
+      - SV-254293r877397_rule
+      - CCI-000226
+      - CAT1
+
+- name: "HIGH | WN22-CC-000210 | PATCH | Windows Server 2022 AutoPlay must be turned off for non-volume devices."
+  ansible.windows.win_regedit:
+      path: HKLM:\Software\Policies\Microsoft\Windows\Explorer
+      value: NoAutoplayfornonVolume
+      data: 1
+      datatype: dword
+  when:
+      - wn22_cc_000210
+  tags:
+      - WN22-CC-000210
+      - V-254352
+      - SRG-OS-000368-GPOS-00154
+      - SV-254352r848872_rule
+      - CCI-001764
+      - CAT1
+
+- name: "HIGH | WN22-CC-000220 | PATCH | Windows Server 2022 default AutoRun behavior must be configured to prevent AutoRun commands."
+  ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
+      value: NoAutorun
+      data: 1
+      datatype: dword
+  when:
+      - wn22_cc_000220
+  tags:
+      - WN22-CC-000220
+      - V-254353
+      - SRG-OS-000368-GPOS-00154
+      - SV-254353r848875_rule
+      - CCI-001764
+      - CAT1
+
+- name: "HIGH | WN22-CC-000230 | PATCH | Windows Server 2022 AutoPlay must be disabled for all drives."
+  ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
+      name: NoDriveTypeAutoRun
+      data: 255
+      datatype: dword
+  when: wn22_cc_000230
+  tags:
+      - WN22-CC-000230
+      - V-254354
+      - SV-254354r848878_rule
+      - SRG-OS-000368-GPOS-00154
+      - CCI-001764
+      - CAT1
+
+- name: "HIGH | WN22-CC-000430 | PATCH | Windows Server 2022 must disable the Windows Installer Always install with elevated privileges option."
+  ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer
+      state: present
+      value: AlwaysInstallElevated
+      data: 0
+      datatype: dword
+  when:
+      - wn22_cc_000430
+  tags:
+      - WN22-CC-000430
+      - V-254374
+      - SRG-OS-000362-GPOS-00149
+      - SV-254374r848938_rule
+      - CCI-001812
       - CAT1
 
 - name: "HIGH | WN22-CC-000470 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) client must not use Basic authentication."
@@ -133,38 +158,6 @@
       - SRG-OS-000125-GPOS-00065
       - SV-254381r877395_rule
       - CCI-000877
-      - CAT1
-
-- name: "HIGH | WN22-SO-000230 | PATCH | Windows Server 2022 must not allow anonymous enumeration of shares."
-  ansible.windows.win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
-      value: RestrictAnonymous
-      data: 1
-      datatype: dword
-  when:
-      - wn22_so_000230
-  tags:
-      - WN22-SO-000230
-      - V-254467
-      - SRG-OS-000138-GPOS-00069
-      - SV-254467r849217_rule
-      - CCI-001090
-      - CAT1
-
-- name: "HIGH | WN22-SO-000250 | PATCH | Windows Server 2022 must restrict anonymous access to Named Pipes and Shares."
-  ansible.windows.win_regedit:
-      path: HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters
-      value: restrictnullsessaccess
-      data: 1
-      datatype: dword
-  when:
-      - wn22_so_000250
-  tags:
-      - WN22-SO-000250
-      - V-254469
-      - SRG-OS-000138-GPOS-00069
-      - SV-254469r849223_rule
-      - CCI-001090
       - CAT1
 
 - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
@@ -302,6 +295,70 @@
       - CCI-002235
       - CAT1
 
+- name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
+  block:
+      - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access. | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
+
+      - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access. | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: 'WN22-DC-000150'
+  when:
+      - wn22_dc_000150
+      - ansible_windows_domain_role == "Primary domain controller"
+  tags:
+      - WN22-DC-000150
+      - V-254399
+      - SRG-OS-000480-GPOS-00227
+      - SV-254399r849013_rule
+      - CCI-000366
+      - CAT1
+
+- name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA)."
+  block:
+      - name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA). | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA)."
+
+      - name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA). | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-DC-000290'
+  when:
+      - wn22_dc_000290
+      - ansible_windows_domain_role == "Primary domain controller"
+  tags:
+      - WN22-DC-000290
+      - V-254413
+      - SRG-OS-000066-GPOS-00034
+      - SV-254413r849055_rule
+      - CCI-000185
+      - CAT1
+
+# add some task/external variable for approved CAs, check for DoD and how to pull programatically
+- name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
+  block:
+      - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA). | Message out"
+        ansible.builtin.debug:
+            msg: "Warning!! This is a manual task. Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
+
+      - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA). | import reuseable task."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-DC-000300'
+  when:
+      - wn22_dc_000300
+      - ansible_windows_domain_role == "Primary domain controller"
+  tags:
+      - WN22-DC-000300
+      - V-254414
+      - SRG-OS-000066-GPOS-00034
+      - SV-254414r849058_rule
+      - CCI-000185
+      - CAT1
+
 # populate a dictionary/list from customer
 - name: "HIGH | WN22-MS-000010 | AUDIT | Windows Server 2022 must only allow Administrators responsible for the member server or standalone or nondomain-joined system to have Administrator rights on the system"
   block:
@@ -332,160 +389,6 @@
       - SV-254428r877392_rule
       - CCI-002235
       - audit
-      - CAT1
-
-- name: "HIGH | WN22-UR-000020 | PATCH | Windows Server 2022 Act as part of the operating system user right must not be assigned to any groups or accounts."
-  ansible.windows.win_user_right:
-      name: SeTcbPrivilege
-      users: []
-      action: set
-  when:
-      - wn22_ur_000020
-  tags:
-      - WN22-UR-000020
-      - V-254492
-      - SRG-OS-000324-GPOS-00125
-      - SV-254492r877392_rule
-      - CCI-002235
-      - CAT1
-
-- name: "HIGH | WN22-UR-000060 | PATCH | Windows Server 2022 Create a token object user right must not be assigned to any groups or accounts."
-  community.windows.win_security_policy:
-      section: Privilege Rights
-      key: SeCreateTokenPrivilege
-      value: ""
-  when:
-      - wn22_ur_000060
-  tags:
-      - WN22-UR-000060
-      - V-254496
-      - SRG-OS-000324-GPOS-00125
-      - SV-254496r877392_rule
-      - CCI-002235
-      - CAT1
-
-# fails openscap - the v1r10 xml checks for "Administrators" string but secedit uses the SIDs thus
-# "SeDebugPrivilege = *S-1-5-32-544"  is Administrators (openscap fails)
-# emailed_disa.letterkenny.re.mbx.stig-customer-support-mailbox@mail.mil
-# SCC tool works
-- name: "HIGH | WN22-UR-000100 | PATCH | Windows Server 2022 Debug programs: user right must only be assigned to the Administrators group."
-  ansible.windows.win_user_right:
-      name: SeDebugPrivilege
-      users: Administrators
-      action: set
-  when:
-      - wn22_ur_000100
-  tags:
-      - WN22-UR-000100
-      - V-254500
-      - SRG-OS-000324-GPOS-00125
-      - SV-254500r877392_rule
-      - CCI-002235
-      - CAT1
-
-- name: "HIGH | WN22-CC-000430 | PATCH | Windows Server 2022 must disable the Windows Installer Always install with elevated privileges option."
-  ansible.windows.win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer
-      state: present
-      value: AlwaysInstallElevated
-      data: 0
-      datatype: dword
-  when:
-      - wn22_cc_000430
-  tags:
-      - WN22-CC-000430
-      - V-254374
-      - SRG-OS-000362-GPOS-00149
-      - SV-254374r848938_rule
-      - CCI-001812
-      - CAT1
-
-- name: "HIGH | WN22-CC-000210 | PATCH | Windows Server 2022 AutoPlay must be turned off for non-volume devices."
-  ansible.windows.win_regedit:
-      path: HKLM:\Software\Policies\Microsoft\Windows\Explorer
-      value: NoAutoplayfornonVolume
-      data: 1
-      datatype: dword
-  when:
-      - wn22_cc_000210
-  tags:
-      - WN22-CC-000210
-      - V-254352
-      - SRG-OS-000368-GPOS-00154
-      - SV-254352r848872_rule
-      - CCI-001764
-      - CAT1
-
-- name: "HIGH | WN22-CC-000220 | PATCH | Windows Server 2022 default AutoRun behavior must be configured to prevent AutoRun commands."
-  ansible.windows.win_regedit:
-      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
-      value: NoAutorun
-      data: 1
-      datatype: dword
-  when:
-      - wn22_cc_000220
-  tags:
-      - WN22-CC-000220
-      - V-254353
-      - SRG-OS-000368-GPOS-00154
-      - SV-254353r848875_rule
-      - CCI-001764
-      - CAT1
-
-- name: "HIGH | WN22-CC-000230 | PATCH | Windows Server 2022 AutoPlay must be disabled for all drives."
-  ansible.windows.win_regedit:
-      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
-      name: NoDriveTypeAutoRun
-      data: 255
-      datatype: dword
-  when: wn22_cc_000230
-  tags:
-      - WN22-CC-000230
-      - V-254354
-      - SV-254354r848878_rule
-      - SRG-OS-000368-GPOS-00154
-      - CCI-001764
-      - CAT1
-
-- name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email."
-  block:
-      - name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email. | Message out"
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email."
-
-      - name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email. | import reuseable task."
-        ansible.builtin.import_tasks: warning_facts.yml
-        vars:
-            warn_control_id: 'WN22-00-000030'
-  when:
-      - wn22_00_000030
-  tags:
-      - WN22-00-000030
-      - V-254240
-      - SRG-OS-000480-GPOS-00227
-      - SV-254240r848536_rule
-      - CCI-000366
-      - CAT1
-
-- name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
-  block:
-      - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access. | Message out"
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
-
-      - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access. | import reuseable task."
-        ansible.builtin.import_tasks: warning_facts.yml
-  vars:
-      warn_control_id: 'WN22-DC-000150'
-  when:
-      - wn22_dc_000150
-      - ansible_windows_domain_role == "Primary domain controller"
-  tags:
-      - WN22-DC-000150
-      - V-254399
-      - SRG-OS-000480-GPOS-00227
-      - SV-254399r849013_rule
-      - CCI-000366
       - CAT1
 
 - name: "HIGH | WN22-MS-000140 | PATCH | Windows Server 2022 must be running Credential Guard on domain-joined member servers."
@@ -560,6 +463,54 @@
       - CCI-000366
       - CAT1
 
+- name: "HIGH | WN22-SO-000230 | PATCH | Windows Server 2022 must not allow anonymous enumeration of shares."
+  ansible.windows.win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+      value: RestrictAnonymous
+      data: 1
+      datatype: dword
+  when:
+      - wn22_so_000230
+  tags:
+      - WN22-SO-000230
+      - V-254467
+      - SRG-OS-000138-GPOS-00069
+      - SV-254467r849217_rule
+      - CCI-001090
+      - CAT1
+
+- name: "HIGH | WN22-SO-000250 | PATCH | Windows Server 2022 must restrict anonymous access to Named Pipes and Shares."
+  ansible.windows.win_regedit:
+      path: HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters
+      value: restrictnullsessaccess
+      data: 1
+      datatype: dword
+  when:
+      - wn22_so_000250
+  tags:
+      - WN22-SO-000250
+      - V-254469
+      - SRG-OS-000138-GPOS-00069
+      - SV-254469r849223_rule
+      - CCI-001090
+      - CAT1
+
+- name: "HIGH | WN22-SO-000300 | PATCH | Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords."
+  ansible.windows.win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+      value: NoLMHash
+      data: 1
+      datatype: dword
+  when:
+      - wn22_so_000300
+  tags:
+      - WN22-SO-000300
+      - V-254474
+      - SRG-OS-000073-GPOS-00041
+      - SV-254474r877397_rule
+      - CCI-000226
+      - CAT1
+
 - name: "HIGH | WN22-SO-000310 | PATCH | Windows Server 2022 LAN Manager authentication level must be configured to send NTLMv2 response only and to refuse LM and NTLM."
   ansible.windows.win_regedit:
       path: HKLM:\System\CurrentControlSet\Control\Lsa
@@ -574,4 +525,53 @@
       - SRG-OS-000480-GPOS-00227
       - SV-254467r849217_rule
       - CCI-000366
+      - CAT1
+
+- name: "HIGH | WN22-UR-000020 | PATCH | Windows Server 2022 Act as part of the operating system user right must not be assigned to any groups or accounts."
+  ansible.windows.win_user_right:
+      name: SeTcbPrivilege
+      users: []
+      action: set
+  when:
+      - wn22_ur_000020
+  tags:
+      - WN22-UR-000020
+      - V-254492
+      - SRG-OS-000324-GPOS-00125
+      - SV-254492r877392_rule
+      - CCI-002235
+      - CAT1
+
+- name: "HIGH | WN22-UR-000060 | PATCH | Windows Server 2022 Create a token object user right must not be assigned to any groups or accounts."
+  community.windows.win_security_policy:
+      section: Privilege Rights
+      key: SeCreateTokenPrivilege
+      value: ""
+  when:
+      - wn22_ur_000060
+  tags:
+      - WN22-UR-000060
+      - V-254496
+      - SRG-OS-000324-GPOS-00125
+      - SV-254496r877392_rule
+      - CCI-002235
+      - CAT1
+
+# fails openscap - the v1r10 xml checks for "Administrators" string but secedit uses the SIDs thus
+# "SeDebugPrivilege = *S-1-5-32-544"  is Administrators (openscap fails)
+# emailed_disa.letterkenny.re.mbx.stig-customer-support-mailbox@mail.mil
+# SCC tool works
+- name: "HIGH | WN22-UR-000100 | PATCH | Windows Server 2022 Debug programs: user right must only be assigned to the Administrators group."
+  ansible.windows.win_user_right:
+      name: SeDebugPrivilege
+      users: Administrators
+      action: set
+  when:
+      - wn22_ur_000100
+  tags:
+      - WN22-UR-000100
+      - V-254500
+      - SRG-OS-000324-GPOS-00125
+      - SV-254500r877392_rule
+      - CCI-002235
       - CAT1
