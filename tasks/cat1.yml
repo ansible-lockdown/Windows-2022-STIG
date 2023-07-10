@@ -23,7 +23,7 @@
 - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes."
   block:
       - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes."
-        ansible.windows.win_shell: Get-Volume
+        ansible.windows.win_shell: '[System.IO.DriveInfo]::GetDrives() | Format-Table'
         changed_when: false
         failed_when: false
         check_mode: false
@@ -31,7 +31,9 @@
 
       - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes. | Message out"
         debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 local volumes must use a format that supports NTFS attributes."
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 local volumes must use a format that supports NTFS attributes."
+                - "{{ wn22_00_000130_audit.stdout.split('\n') }}"
 
       - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
