@@ -43,13 +43,13 @@
   tags:
       - CAT1
 
-- name: Execute the category 2 (medium severity) tasks
+- name: Execute the category 2 (Medium Severity) tasks
   ansible.builtin.import_tasks: cat2.yml
   when: win2022stig_cat2_patch
   tags:
       - CAT2
 
-- name: Execute the category 3 (lowest severity) tasks
+- name: Execute the category 3 (Lowest Severity) tasks
   ansible.builtin.import_tasks: cat3.yml
   when: win2022stig_cat3_patch
   tags:
@@ -61,8 +61,3 @@
           - "You have {{ warn_count }} Warning(s) that require investigation(s). Their ID's are listed below:"
           - "{{ warn_control_list }}"
   when: warn_count != 0
-
-- name: Reboot Now
-  ansible.windows.win_shell: shutdown -r -t 1
-  changed_when: false
-  check_mode: false

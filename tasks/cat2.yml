@@ -977,9 +977,6 @@
             - wn22stig_lockoutbadcount > 0
             - wn22stig_lockoutbadcount <= 3
 
-      - name: Pause for 2 minutes to finsh WN22-AC-000020
-        ansible.builtin.pause:
-            minutes: '2'
   when:
       - wn22_ac_000020
   tags:
