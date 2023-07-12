@@ -422,7 +422,7 @@
       path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
       value: LimitBlankPasswordUse
       data: 1
-      datatype: string
+      datatype: dword
   when:
       - wn22_so_000020
   tags:
