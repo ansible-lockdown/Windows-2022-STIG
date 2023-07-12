@@ -682,18 +682,22 @@
 
 - name: "MEDIUM | WN22-00-000270 | AUDIT | Windows Server 2022 must have the roles and features required by the system documented."
   block:
-      - name: "MEDIUM | WN22-00-000270 | AUDIT | Windows Server 2022 bust have the roles and features required by the system documented."
+      - name: "MEDIUM | WN22-00-000270 | AUDIT | The roles and features required by the system must be documented. | Audit The System"
         ansible.windows.win_shell: Get-WindowsFeature | Where-Object -FilterScript {$_.Installed -EQ $True}
         changed_when: false
         failed_when: false
-        check_mode: false
         register: wn22_00_000270_audit
 
-      - name: "MEDIUM | WN22-00-000270 | AUDIT | Windows Server 2022 must have the roles and features required by the system documented."
+      - name: "MEDIUM | WN22-00-000270 | AUDIT | The roles and features required by the system must be documented. | Warning Message."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must have the roles and features required by the system documented."
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 must have the roles"
+                - "and features required by the system documented. Below is the current list of"
+                - "roles and features installed on the system."
+                - "Document the roles and features required for the system to operate. Uninstall any that are not required."
+                - "{{ wn22_00_000270_audit.stdout_lines }}"
 
-      - name: "MEDIUM | WN22-00-000270 | AUDIT | Windows Server 2022 must have the roles and features required by the system documented. | import reuseable task."
+      - name: "MEDIUM | WN22-00-000270 | AUDIT | The roles and features required by the system must be documented. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000270'
