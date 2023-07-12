@@ -575,21 +575,24 @@
 
 - name: "MEDIUM | WN22-00-000230 | AUDIT | Windows Server 2022 non-system-created file shares on a system must limit access to groups that require it."
   block:
-      - name: "MEDIUM | WN22-00-000230 | AUDIT | Windows Server 2022 non-system-created file shares on a system must limit access to groups that require it."
-        ansible.windows.win_shell: Get-SmbShare | Where-Object -FilterScript {$_.Special -EQ $False}
+      - name: "MEDIUM | WN22-00-000230 | AUDIT | Non-system-created file shares on a system must limit access to groups that require it. | Audit Shares"
+        ansible.windows.win_shell: Get-SmbShare | Where-Object { ($_.Name -notlike "ADMIN$") -and ($_.Name -notlike 'C$') -and ($_.Name -notlike 'IPC$') } | Select-Object -Property Name | format-table -hidetableheaders
         changed_when: false
         failed_when: false
-        check_mode: false
         register: wn22_00_000230_audit
 
-      - name: "MEDIUM | WN22-00-000230 | AUDIT | Windows Server 2022 non-system-created file shares on a system must limit access to groups that require it."
+      - name: "MEDIUM | WN22-00-000230 | AUDIT | Non-system-created file shares on a system must limit access to groups that require it. | Warning Message."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 non-system-created file shares on a system must limit access to groups that require it."
+            msg:
+                - "Warning!! You have shares that non-system created. Please manually review those shares listed below to make sure appropriate permissions are applied"
+                - "{{ wn22_00_000230_audit.stdout_lines | select() | list }}"
+        when: wn22_00_000230_audit.stdout_lines | select() | length > 0
 
-      - name: "MEDIUM | WN22-00-000230 | AUDIT | Windows Server 2022 non-system-created file shares on a system must limit access to groups that require it. | import reuseable task."
+      - name: "MEDIUM | WN22-00-000230 | AUDIT | Non-system-created file shares on a system must limit access to groups that require it."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000230'
+        when: wn22_00_000230_audit.stdout_lines | select() | length > 0
   when:
       - wn22_00_000230
   tags:
