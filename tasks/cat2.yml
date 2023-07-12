@@ -734,11 +734,16 @@
 
 - name: "MEDIUM | WN22-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP)."
   block:
-      - name: "MEDIUM | WN22-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP)."
+      - name: "MEDIUM | WN16-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | Warning Message"
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP)."
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 must employ automated mechanisms to determine the state of system"
+                - "components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System"
+                - "(HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans"
+                - "by Computer Network Defense Service Provider (CNDSP). Verify DoD-approved ESS software is installed and properly operating."
+                - "Ask the site ISSM for documentation of the ESS software installation and configuration."
 
-      - name: "MEDIUM | WN22-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | import reuseable task."
+      - name: "MEDIUM | WN16-00-000290 | PATCH | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000290'
