@@ -429,7 +429,7 @@
                                 }
         changed_when: false
         failed_when: false
-        register: wn22_00_000210_account_audit_dm_sa
+        register: wn22_00_000190_account_audit_dm_sa
         when: not ansible_windows_domain_role == "Primary domain controller"
 
       - name: "MEDIUM | WN22-00-000190 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Outdated or unused accounts must be removed from the system or disabled. | Warning Message."
@@ -445,17 +445,17 @@
                 - "Below is the list of User accounts found on the system. Please check the report"
                 - "below and compare the the STIG requirements."
                 - "----------------------------------------------------------"
-                - "{{ wn22_00_000210_account_audit_dm_sa.stdout.split('\n') }}"
+                - "{{ wn22_00_000190_account_audit_dm_sa.stdout.split('\n') }}"
                 - "----------------------------------------------------------"
         when:
-            - wn22_00_000210_account_audit_dm_sa is not skipped
-            - wn22_00_000210_account_audit_dm_sa.stdout != ""
+            - wn22_00_000190_account_audit_dm_sa is not skipped
+            - wn22_00_000190_account_audit_dm_sa.stdout != ""
 
       - name: "MEDIUM | WN22-00-000190 | AUDIT | Outdated or unused accounts must be removed from the system or disabled. | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000190'
-        when: wn22_00_000210_account_audit_dc is not skipped and wn22_00_000210_account_audit_dc.stdout != "" or wn22_00_000210_account_audit_dm_sa is not skipped and wn22_00_000210_account_audit_dm_sa.stdout != ""
+        when: wn22_00_000190_account_audit_dc is not skipped and wn22_00_000190_account_audit_dc.stdout != "" or wn22_00_000190_account_audit_dm_sa is not skipped and wn22_00_000190_account_audit_dm_sa.stdout != ""
   when:
       - wn22_00_000190
   tags:
