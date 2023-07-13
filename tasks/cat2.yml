@@ -759,14 +759,45 @@
 
 - name: "MEDIUM | WN22-00-000300 | AUDIT | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours."
   block:
-      - name: "MEDIUM | WN22-00-000300 | AUDIT | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours."
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours."
+      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN CONTROLLER | Windows Server 2016 must automatically remove or disable temporary user accounts after 72 hours. | Get User List."
+        ansible.windows.win_shell: Search-ADAccount -AccountExpiring | FT Name, AccountExpirationDate
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000330_audit_dc
+        when: ansible_windows_domain_role == "Primary domain controller"
 
-      - name: "MEDIUM | WN22-00-000300 | AUDIT | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | import reuseable task."
+      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN CONTROLLER | Windows Server 2016 must automatically remove or disable temporary user accounts after 72 hours. | Warning Message"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! This is a manual task. Please review all accounts to verify there are no temporary accounts"
+                - "listed where the expiration date is longer then 72 hours."
+                - "{{ wn22_00_000330_audit_dc.stdout.split('\n') }}"
+        when:
+            - wn22_00_000330_audit_dc is not skipped
+            - wn22_00_000330_audit_dc.stdout != ""
+
+      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2016 must automatically remove or disable temporary user accounts after 72 hours. | Get User List."
+        ansible.windows.win_shell: Get-LocalUser
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000330_audit_sa
+        when: not ansible_windows_domain_role == "Primary domain controller"
+
+      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2016 must automatically remove or disable temporary user accounts after 72 hours. | Warning Message"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! This is a manual task. Please review all accounts to verify there are no temporary accounts"
+                - "listed where the expiration date is longer then 72 hours."
+                - "{{ wn22_00_000330_audit_sa.stdout.split('\n') }}"
+        when:
+            - wn22_00_000330_audit_dc is not skipped
+            - wn22_00_000330_audit_dc.stdout != ""
+
+      - name: "MEDIUM | WN22-00-000300 | AUDIT | Windows Server 2016 must automatically remove or disable temporary user accounts after 72 hours. | Warning Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000300'
+        when: wn22_00_000330_audit_dc is not skipped and wn22_00_000330_audit_dc.stdout != "" or wn22_00_000330_audit_dc is not skipped and wn22_00_000330_audit_dc.stdout != ""
   when:
       - wn22_00_000300
   tags:
