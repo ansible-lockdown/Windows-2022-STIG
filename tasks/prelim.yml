@@ -24,3 +24,11 @@
 - name: win2022_rdp_enabled.value var
   ansible.builtin.debug:
       var: win2022_rdp_enabled.value
+
+- name: Get Drive Letters"
+  ansible.windows.win_shell: Get-Volume | ?{ $_.DriveType -eq 'Fixed' } | Select-Object -ExpandProperty 'DriveLetter'
+  changed_when: false
+  failed_when: false
+  register: wn22_drive_letters
+  when:
+      - wn22_au_000060

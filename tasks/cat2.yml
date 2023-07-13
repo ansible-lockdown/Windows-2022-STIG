@@ -759,14 +759,14 @@
 
 - name: "MEDIUM | WN22-00-000300 | AUDIT | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours."
   block:
-      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN CONTROLLER | Windows Server 2016 must automatically remove or disable temporary user accounts after 72 hours. | Get User List."
+      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | Get User List."
         ansible.windows.win_shell: Search-ADAccount -AccountExpiring | FT Name, AccountExpirationDate
         changed_when: false
         failed_when: false
         register: wn22_00_000330_audit_dc
         when: ansible_windows_domain_role == "Primary domain controller"
 
-      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN CONTROLLER | Windows Server 2016 must automatically remove or disable temporary user accounts after 72 hours. | Warning Message"
+      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | Warning Message"
         ansible.builtin.debug:
             msg:
                 - "Warning!! This is a manual task. Please review all accounts to verify there are no temporary accounts"
@@ -776,14 +776,14 @@
             - wn22_00_000330_audit_dc is not skipped
             - wn22_00_000330_audit_dc.stdout != ""
 
-      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2016 must automatically remove or disable temporary user accounts after 72 hours. | Get User List."
+      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | Get User List."
         ansible.windows.win_shell: Get-LocalUser
         changed_when: false
         failed_when: false
         register: wn22_00_000330_audit_sa
         when: not ansible_windows_domain_role == "Primary domain controller"
 
-      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2016 must automatically remove or disable temporary user accounts after 72 hours. | Warning Message"
+      - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | Warning Message"
         ansible.builtin.debug:
             msg:
                 - "Warning!! This is a manual task. Please review all accounts to verify there are no temporary accounts"
@@ -793,7 +793,7 @@
             - wn22_00_000330_audit_dc is not skipped
             - wn22_00_000330_audit_dc.stdout != ""
 
-      - name: "MEDIUM | WN22-00-000300 | AUDIT | Windows Server 2016 must automatically remove or disable temporary user accounts after 72 hours. | Warning Count"
+      - name: "MEDIUM | WN22-00-000300 | AUDIT | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | Warning Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000300'
@@ -810,14 +810,45 @@
 
 - name: "MEDIUM | WN22-00-000310 | AUDIT | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours."
   block:
-      - name: "MEDIUM | WN22-00-000310 | AUDIT | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours."
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours."
+      - name: "MEDIUM | WN22-00-000310 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | Get User List."
+        ansible.windows.win_shell: Search-ADAccount -AccountExpiring | FT Name, AccountExpirationDate
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000310_audit_dc
+        when: ansible_windows_domain_role == "Primary domain controller"
 
-      - name: "MEDIUM | WN22-00-000310 | AUDIT | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | import reuseable task."
+      - name: "MEDIUM | WN22-00-000310 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | Warning Message"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 must automatically remove or disable emergency"
+                - "accounts after the crisis is resolved or within 72 hours."
+                - "{{ wn22_00_000310_audit_dc.stdout.split('\n') }}"
+        when:
+            - wn22_00_000310_audit_dc is not skipped
+            - wn22_00_000310_audit_dc.stdout != ""
+
+      - name: "MEDIUM | WN22-00-000310 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | Get User List."
+        ansible.windows.win_shell: Get-LocalUser
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000310_audit_sa
+        when: not ansible_windows_domain_role == "Primary domain controller"
+
+      - name: "MEDIUM | WN22-00-000310 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | Warning Message"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 must automatically remove or disable emergency"
+                - "accounts after the crisis is resolved or within 72 hours."
+                - "{{ wn22_00_000310_audit_sa.stdout.split('\n') }}"
+        when:
+            - wn22_00_000310_audit_sa is not skipped
+            - wn22_00_000310_audit_sa.stdout != ""
+
+      - name: "MEDIUM | WN22-00-000310 | AUDIT | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | Warning Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000310'
+        when: wn22_00_000310_audit_dc is not skipped and wn22_00_000310_audit_dc.stdout != "" or wn22_00_000310_audit_dc is not skipped and wn22_00_000310_audit_dc.stdout != ""
   when:
       - wn22_00_000310
   tags:
@@ -980,14 +1011,28 @@
 
 - name: "MEDIUM | WN22-00-000420 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent anonymous logons."
   block:
-      - name: "MEDIUM | WN22-00-000420 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent anonymous logons."
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 FTP servers must be configured to prevent anonymous logons."
+      - name: "MEDIUM | WN22-00-000420 | AUDIT | FTP servers must be configured to prevent anonymous logons. | Get FTP Installed Status."
+        ansible.windows.win_shell: Get-WindowsFeature | Where Name -eq Web-Ftp-Service
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000420_audit
 
-      - name: "MEDIUM | WN22-00-000420 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent anonymous logons. | import reuseable task."
+      - name: set_fact
+        ansible.builtin.set_fact:
+            wn22_00_000420_audit: "{{ wn22_00_000420_audit.stdout_lines | regex_search('Installed') }}"
+
+      - name: "MEDIUM | WN22-00-000420 | AUDIT | FTP servers must be configured to prevent anonymous logons. | Warning Message"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! This is a manual task. Internet Information Services (IIS) Manager FTP is currently"
+                - "installed on the system. Anonymous Authentication must be set to diabled per STIG Requirements."
+        when: "'Installed' in wn22_00_000420_audit"
+
+      - name: "MEDIUM | WN22-00-000420 | AUDIT | FTP servers must be configured to prevent anonymous logons. | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000420'
+        when: "'Installed' in wn22_00_000420_audit"
   when:
       - wn22_00_000420
   tags:
@@ -1000,14 +1045,39 @@
 
 - name: "MEDIUM | WN22-00-000430 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent access to the system drive."
   block:
-      - name: "MEDIUM | WN22-00-000430 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent access to the system drive."
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 FTP servers must be configured to prevent access to the system drive."
+      - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Get FTP Installed."
+        ansible.windows.win_shell: Get-WindowsFeature | Where Name -eq Web-Ftp-Service
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000430_audit
 
-      - name: "MEDIUM | WN22-00-000430 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent access to the system drive. | import reuseable task."
+      - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Set Fact."
+        ansible.builtin.set_fact:
+            wn22_00_000430_audit: "{{ wn22_00_000430_audit.stdout_lines | regex_search('Installed') }}"
+
+      - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Get Sites Info."
+        ansible.windows.win_shell: |
+                                Import-Module IISAdministration
+                                Get-IISSite
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000430_isssite_audit
+        when: "'Installed' in wn22_00_000430_audit"
+
+      - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Warning Message."
+        debug:
+            msg:
+                - "Warning!! This is a manual task. For any sites with a Binding that lists FTP, right-click the site and select Explore."
+                - "If the site includes any system areas such as root of the drive, Program Files, or Windows directories, this is a finding"
+                - "Configure the FTP sites to allow access only to specific FTP shared resources. Do not allow access to other areas of the system."
+                - "{{ wn22_00_000430_isssite_audit.stdout.split('\n') }}"
+        when: "'Installed' in wn22_00_000430_audit"
+
+      - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000430'
+        when: "'Installed' in wn22_00_000430_audit"
   when:
       - wn22_00_000430
   tags:
@@ -1333,7 +1403,10 @@
   block:
       - name: "MEDIUM | WN22-AU-000010 | AUDIT | Windows Server 2022 audit records must be backed up to a different system or media than the system being audited."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 audit records must be backed up to a different system or media than the system being audited."
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 audit records must be backed up to a"
+                - "different system or media than the system being audited. Establish and implement a process"
+                - "for backing up log data to another system or media other than the system being audited."
 
       - name: "MEDIUM | WN22-AU-000010 | AUDIT | Windows Server 2022 audit records must be backed up to a different system or media than the system being audited. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -1353,7 +1426,9 @@
   block:
       - name: "MEDIUM | WN22-AU-000020 | AUDIT | Windows Server 2022 must, at a minimum, offload audit records of interconnected systems in real time and offload standalone or nondomain-joined systems weekly."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must, at a minimum, offload audit records of interconnected systems in real time and offload standalone or nondomain-joined systems weekly."
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 must, at a minimum, offload audit"
+                - "records of interconnected systems in real time and offload standalone or nondomain-joined systems weekly."
 
       - name: "MEDIUM | WN22-AU-000020 | AUDIT | Windows Server 2022 must, at a minimum, offload audit records of interconnected systems in real time and offload standalone or nondomain-joined systems weekly. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -1371,11 +1446,30 @@
 
 - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows Server 2022 permissions for the Application event log must prevent access by non-privileged accounts."
   block:
-      - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows Server 2022 permissions for the Application event log must prevent access by non-privileged accounts."
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 permissions for the Application event log must prevent access by non-privileged accounts."
+      - name: "MEDIUM | WN22-AU-000030 | PATCH | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Get Default Log Locations."
+        ansible.windows.win_shell: Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\ | Select-Object File | ft -HideTableHeaders
+        changed_when: false
+        failed_when: false
+        register: wn22_au_000030_app_log_location
 
-      - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows Server 2022 permissions for the Application event log must prevent access by non-privileged accounts. | import reuseable task."
+      - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Get Current Permissions For Default Application Log."
+        ansible.windows.win_shell: get-acl "{{ wn22_au_000030_app_log_location.stdout | trim }}" | FL AccessToString
+        changed_when: false
+        failed_when: false
+        register: wn22_au_000030_app_log_permissions
+
+      - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Permissions warning for accounts."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! Ensure the permissions on the Application event log (Application.evtx) are configured"
+                - "to prevent standard user accounts or groups from having access. The default permissions listed below satisfy this requirement:"
+                - "Eventlog - Full Control, SYSTEM - Full Control, Administrators - Full Control"
+                - "Current location of Application.evtx is {{ wn22_au_000030_app_log_location.stdout | trim }}"
+                - "If there is no output below If the location of the logs has been changed, when adding Eventlog to the permissions,"
+                - "it must be entered as NT Service\\Eventlog"
+                - "{{ wn22_au_000030_app_log_permissions.stdout_lines | reject('match', '^$') | list }}"
+
+      - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-AU-000030'
@@ -1393,9 +1487,28 @@
 
 - name: "MEDIUM | WN22-AU-000040 | AUDIT | Windows Server 2022 permissions for the Security event log must prevent access by non-privileged accounts."
   block:
-      - name: "MEDIUM | WN22-AU-000040 | AUDIT | Windows Server 2022 permissions for the Security event log must prevent access by non-privileged accounts."
+      - name: "MEDIUM | WN22-AU-000040 | AUDIT | Permissions for the Security event log must prevent access by non-privileged accounts. | Get Default Log Locations."
+        ansible.windows.win_shell: Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Security\ | Select-Object File | ft -HideTableHeaders
+        changed_when: false
+        failed_when: false
+        register: wn22_au_000040_sec_log_location
+
+      - name: "MEDIUM | WN22-AU-000040 | AUDIT | Permissions for the Security event log must prevent access by non-privileged accounts. | Get Current Permissions For Default Security Log."
+        ansible.windows.win_shell: get-acl "{{ wn22_au_000040_sec_log_location.stdout | trim }}" | FL AccessToString
+        changed_when: false
+        failed_when: false
+        register: wn22_au_000040_sec_log_permissions
+
+      - name: "MEDIUM | WN22-AU-000040 | AUDIT | Permissions for the Security event log must prevent access by non-privileged accounts. | Permissions warning for accounts."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 permissions for the Security event log must prevent access by non-privileged accounts."
+            msg:
+                - "Warning!! Ensure the permissions on the Security event log (Security.evtx) are configured"
+                - "to prevent standard user accounts or groups from having access. The default permissions listed below satisfy this requirement:"
+                - "Eventlog - Full Control, SYSTEM - Full Control, Administrators - Full Control"
+                - "Current location of Security.evtx is {{ wn22_au_000040_sec_log_location.stdout | trim }}"
+                - "If there is no output below If the location of the logs has been changed, when adding Eventlog to the permissions,"
+                - "it must be entered as NT Service\\Eventlog"
+                - "{{ wn22_au_000040_sec_log_permissions.stdout_lines | reject('match', '^$') | list }}"
 
       - name: "MEDIUM | WN22-AU-000040 | AUDIT | Windows Server 2022 permissions for the Security event log must prevent access by non-privileged accounts. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -1415,9 +1528,28 @@
 
 - name: "MEDIUM | WN22-AU-000050 | AUDIT | Windows Server 2022 permissions for the System event log must prevent access by non-privileged accounts."
   block:
-      - name: "MEDIUM | WN22-AU-000050 | AUDIT | Windows Server 2022 permissions for the System event log must prevent access by non-privileged accounts."
+      - name: "MEDIUM | WN22-AU-000050 | AUDIT | Permissions for the System event log must prevent access by non-privileged accounts. | Get Default Log Locations."
+        ansible.windows.win_shell: Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\System\ | Select-Object File | ft -HideTableHeaders
+        changed_when: false
+        failed_when: false
+        register: wn22_au_000050_system_log_location
+
+      - name: "MEDIUM | WN22-AU-000050 | AUDIT | Permissions for the System event log must prevent access by non-privileged accounts. | Get Current Permissions For Default System Log."
+        ansible.windows.win_shell: get-acl "{{ wn22_au_000050_system_log_location.stdout | trim }}" | FL AccessToString
+        changed_when: false
+        failed_when: false
+        register: wn22_au_000050_system_log_permissions
+
+      - name: "MEDIUM | WN22-AU-000050 | AUDIT | Permissions for the System event log must prevent access by non-privileged accounts. | Permissions warning for accounts."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 permissions for the System event log must prevent access by non-privileged accounts."
+            msg:
+                - "Warning!! Ensure the permissions on the System event log (System.evtx) are configured"
+                - "to prevent standard user accounts or groups from having access. The default permissions listed below satisfy this requirement:"
+                - "Eventlog - Full Control, SYSTEM - Full Control, Administrators - Full Control"
+                - "Current location of System.evtx is {{ wn22_au_000050_system_log_location.stdout | trim }}"
+                - "If there is no output below If the location of the logs has been changed, when adding Eventlog to the permissions,"
+                - "it must be entered as NT Service\\Eventlog"
+                - "{{ wn22_au_000050_system_log_permissions.stdout_lines | reject('match', '^$') | list }}"
 
       - name: "MEDIUM | WN22-AU-000050 | AUDIT | Windows Server 2022 permissions for the System event log must prevent access by non-privileged accounts. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -1437,9 +1569,24 @@
 
 - name: "MEDIUM | WN22-AU-000060 | AUDIT | Windows Server 2022 Event Viewer must be protected from unauthorized modification and deletion."
   block:
-      - name: "MEDIUM | WN22-AU-000060 | AUDIT | Windows Server 2022 Event Viewer must be protected from unauthorized modification and deletion."
+      - name: "MEDIUM | WN22-AU-000060 | AUDIT | Event Viewer must be protected from unauthorized modification and deletion. | Get Current Permissions For Eventvwr.exe."
+        ansible.windows.win_shell: get-acl {{ item }}:\Windows\system32\Eventvwr.exe | FL AccessToString
+        changed_when: false
+        failed_when: false
+        with_items:
+            - "{{ wn22_drive_letters.stdout_lines }}"
+        register: wn22_au_000060_event_viewer_permissions
+
+      - name: "MEDIUM | WN22-AU-000060 | AUDIT | Event Viewer must be protected from unauthorized modification and deletion. | Permissions warning for accounts."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Event Viewer must be protected from unauthorized modification and deletion."
+            msg:
+                - "Warning!! Event Viewer must be protected from unauthorized modification and deletion."
+                - "If any groups or accounts other than TrustedInstaller have Full control or Modify permissions, this is a finding."
+                - "TrustedInstaller - Full Control, Administrators, SYSTEM, Users, ALL APPLICATION PACKAGES,"
+                - "ALL RESTRICTED APPLICATION PACKAGES - Read & Execute"
+                - "If there is no output below If the location of the logs has been changed"
+                - "The default location should be System32 folder."
+                - "{{ wn22_au_000060_event_viewer_permissions.results[0].stdout_lines }}"
 
       - name: "MEDIUM | WN22-AU-000060 | AUDIT | Windows Server 2022 Event Viewer must be protected from unauthorized modification and deletion. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -2870,7 +3017,11 @@
   block:
       - name: "MEDIUM | WN22-DC-000020 | AUDIT | Windows Server 2022 Kerberos user logon restrictions must be enforced."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Kerberos user logon restrictions must be enforced."
+            msg:
+                - "Warning!! Kerberos user logon restrictions must be enforced."
+                - "Configure the policy value in the Default Domain Policy for Computer Configuration"
+                - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
+                - ">> Enforce user logon restrictions to Enabled"
 
       - name: "MEDIUM | WN22-DC-000020 | AUDIT | Windows Server 2022 Kerberos user logon restrictions must be enforced. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -2892,7 +3043,12 @@
   block:
       - name: "MEDIUM | WN22-DC-000030 | AUDIT | Windows Server 2022 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less."
+            msg:
+                - "Warning!! The Kerberos service ticket maximum lifetime must be limited to 600 minutes or less."
+                - "Configure the policy value in the Default Domain Policy for Computer Configuration"
+                - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
+                - ">> Maximum lifetime for service ticket to a maximum of 600 minutes, but not 0, which equates to"
+                - "Ticket doesn't expire"
 
       - name: "MEDIUM | WN22-DC-000030 | AUDIT | Windows Server 2022 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -2914,7 +3070,11 @@
   block:
       - name: "MEDIUM | WN22-DC-000040 | AUDIT | Windows Server 2022 Kerberos user ticket lifetime must be limited to 10 hours or less."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Kerberos user ticket lifetime must be limited to 10 hours or less."
+            msg:
+                - "Warning!! The Kerberos user ticket lifetime must be limited to 10 hours or less."
+                - "Configure the policy value in the Default Domain Policy for Computer Configuration"
+                - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
+                - ">> Maximum lifetime for user ticket to a maximum of 10 hours but not 0, which equates to Ticket doesn't expire"
 
       - name: "MEDIUM | WN22-DC-000040 | AUDIT | Windows Server 2022 Kerberos user ticket lifetime must be limited to 10 hours or less. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -2936,7 +3096,11 @@
   block:
       - name: "MEDIUM | WN22-DC-000050 | AUDIT | Windows Server 2022 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less."
+            msg:
+                - "Warning!! The Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less."
+                - "Configure the policy value in the Default Domain Policy for Computer Configuration"
+                - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
+                - ">> Maximum lifetime for user ticket renewal to a maximum of 7 days or less"
 
       - name: "MEDIUM | WN22-DC-000050 | AUDIT | Windows Server 2022 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less.| import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -2958,7 +3122,11 @@
   block:
       - name: "MEDIUM | WN22-DC-000060 | AUDIT | Windows Server 2022 computer clock synchronization tolerance must be limited to 5 minutes or less."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 computer clock synchronization tolerance must be limited to 5 minutes or less."
+            msg:
+                - "Warning!! The Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less."
+                - "Configure the policy value in the Default Domain Policy for Computer Configuration"
+                - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
+                - ">> Maximum tolerance for computer clock synchronization to a maximum of 5 minutes or less."
 
       - name: "MEDIUM | WN22-DC-000060 | AUDIT | Windows Server 2022 computer clock synchronization tolerance must be limited to 5 minutes or less. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -2978,9 +3146,29 @@
 
 - name: "MEDIUM | WN22-DC-000120 | AUDIT | Windows Server 2022 data files owned by users must be on a different logical partition from the directory server data files."
   block:
-      - name: "MEDIUM | WN22-DC-000120 | AUDIT | Windows Server 2022 data files owned by users must be on a different logical partition from the directory server data files."
+      - name: "MEDIUM | WN22-DC-000120 | AUDIT | Data files owned by users must be on a different logical partition from the directory server data files. | Audit Current Dir Locations For DSA"
+        ansible.windows.win_shell: Get-ItemProperty Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NTDS\Parameters -Name "Database log files path","DSA Database file"
+        changed_when: false
+        failed_when: false
+        register: wn22_dc_000120_audit_dirlocation
+
+      - name: "MEDIUM | WN22-DC-000120 | AUDIT | Data files owned by users must be on a different logical partition from the directory server data files. | Get Shared Drives"
+        ansible.windows.win_shell: net share
+        changed_when: false
+        failed_when: false
+        register: wn22_dc_000120_audit_shares
+
+      - name: "MEDIUM | WN22-DC-000120 | AUDIT | Data files owned by users must be on a different logical partition from the directory server data files. | Warning Message."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 data files owned by users must be on a different logical partition from the directory server data files."
+            msg:
+                - "Warning!! This is a manual task. Data files owned by users must be on a different logical partition"
+                - "from the directory server data files. Ignore system shares (e.g., NETLOGON, SYSVOL, and administrative"
+                - "shares ending in $). User shares that are hidden (ending with $) should not be ignored."
+                - "If user shares are located on the same logical partition as the directory server data files, this is a finding."
+                - "Note the directory locations in the values for DSA Database file"
+                - "{{ wn22_dc_000120_audit_dirlocation.stdout_lines | trim }}"
+                - "Note the logical drive(s) or file system partition for any organization-created data shares."
+                - "{{ wn22_dc_000120_audit_shares.stdout_lines | trim }}"
 
       - name: "MEDIUM | WN22-DC-000120 | AUDIT | Windows Server 2022 data files owned by users must be on a different logical partition from the directory server data files. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -3001,7 +3189,10 @@
   block:
       - name: "MEDIUM | WN22-DC-000130 | AUDIT | Windows Server 2022 domain controllers must run on a machine dedicated to that function."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 domain controllers must run on a machine dedicated to that function."
+            msg:
+                - "Warning!! This is a manual task. Domain controllers must run on a machine dedicated to that function."
+                - "Review installed applications. Remove additional roles or applications such as web, database,"
+                - "and email from the domain controller."
 
       - name: "MEDIUM | WN22-DC-000130 | AUDIT | Windows Server 2022 domain controllers must run on a machine dedicated to that function. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -3022,7 +3213,12 @@
   block:
       - name: "MEDIUM | WN22-DC-000140 | AUDIT | Windows Server 2022 must use separate, NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service implementations at a classified confidentiality level when replication data traverses a network cleared to a lower level than the data."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must use separate, NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service implementations at a classified confidentiality level when replication data traverses a network cleared to a lower level than the data."
+            msg:
+                - "Warning!! This is a manual task. If the classification level of the Windows domain controller is higher than"
+                - "the level of the network traversed and NSA-approved encryption is not used, this is a finding."
+                - "Configure NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service"
+                - "implementations at a classified confidentiality level that transfer replication data through a network cleared"
+                - "to a lower level than the data."
 
       - name: "MEDIUM | WN22-DC-000140 | AUDIT | Windows Server 2022 must use separate, NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service implementations at a classified confidentiality level when replication data traverses a network cleared to a lower level than the data. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -3043,7 +3239,9 @@
   block:
       - name: "MEDIUM | WN22-DC-000170 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must be configured with proper audit settings."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Active Directory Group Policy objects must be configured with proper audit settings."
+            msg:
+                - "Warning!! This is a manual task. Active Directory Group Policy objects must be configured with proper audit settings."
+                - "Please review the STIG documentation for proper direction on auditing this control."
 
       - name: "MEDIUM | WN22-DC-000170 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must be configured with proper audit settings. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -3065,7 +3263,9 @@
   block:
       - name: "MEDIUM | WN22-DC-000180 | AUDIT | Windows Server 2022 Active Directory Domain object must be configured with proper audit settings."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Active Directory Domain object must be configured with proper audit settings."
+            msg:
+                - "Warning!! This is a manual task. The Active Directory Domain object must be configured with proper audit settings."
+                - "Please review the STIG documentation for proper direction on auditing this control."
 
       - name: "MEDIUM | WN22-DC-000180 | AUDIT | Windows Server 2022 Active Directory Domain object must be configured with proper audit settings. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -3087,7 +3287,9 @@
   block:
       - name: "MEDIUM | WN22-DC-000190 | AUDIT | Windows Server 2022 Active Directory Infrastructure object must be configured with proper audit settings."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Active Directory Infrastructure object must be configured with proper audit settings."
+            msg:
+                - "Warning!! This is a manual task. The Active Directory Infrastructure object must be configured with proper audit settings."
+                - "Please review the STIG documentation for proper direction on auditing this control."
 
       - name: "MEDIUM | WN22-DC-000190 | AUDIT | Windows Server 2022 Active Directory Infrastructure object must be configured with proper audit settings. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -3109,7 +3311,10 @@
   block:
       - name: "MEDIUM | WN22-DC-000200 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must be configured with proper audit settings."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must be configured with proper audit settings."
+            msg:
+                - "Warning!! This is a manual task. The Active Directory Domain Controllers Organizational"
+                - "Unit (OU) object must be configured with proper audit settings."
+                - "Please review the STIG documentation for proper direction on auditing this control."
 
       - name: "MEDIUM | WN22-DC-000200 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must be configured with proper audit settings. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -3131,7 +3336,9 @@
   block:
       - name: "MEDIUM | WN22-DC-000210 | AUDIT | Windows Server 2022 Active Directory AdminSDHolder object must be configured with proper audit settings."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Active Directory AdminSDHolder object must be configured with proper audit settings."
+            msg:
+                - "Warning!! This is a manual task. The Active Directory AdminSDHolder object must be configured with proper audit settings."
+                - "Please review the STIG documentation for proper direction on auditing this control."
 
       - name: "MEDIUM | WN22-DC-000210 | AUDIT | Windows Server 2022 Active Directory AdminSDHolder object must be configured with proper audit settings. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -3153,7 +3360,9 @@
   block:
       - name: "MEDIUM | WN22-DC-000220 | AUDIT | Windows Server 2022 Active Directory RID Manager$ object must be configured with proper audit settings."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Active Directory RID Manager$ object must be configured with proper audit settings."
+            msg:
+                - "Warning!! This is a manual task. The Active Directory RID Manager$ object must be configured with proper audit settings."
+                - "Please review the STIG documentation for proper direction on auditing this control."
 
       - name: "MEDIUM | WN22-DC-000220 | AUDIT | Windows Server 2022 Active Directory RID Manager$ object must be configured with proper audit settings. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -3863,20 +4072,24 @@
 
 - name: "MEDIUM | WN22-PK-000020 | AUDIT | Windows Server 2022 must have the DoD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems."
   block:
-      - name: "MEDIUM | WN22-PK-000020 | AUDIT | Windows Server 2022 must have the DoD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems."
-        ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\disallowed | Where {$_.Issuer -Like "*DoD Interoperability*" -and $_.Subject -Like "*DoD*"} | FL Subject, Issuer, Thumbprint, NotAfter
+      - name: "MEDIUM | WN22-PK-000020 | AUDIT | The DoD Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems. | DoD Interoperability Root CA 2 49 Thumb Check."
+        ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\disallowed | Where {$_.Issuer -Like "*DoD Interoperability*" -and $_.Subject -Like "*DoD*" -and $_.Thumbprint -Like "49CBE933151872E17C8EAE7F0ABA97FB610F6477"} | FL Subject, Issuer, Thumbprint, NotAfter
         changed_when: false
-        check_mode: false
-        register: wn22_pk_000020_audit
+        failed_when: false
+        register: wn22_pk_000020_interop_check_for_49
 
-      - name: "MEDIUM | WN22-PK-000020 | AUDIT | Windows Server 2022 must have the DoD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems."
+      - name: "MEDIUM | WN22-PK-000020 | AUDIT | The DoD Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems. | Warning!! No DoD Interoperability Root CA 2 Certificate Installed."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must have the DoD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems."
+            msg:
+                - "Warning!! The DoD Root CA 3 - DoD Interoperability Root CA 2 certificate is not installed on the system or"
+                - "does not contain Thumbprint 49CBE933151872E17C8EAE7F0ABA97FB610F6477 for the Certificate."
+        when: wn22_pk_000020_interop_check_for_49.stdout == ""
 
-      - name: "MEDIUM | WN22-PK-000020 | AUDIT | Windows Server 2022 must have the DoD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems. | import reuseable task."
+      - name: "MEDIUM | WN22-PK-000020 | AUDIT | The DoD Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-PK-000020'
+        when: wn22_pk_000020_interop_check_for_49.stdout == ""
   when:
       - wn22_pk_000020
   tags:
@@ -3890,20 +4103,24 @@
 
 - name: "MEDIUM | WN22-PK-000030 | AUDIT | Windows Server 2022 must have the US DoD CCEB Interoperability Root CA cross-certificates in the Untrusted Certificates Store on unclassified systems."
   block:
-      - name: "MEDIUM | WN22-PK-000030 | AUDIT | Windows Server 2022 must have the US DoD CCEB Interoperability Root CA cross-certificates in the Untrusted Certificates Store on unclassified systems."
-        ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\disallowed | Where Issuer -Like "*CCEB Interoperability*" | FL Subject, Issuer, Thumbprint, NotAfter
+      - name: "MEDIUM | WN22-PK-000030 | AUDIT | The US DoD CCEB Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems. | DoD CCEB Interop Check."
+        ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\disallowed | Where {$_.Issuer -Like "*US DoD CCEB Interoperability Root CA 2*" -and $_.Subject -Like "*DoD Root CA 3*" -and $_.Thumbprint -Like "9B74964506C7ED9138070D08D5F8B969866560C8"} | FL Subject, Issuer, Thumbprint, NotAfter
         changed_when: false
-        check_mode: false
-        register: wn22_pk_000030_audit
+        failed_when: false
+        register: wn22_pk_000030_cceb_interop_check
 
-      - name: "MEDIUM | WN22-PK-000030 | AUDIT | Windows Server 2022 must have the US DoD CCEB Interoperability Root CA cross-certificates in the Untrusted Certificates Store on unclassified systems."
+      - name: "MEDIUM | WN22-PK-000030 | AUDIT | The US DoD CCEB Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems. | Warning!! No DoD Root CA 3 - US DoD CCEB Interoperability Certificate Installed."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must have the US DoD CCEB Interoperability Root CA cross-certificates in the Untrusted Certificates Store on unclassified systems."
+            msg:
+                - "Warning!! The DoD Root CA 3 - US DoD CCEB Interoperability Root CA 2 certificate is not installed on the system or"
+                - "does not contain Thumbprint 9B74964506C7ED9138070D08D5F8B969866560C8 for the Certificate."
+        when: wn22_pk_000030_cceb_interop_check.stdout == ""
 
-      - name: "MEDIUM | WN22-PK-000030 | AUDIT | Windows Server 2022 must have the US DoD CCEB Interoperability Root CA cross-certificates in the Untrusted Certificates Store on unclassified systems. | import reuseable task."
+      - name: "MEDIUM | WN22-PK-000030 | AUDIT | The US DoD CCEB Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-PK-000030'
+        when: wn22_pk_000030_cceb_interop_check.stdout == ""
   when:
       - wn22_pk_000030
   tags:
