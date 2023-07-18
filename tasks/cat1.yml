@@ -144,6 +144,7 @@
       - SV-254378r877395_rule
       - CCI-000877
       - CAT1
+      - winrm
 
 - name: "HIGH | WN22-CC-000500 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) service must not use Basic authentication."
   ansible.windows.win_regedit:
@@ -161,6 +162,7 @@
       - SV-254381r877395_rule
       - CCI-000877
       - CAT1
+      - winrm
 
 - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
   block:

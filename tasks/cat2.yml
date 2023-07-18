@@ -2945,6 +2945,7 @@
       - CCI-002890
       - CCI-003123
       - CAT2
+      - winrm
 
 - name: "MEDIUM | WN22-CC-000490 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) client must not use Digest authentication."
   ansible.windows.win_regedit:
@@ -2979,6 +2980,7 @@
       - CCI-002890
       - CCI-003123
       - CAT2
+      - winrm
 
 - name: "MEDIUM | WN22-CC-000520 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) service must not store RunAs credentials."
   ansible.windows.win_regedit:
@@ -2996,6 +2998,7 @@
       - SV-254383r848965_rule
       - CCI-002038
       - CAT2
+      - winrm
 
 - name: "MEDIUM | WN22-CC-000530 | PATCH | Windows Server 2022 must have PowerShell Transcription enabled."
   ansible.windows.win_regedit:
