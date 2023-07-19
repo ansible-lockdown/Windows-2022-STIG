@@ -1187,24 +1187,6 @@
       - CCI-000044
       - CAT2
 
-- name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater. | Apply Variable"
-  community.windows.win_security_policy:
-      section: System Access
-      key: ResetLockoutCount
-      value: "{{ wn22stig_resetlockoutcount }}"
-      when:
-          - wn22stig_resetlockoutcount >= 15
-  when:
-      - wn22_ac_000030
-  tags:
-      - WN22-AC-000030
-      - V-254287
-      - SRG-OS-000021-GPOS-00005
-      - SV-254287r848677_rule
-      - CCI-000044
-      - CCI-002238
-      - CAT2
-
 # below task is dependent on WN22-AC-000020 and WN22-AC-000030, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'LockoutDuration' in section 'System Access' is not a valid key, cannot set this value"
 - name: "MEDIUM | WN22-AC-000010 | PATCH | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater."
   block:
@@ -1240,6 +1222,24 @@
       - V-254285
       - SRG-OS-000329-GPOS-00128
       - SV-254285r848671_rule
+      - CCI-002238
+      - CAT2
+
+- name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater. | Apply Variable"
+  community.windows.win_security_policy:
+      section: System Access
+      key: ResetLockoutCount
+      value: "{{ wn22stig_resetlockoutcount }}"
+      when:
+          - wn22stig_resetlockoutcount >= 15
+  when:
+      - wn22_ac_000030
+  tags:
+      - WN22-AC-000030
+      - V-254287
+      - SRG-OS-000021-GPOS-00005
+      - SV-254287r848677_rule
+      - CCI-000044
       - CCI-002238
       - CAT2
 
