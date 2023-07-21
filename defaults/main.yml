@@ -32,6 +32,11 @@ win2022stig_system_is_container: false
 # set to false to skip long running tasks
 long_running: false
 
+# win22stig_cloud_based_system is a setting built into the playbook for testing locally vs azure.
+# We have found certain controls need to be set in a different order when being applied in the
+# different enviroments. By Default This is set to false.
+win22stig_cloud_based_system: false
+
 # win2022stig_skip_secure_winrm is used in the playbook to skip over WINRM based controls that
 # may cause WINRM Basic Connection Type to be disabled.
 # Setting win2022stig_skip_secure_winrm to 'false' will enable Secure Connection types only.

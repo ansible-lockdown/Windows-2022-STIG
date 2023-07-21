@@ -1179,6 +1179,7 @@
 
   when:
       - wn22_ac_000020
+      - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000020
       - V-254286
@@ -1214,6 +1215,7 @@
           - wn22stig_resetlockoutcount >= 15
   when:
       - wn22_ac_000030
+      - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000030
       - V-254287
@@ -1253,6 +1255,7 @@
               wn22stig_lockoutduration >= 15
   when:
       - wn22_ac_000010
+      - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000010
       - V-254285
