@@ -46,7 +46,7 @@ win22stig_cloud_based_system: false
 # WN22-CC-000480 - CAT2
 # WN22-CC-000510 - CAT2
 # WN22-CC-000520 - CAT2
-win2022stig_skip_secure_winrm: true
+win2022stig_skip_secure_winrm: false
 
 # CAT 1 rules
 wn22_00_000030: true
