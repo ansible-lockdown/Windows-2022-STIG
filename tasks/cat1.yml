@@ -14,11 +14,11 @@
       - wn22_00_000030
   tags:
       - WN22-00-000030
-      - V-254240
+      - CAT1
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254240r848536_rule
-      - CCI-000366
-      - CAT1
+      - V-254240
 
 - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes."
   block:
@@ -43,11 +43,11 @@
       - wn22_00_000130
   tags:
       - WN22-00-000130
-      - V-205663
+      - CAT1
+      - CCI-000213
       - SRG-OS-000080-GPOS-00048
       - SV-254250r848566_rule
-      - CCI-000213
-      - CAT1
+      - V-205663
 
 - name: "HIGH | WN22-AC-000090 | PATCH | Windows Server 2022 reversible password encryption must be disabled."
   community.windows.win_security_policy:
@@ -58,11 +58,11 @@
       - wn22_ac_000090
   tags:
       - WN22-AC-000090
-      - V-254293
+      - CAT1
+      - CCI-000226
       - SRG-OS-000073-GPOS-00041
       - SV-254293r877397_rule
-      - CCI-000226
-      - CAT1
+      - V-254293
 
 - name: "HIGH | WN22-CC-000210 | PATCH | Windows Server 2022 AutoPlay must be turned off for non-volume devices."
   ansible.windows.win_regedit:
@@ -74,11 +74,11 @@
       - wn22_cc_000210
   tags:
       - WN22-CC-000210
-      - V-254352
+      - CAT1
+      - CCI-001764
       - SRG-OS-000368-GPOS-00154
       - SV-254352r848872_rule
-      - CCI-001764
-      - CAT1
+      - V-254352
 
 - name: "HIGH | WN22-CC-000220 | PATCH | Windows Server 2022 default AutoRun behavior must be configured to prevent AutoRun commands."
   ansible.windows.win_regedit:
@@ -90,11 +90,11 @@
       - wn22_cc_000220
   tags:
       - WN22-CC-000220
-      - V-254353
+      - CAT1
+      - CCI-001764
       - SRG-OS-000368-GPOS-00154
       - SV-254353r848875_rule
-      - CCI-001764
-      - CAT1
+      - V-254353
 
 - name: "HIGH | WN22-CC-000230 | PATCH | Windows Server 2022 AutoPlay must be disabled for all drives."
   ansible.windows.win_regedit:
@@ -105,11 +105,11 @@
   when: wn22_cc_000230
   tags:
       - WN22-CC-000230
-      - V-254354
-      - SV-254354r848878_rule
-      - SRG-OS-000368-GPOS-00154
-      - CCI-001764
       - CAT1
+      - CCI-001764
+      - SRG-OS-000368-GPOS-00154
+      - SV-254354r848878_rule
+      - V-254354
 
 - name: "HIGH | WN22-CC-000430 | PATCH | Windows Server 2022 must disable the Windows Installer Always install with elevated privileges option."
   ansible.windows.win_regedit:
@@ -122,11 +122,11 @@
       - wn22_cc_000430
   tags:
       - WN22-CC-000430
-      - V-254374
+      - CAT1
+      - CCI-001812
       - SRG-OS-000362-GPOS-00149
       - SV-254374r848938_rule
-      - CCI-001812
-      - CAT1
+      - V-254374
 
 - name: "HIGH | WN22-CC-000470 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) client must not use Basic authentication."
   ansible.windows.win_regedit:
@@ -139,11 +139,11 @@
       - not win2022stig_skip_secure_winrm
   tags:
       - WN22-CC-000470
-      - V-254378
+      - CAT1
+      - CCI-000877
       - SRG-OS-000125-GPOS-00065
       - SV-254378r877395_rule
-      - CCI-000877
-      - CAT1
+      - V-254378
       - winrm
 
 - name: "HIGH | WN22-CC-000500 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) service must not use Basic authentication."
@@ -157,11 +157,11 @@
       - not win2022stig_skip_secure_winrm
   tags:
       - WN22-CC-000500
-      - V-254381
+      - CAT1
+      - CCI-000877
       - SRG-OS-000125-GPOS-00065
       - SV-254381r877395_rule
-      - CCI-000877
-      - CAT1
+      - V-254381
       - winrm
 
 - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
@@ -187,12 +187,11 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000010
-      - V-254385
+      - CAT1
+      - CCI-002235
       - SRG-OS-000324-GPOS-00125
       - SV-254385r877392_rule
-      - CCI-002235
-      - notest
-      - CAT1
+      - V-254385
 
 - name: "HIGH | WN22-DC-000070 | AUDIT | Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access."
   block:
@@ -209,11 +208,11 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000070
-      - V-254391
+      - CAT1
+      - CCI-002235
       - SRG-OS-000324-GPOS-00125
       - SV-254391r877392_rule
-      - CCI-002235
-      - CAT1
+      - V-254391
 
 - name: "HIGH | WN22-DC-000080 | AUDIT | Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions."
   block:
@@ -230,11 +229,11 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000080
-      - V-254392
+      - CAT1
+      - CCI-002235
       - SRG-OS-000324-GPOS-00125
       - SV-254392r877392_rule
-      - CCI-002235
-      - CAT1
+      - V-254392
 
 - name: "HIGH | WN22-DC-000090 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must have proper access control permissions."
   block:
@@ -251,11 +250,11 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000090
-      - V-205741
+      - CAT1
+      - CCI-002235
       - SRG-OS-000324-GPOS-00125
       - SV-205741r569188_rule
-      - CCI-002235
-      - CAT1
+      - V-205741
 
 - name: "HIGH | WN22-DC-000100 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must have the proper access control permissions."
   block:
@@ -272,11 +271,11 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000100
-      - V-254394
+      - CAT1
+      - CCI-002235
       - SRG-OS-000324-GPOS-00125
       - SV-254394r877392_rule
-      - CCI-002235
-      - CAT1
+      - V-254394
 
 - name: "HIGH | WN22-DC-000110 | AUDIT | Windows Server 2022 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions."
   block:
@@ -293,11 +292,11 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000110
-      - V-254395
+      - CAT1
+      - CCI-002235
       - SV-254395r877392_rule
       - SRG-OS-000324-GPOS-00125
-      - CCI-002235
-      - CAT1
+      - V-254395
 
 - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
   block:
@@ -314,11 +313,11 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000150
-      - V-254399
+      - CAT1
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254399r849013_rule
-      - CCI-000366
-      - CAT1
+      - V-254399
 
 - name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA)."
   block:
@@ -335,13 +334,12 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000290
-      - V-254413
+      - CAT1
+      - CCI-000185
       - SRG-OS-000066-GPOS-00034
       - SV-254413r849055_rule
-      - CCI-000185
-      - CAT1
+      - V-254413
 
-# add some task/external variable for approved CAs, check for DoD and how to pull programatically
 - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
   block:
       - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA). | Message out"
@@ -357,13 +355,12 @@
       - ansible_windows_domain_role == "Primary domain controller"
   tags:
       - WN22-DC-000300
-      - V-254414
+      - CAT1
+      - CCI-000185
       - SRG-OS-000066-GPOS-00034
       - SV-254414r849058_rule
-      - CCI-000185
-      - CAT1
+      - V-254414
 
-# populate a dictionary/list from customer
 - name: "HIGH | WN22-MS-000010 | AUDIT | Windows Server 2022 must only allow Administrators responsible for the member server or standalone or nondomain-joined system to have Administrator rights on the system"
   block:
       - name: "HIGH | WN22-MS-000010 | AUDIT | Windows Server 2022 must only allow Administrators responsible for the member server or standalone or nondomain-joined system to have Administrator rights on the system"
@@ -388,12 +385,12 @@
       - "'controller' not in ansible_windows_domain_role"
   tags:
       - WN22-MS-000010
-      - V-254428
+      - CAT1
+      - CCI-002235
       - SRG-OS-000324-GPOS-00125
       - SV-254428r877392_rule
-      - CCI-002235
+      - V-254428
       - audit
-      - CAT1
 
 - name: "HIGH | WN22-MS-000140 | PATCH | Windows Server 2022 must be running Credential Guard on domain-joined member servers."
   ansible.windows.win_regedit:
@@ -412,12 +409,11 @@
       - ansible_windows_domain_role == "Member server"
   tags:
       - WN22-MS-000140
-      - V-254441
+      - CAT1
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254441r849139_rule
-      - CCI-000366
-      - NeedToTestMemberServer
-      - CAT1
+      - V-254441
 
 - name: "HIGH | WN22-SO-000020 | PATCH | Windows Server 2022 must prevent local accounts with blank passwords from being used from the network."
   ansible.windows.win_regedit:
@@ -429,11 +425,11 @@
       - wn22_so_000020
   tags:
       - WN22-SO-000020
-      - V-254446
+      - CAT1
+      - CCI-000366
       - SV-254446r849154_rule
       - SRG-OS-000480-GPOS-00227
-      - CCI-000366
-      - CAT1
+      - V-254446
 
 - name: "HIGH | WN22-SO-000210 | PATCH | Windows Server 2022 must not allow anonymous SID/Name translation."
   community.windows.win_security_policy:
@@ -444,11 +440,11 @@
       - wn22_so_000210
   tags:
       - WN22-SO-000210
-      - V-254465
+      - CAT1
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254465r849211_rule
-      - CCI-000366
-      - CAT1
+      - V-254465
 
 - name: "HIGH | WN22-SO-000220 | PATCH | Windows Server 2022 must not allow anonymous enumeration of Security Account Manager (SAM) accounts."
   ansible.windows.win_regedit:
@@ -461,11 +457,11 @@
       - ansible_windows_domain_role != "Primary domain controller"
   tags:
       - WN22-SO-000220
-      - V-254466
+      - CAT1
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254466r849214_rule
-      - CCI-000366
-      - CAT1
+      - V-254466
 
 - name: "HIGH | WN22-SO-000230 | PATCH | Windows Server 2022 must not allow anonymous enumeration of shares."
   ansible.windows.win_regedit:
@@ -477,11 +473,11 @@
       - wn22_so_000230
   tags:
       - WN22-SO-000230
-      - V-254467
+      - CAT1
+      - CCI-001090
       - SRG-OS-000138-GPOS-00069
       - SV-254467r849217_rule
-      - CCI-001090
-      - CAT1
+      - V-254467
 
 - name: "HIGH | WN22-SO-000250 | PATCH | Windows Server 2022 must restrict anonymous access to Named Pipes and Shares."
   ansible.windows.win_regedit:
@@ -493,11 +489,11 @@
       - wn22_so_000250
   tags:
       - WN22-SO-000250
-      - V-254469
+      - CAT1
+      - CCI-001090
       - SRG-OS-000138-GPOS-00069
       - SV-254469r849223_rule
-      - CCI-001090
-      - CAT1
+      - V-254469
 
 - name: "HIGH | WN22-SO-000300 | PATCH | Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords."
   ansible.windows.win_regedit:
@@ -509,11 +505,11 @@
       - wn22_so_000300
   tags:
       - WN22-SO-000300
-      - V-254474
+      - CAT1
+      - CCI-000226
       - SRG-OS-000073-GPOS-00041
       - SV-254474r877397_rule
-      - CCI-000226
-      - CAT1
+      - V-254474
 
 - name: "HIGH | WN22-SO-000310 | PATCH | Windows Server 2022 LAN Manager authentication level must be configured to send NTLMv2 response only and to refuse LM and NTLM."
   ansible.windows.win_regedit:
@@ -525,11 +521,11 @@
       - wn22_so_000310
   tags:
       - WN22-SO-000310
-      - V-254467
+      - CAT1
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254467r849217_rule
-      - CCI-000366
-      - CAT1
+      - V-254467
 
 - name: "HIGH | WN22-UR-000020 | PATCH | Windows Server 2022 Act as part of the operating system user right must not be assigned to any groups or accounts."
   ansible.windows.win_user_right:
@@ -540,11 +536,11 @@
       - wn22_ur_000020
   tags:
       - WN22-UR-000020
-      - V-254492
+      - CAT1
+      - CCI-002235
       - SRG-OS-000324-GPOS-00125
       - SV-254492r877392_rule
-      - CCI-002235
-      - CAT1
+      - V-254492
 
 - name: "HIGH | WN22-UR-000060 | PATCH | Windows Server 2022 Create a token object user right must not be assigned to any groups or accounts."
   community.windows.win_security_policy:
@@ -555,16 +551,12 @@
       - wn22_ur_000060
   tags:
       - WN22-UR-000060
-      - V-254496
+      - CAT1
+      - CCI-002235
       - SRG-OS-000324-GPOS-00125
       - SV-254496r877392_rule
-      - CCI-002235
-      - CAT1
+      - V-254496
 
-# fails openscap - the v1r10 xml checks for "Administrators" string but secedit uses the SIDs thus
-# "SeDebugPrivilege = *S-1-5-32-544"  is Administrators (openscap fails)
-# emailed_disa.letterkenny.re.mbx.stig-customer-support-mailbox@mail.mil
-# SCC tool works
 - name: "HIGH | WN22-UR-000100 | PATCH | Windows Server 2022 Debug programs: user right must only be assigned to the Administrators group."
   ansible.windows.win_user_right:
       name: SeDebugPrivilege
@@ -574,8 +566,8 @@
       - wn22_ur_000100
   tags:
       - WN22-UR-000100
-      - V-254500
+      - CAT1
+      - CCI-002235
       - SRG-OS-000324-GPOS-00125
       - SV-254500r877392_rule
-      - CCI-002235
-      - CAT1
+      - V-254500

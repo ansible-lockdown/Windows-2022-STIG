@@ -14,18 +14,17 @@
       - wn22_00_000010
   tags:
       - WN22-00-000010
-      - V-254238
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254238r848530_rule
-      - CCI-000366
-      - CAT2
+      - V-254238
+      - manual
 
-# enumerating on DC is different than standalone
 - name: "MEDIUM | WN22-00-000020 | AUDIT | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age }} days."
   block:
       - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age }} days."
         ansible.windows.win_shell: "Get-ADUser -Filter * -Property PasswordLastSet | Where SID -like S-1-5-21-*-500 | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ wn22stig_pass_age }}))} | Select Name,PasswordLastSet"
-        # win_shell: "Get-ADUser krbtgt -Property PasswordLastSet | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ wn22stig_krbtgt_pass_age }}))} | Select-Object -ExpandProperty PasswordLastSet"
         changed_when: false
         check_mode: false
         register: wn22_00_000020_audit_dc
@@ -61,8 +60,7 @@
             warn_control_id: 'WN22-00-000020'
         when:
             - not wn22_00_000020_audit_dc is skipped
-            - wn22_00_000020_audit_dc.stdout != "" or
-            - wn22_00_000020_audit_dm_sa is defined
+            - wn22_00_000020_audit_dc.stdout != "" or wn22_00_000020_audit_dm_sa is defined
             - wn22_00_000020_audit_dm_sa.stdout != ""
   when:
       - wn22_00_000020
@@ -72,7 +70,6 @@
       - CCI-000199
       - SV-254239r915618_rule
       - SRG-OS-000076-GPOS-00044
-      - NeedToTestDomainController
       - audit
       - CAT2
 
@@ -152,7 +149,6 @@
       - SV-254243r848545_rule
       - CCI-000366
       - CAT2
-      # how to make this list?
 
 - name: "MEDIUM | WN22-00-000070 | AUDIT | Windows Server 2022 shared user accounts must not be permitted."
   block:
@@ -193,10 +189,7 @@
       - SV-254245r890536_rule
       - CCI-001774
       - CAT2
-      # Get-AppLockerPolicy -Effective
 
-# Current hardware and virtual environments may not support virtualization-based security features, including Credential Guard, due to specific supporting
-# requirements including a TPM, UEFI with Secure Boot, and the capability to run the Hyper-V feature within a virtual machine.
 - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use."
   block:
       - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Message out"
@@ -216,8 +209,6 @@
       - SV-254246r848554_rule
       - CCI-000366
       - CAT2
-      # wmic /namespace:\\root\cimv2\security\microsofttpm path win32_tpm get *
-      # if not enabled see "No Instance(s) Available." ?
 
 - name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level."
   block:
@@ -508,8 +499,7 @@
             warn_control_id: 'WN22-00-000200'
         when:
             - not wn22_00_000200_audit_dc is skipped
-            - wn22_00_000200_audit_dc.stdout != "" or
-            - not wn22_00_000200_audit_dm_sa is skipped
+            - wn22_00_000200_audit_dc.stdout != "" or not wn22_00_000200_audit_dm_sa is skipped
             - wn22_00_000200_audit_dm_sa.stdout != ""
   when:
       - wn22_00_000200
@@ -525,10 +515,7 @@
 - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire."
   block:
       - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire."
-        ansible.windows.win_shell: |
-          Get-CimInstance -Class Win32_Useraccount -Filter "PasswordExpires=False and LocalAccount=True" |
-          Where-Object -FilterScript {$_.PasswordExpires -EQ $False -AND $_.Disabled -EQ $False} |
-          Format-Table -Property Name,PasswordExpires,Disabled,LocalAccount
+        ansible.windows.win_shell: Get-CimInstance -Class Win32_Useraccount -Filter "PasswordExpires=False and LocalAccount=True" | Where-Object -FilterScript {$_.PasswordExpires -EQ $False -AND $_.Disabled -EQ $False} | Format-Table -Property Name,PasswordExpires,Disabled,LocalAccount  # pragma: allowlist secret
         changed_when: false
         failed_when: false
         check_mode: false
@@ -571,7 +558,6 @@
       - SV-254259r890538_rule
       - CCI-001744
       - CAT2
-      # Some third party software to monitor files
 
 - name: "MEDIUM | WN22-00-000230 | AUDIT | Windows Server 2022 non-system-created file shares on a system must limit access to groups that require it."
   block:
@@ -603,7 +589,6 @@
       - CCI-001090
       - CAT2
 
-# https://stackoverflow.com/questions/31049454/how-to-retrieve-recursively-any-files-with-a-specific-extensions-in-powershell/31049571
 - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed."
   block:
       - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed."
@@ -634,8 +619,6 @@
       - SV-254261r848599_rule
       - CCI-000366
       - CAT2
-      # do we need async; its very long running to search filesystems
-      # get an array of drive letters to search?
 
 - name: "MEDIUM | WN22-00-000250 | AUDIT | Windows Server 2022 systems requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest."
   block:
@@ -734,7 +717,7 @@
 
 - name: "MEDIUM | WN22-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP)."
   block:
-      - name: "MEDIUM | WN16-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | Warning Message"
+      - name: "MEDIUM | WN22-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | Warning Message"
         ansible.builtin.debug:
             msg:
                 - "Warning!! This is a manual task. Windows Server 2022 must employ automated mechanisms to determine the state of system"
@@ -743,7 +726,7 @@
                 - "by Computer Network Defense Service Provider (CNDSP). Verify DoD-approved ESS software is installed and properly operating."
                 - "Ask the site ISSM for documentation of the ESS software installation and configuration."
 
-      - name: "MEDIUM | WN16-00-000290 | PATCH | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | Warn Count"
+      - name: "MEDIUM | WN22-00-000290 | PATCH | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000290'
@@ -1149,6 +1132,16 @@
       - CAT2
 
 # THE FOLLOWING 3 CONTROLS WILL FAIL UNLESS THEY ARE IN THE FOLLOWING ORDER FOR LOCAL BASED SYSTEMS.
+# We have found the order of these three tasks varies between cloud based instances
+# and VM based instances. The task below breaks out to run in a different order
+# for cloud based systems
+- name: "CAT2 task side load for WN22-AC-000010, WN22-AC-000020, and WN22-AC-000030"
+  ansible.builtin.import_tasks: cat2_cloud_lockout_order.yml
+  when:
+      - win22stig_cloud_based_system
+  tags:
+      - cat2_cloud
+
 - name: "MEDIUM | WN22-AC-000020 | PATCH | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less."
   block:
       - name: "MEDIUM | WN22-AC-000020 | AUDIT | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less. | Warning For Bad Variable."
@@ -1157,16 +1150,14 @@
                 - "Warning!! You have a invalid number of days set for wn22stig_lockoutbadcount please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
-            - wn22stig_lockoutbadcount == 0 or
-              wn22stig_lockoutbadcount > 3
+            - wn22stig_lockoutbadcount == 0 or wn22stig_lockoutbadcount > 3
 
       - name: "MEDIUM | WN22-AC-000020 | AUDIT | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-AC-000020'
         when:
-            - wn22stig_lockoutbadcount == 0 or
-              wn22stig_lockoutbadcount > 3
+            - wn22stig_lockoutbadcount == 0 or wn22stig_lockoutbadcount > 3
 
       - name: "MEDIUM | WN22-AC-000020 | PATCH | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less. | Apply Variable."
         community.windows.win_security_policy:
@@ -1176,7 +1167,6 @@
         when:
             - wn22stig_lockoutbadcount > 0
             - wn22stig_lockoutbadcount <= 3
-
   when:
       - wn22_ac_000020
       - not win22stig_cloud_based_system
@@ -1188,7 +1178,7 @@
       - CCI-000044
       - CAT2
 
-# below task is dependent on WN16-AC-000020, maybe custom fail when known error if WN16-AC-000020 not set? "The key 'ResetLockoutCount' in section 'System Access' is not a valid key, cannot set this value"
+# Below task is dependent on WN22-AC-000020, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'ResetLockoutCount' in section 'System Access' is not a valid key, cannot set this value"
 - name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater."
   block:
       - name: MEDIUM | WN22-AC-000030 | AUDIT | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater."
@@ -1198,7 +1188,6 @@
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
             - wn22stig_resetlockoutcount < 15
-
       - name: MEDIUM | WN22-AC-000030 | AUDIT | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
@@ -1225,7 +1214,6 @@
       - CCI-002238
       - CAT2
 
-# below task is dependent on WN22-AC-000020 and WN22-AC-000030, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'LockoutDuration' in section 'System Access' is not a valid key, cannot set this value"
 - name: "MEDIUM | WN22-AC-000010 | PATCH | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater."
   block:
       - name: "MEDIUM | WN22-AC-000010 | PATCH | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater. | Warning For Bad Variable."
@@ -1251,8 +1239,7 @@
             key: LockoutDuration
             value: "{{ wn22stig_lockoutduration }}"
         when:
-            - wn22stig_lockoutduration == 0 or
-              wn22stig_lockoutduration >= 15
+            - wn22stig_lockoutduration == 0 or wn22stig_lockoutduration >= 15
   when:
       - wn22_ac_000010
       - not win22stig_cloud_based_system
@@ -1287,16 +1274,14 @@
                 - "Warning!! You have a invalid number of days set for wn22stig_maximumpasswordage please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
-            - wn22stig_maximumpasswordage == 0 or
-              wn22stig_maximumpasswordage > 60
+            - wn22stig_maximumpasswordage == 0 or wn22stig_maximumpasswordage > 60
 
       - name: "MEDIUM | WN22-AC-000050 | AUDIT | Windows Server 2022 maximum password age must be configured to 60 days or less. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-AC-000050'
         when:
-            - wn22stig_maximumpasswordage == 0 or
-              wn22stig_maximumpasswordage > 60
+            - wn22stig_maximumpasswordage == 0 or wn22stig_maximumpasswordage > 60
 
       - name: "MEDIUM | WN22-AC-000050 | PATCH | Windows Server 2022 maximum password age must be configured to 60 days or less. | Apply Variable."
         community.windows.win_security_policy:
@@ -3445,7 +3430,6 @@
       - CCI-000172
       - CCI-002234
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000250 | PATCH | Windows Server 2022 must be configured to audit DS Access | Directory Service Access failures."
   block:
@@ -3473,7 +3457,6 @@
       - CCI-000172
       - CCI-002234
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000260 | PATCH | Windows Server 2022 must be configured to audit DS Access | Directory Service Changes successes."
   block:
@@ -3501,7 +3484,6 @@
       - CCI-000172
       - CCI-002234
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000280 | AUDIT | Windows Server 2022 domain controllers must have a PKI server certificate."
   block:
@@ -3571,7 +3553,6 @@
       - CCI-002418
       - CCI-002421
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000330 | PATCH | Windows Server 2022 domain controllers must be configured to allow reset of machine account passwords."
   ansible.windows.win_regedit:
@@ -3589,7 +3570,6 @@
       - SV-254417r849067_rule
       - CCI-000366
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000340 | PATCH | Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers."
   ansible.windows.win_user_right:
@@ -3609,7 +3589,6 @@
       - SV-254418r849070_rule
       - CCI-000213
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000350 | PATCH | Windows Server 2022 Add workstations to domain user right must only be assigned to the Administrators group on domain controllers."
   ansible.windows.win_user_right:
@@ -3626,7 +3605,6 @@
       - SV-254419r877392_rule
       - CCI-002235
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000360 | PATCH | Windows Server 2022 Allow log on through Remote Desktop Services user right must only be assigned to the Administrators group on domain controllers."
   ansible.windows.win_user_right:
@@ -3643,7 +3621,6 @@
       - SV-254420r849076_rule
       - CCI-000213
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000370 | PATCH | Windows Server 2022 Deny access to this computer from the network user right on domain controllers must be configured to prevent unauthenticated access."
   ansible.windows.win_user_right:
@@ -3660,7 +3637,6 @@
       - SV-254421r849079_rule
       - CCI-000213
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000380 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain controllers must be configured to prevent unauthenticated access."
   ansible.windows.win_user_right:
@@ -3677,7 +3653,6 @@
       - SV-254422r849082_rule
       - CCI-000213
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000390 | PATCH | Windows Server 2022 Deny log on as a service user right must be configured to include no accounts or groups (blank) on domain controllers."
   community.windows.win_security_policy:
@@ -3694,7 +3669,6 @@
       - SV-254423r849085_rule
       - CCI-000213
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000400 | PATCH | Windows Server 2022 Deny log on locally user right on domain controllers must be configured to prevent unauthenticated access."
   ansible.windows.win_user_right:
@@ -3711,7 +3685,6 @@
       - SV-254424r849088_rule
       - CCI-000213
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000410 | PATCH | Windows Server 2022 Deny log on through Remote Desktop Services user right on domain controllers must be configured to prevent unauthenticated access."
   ansible.windows.win_user_right:
@@ -3728,7 +3701,6 @@
       - SV-254425r849091_rule
       - CCI-002314
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000420 | PATCH | Windows Server 2022 Enable computer and user accounts to be trusted for delegation user right must only be assigned to the Administrators group on domain controllers."
   ansible.windows.win_user_right:
@@ -3745,7 +3717,6 @@
       - SV-254426r877392_rule
       - CCI-002235
       - CAT2
-      - NeedToTestDomainController
 
 - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days."
   block:
@@ -3774,7 +3745,6 @@
       - SRG-OS-000480-GPOS-00227
       - SV-254427r849097_rule
       - CCI-000366
-      - NeedToTestDomainController
       - CAT2
 
 - name: "MEDIUM | WN22-MS-000020 | PATCH | Windows Server 2022 local administrator accounts must have their privileged token filtered to prevent elevated privileges from being used over the network on domain systems."
@@ -3793,7 +3763,6 @@
       - SV-254429r849103_rule
       - CCI-001084
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-MS-000030 | PATCH | Windows Server 2022 local users on domain-joined member servers must not be enumerated."
   ansible.windows.win_regedit:
@@ -3811,7 +3780,6 @@
       - SV-254430r849106_rule
       - CCI-000381
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-MS-000040 | PATCH | Windows Server 2022 must restrict unauthenticated Remote Procedure Call (RPC) clients from connecting to the RPC server on domain-joined member servers and standalone or nondomain-joined systems."
   ansible.windows.win_regedit:
@@ -3912,7 +3880,6 @@
       - SV-254435r849121_rule
       - CCI-000213
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-MS-000090 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
   block:
@@ -3941,7 +3908,6 @@
       - SV-254436r849124_rule
       - CCI-000213
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-MS-000100 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
   block:
@@ -3971,7 +3937,6 @@
       - SV-254437r890547_rule
       - CCI-000213
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-MS-000110 | PATCH | Windows Server 2022 Deny log on locally user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
   block:
@@ -4001,7 +3966,6 @@
       - SV-254438r849130_rule
       - CCI-000213
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-MS-000120 | PATCH | Windows Server 2022 Deny log on through Remote Desktop Services user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems."
   block:
@@ -4032,7 +3996,6 @@
       - SV-254439r849133_rule
       - CCI-002314
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-MS-000130 | PATCH | Windows Server 2022 Enable computer and user accounts to be trusted for delegation user right must not be assigned to any groups or accounts on domain-joined member servers and standalone or nondomain-joined systems."
   community.windows.win_security_policy:
@@ -4255,7 +4218,6 @@
       - CCI-002418
       - CCI-002421
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-SO-000070 | PATCH | Windows Server 2022 setting Domain member: Digitally encrypt secure channel data (when possible) must be configured to Enabled."
   ansible.windows.win_regedit:
@@ -4275,7 +4237,6 @@
       - CCI-002418
       - CCI-002421
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-SO-000080 | PATCH | Windows Server 2022 setting Domain member: Digitally sign secure channel data (when possible) must be configured to Enabled."
   ansible.windows.win_regedit:
@@ -4295,7 +4256,6 @@
       - CCI-002418
       - CCI-002421
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-SO-000090 | PATCH | Windows Server 2022 computer account password must not be prevented from being reset."
   ansible.windows.win_regedit:
@@ -4313,7 +4273,6 @@
       - SV-254453r877039_rule
       - CCI-001967
       - CAT2
-      - NeedToTestMemberServer
 
 - name: "MEDIUM | WN22-SO-000100 | PATCH | Windows Server 2022 maximum age for machine account passwords must be configured to 30 days or less."
   ansible.windows.win_regedit:
@@ -4665,7 +4624,6 @@
       - SV-254482r849262_rule
       - CCI-002038
       - CAT2
-      # - exclusions for server core? think its NA there
 
 - name: "MEDIUM | WN22-SO-000390 | PATCH | Windows Server 2022 UIAccess applications must not be allowed to prompt for elevation without using the secure desktop."
   ansible.windows.win_regedit:
