@@ -43,13 +43,13 @@
   tags:
       - CAT1
 
-- name: Execute the category 2 (Medium Severity) tasks
+- name: Execute the Category 2 (Medium Severity) tasks
   ansible.builtin.import_tasks: cat2.yml
   when: win2022stig_cat2_patch
   tags:
       - CAT2
 
-- name: Execute the category 3 (Lowest Severity) tasks
+- name: Execute the Category 3 (Lowest Severity) tasks
   ansible.builtin.import_tasks: cat3.yml
   when: win2022stig_cat3_patch
   tags:

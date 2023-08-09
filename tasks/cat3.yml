@@ -26,11 +26,11 @@
       - wn22_00_000180
   tags:
       - WN22-00-000180
-      - V-205664
+      - CAT3
+      - CCI-000213
       - SRG-OS-000080-GPOS-00048
       - SV-205664r569188_rule
-      - CCI-000213
-      - CAT3
+      - V-205664
 
 - name: "LOW | WN22-00-000440 | AUDIT | The Windows Server 2022 time service must synchronize with an appropriate DoD time source."
   block:
@@ -45,11 +45,11 @@
   when: wn22_00_000440
   tags:
       - WN22-00-000440
-      - V-205800
+      - CAT3
+      - CCI-001891
       - SRG-OS-000355-GPOS-00143
       - SV-205800r859311_rule
-      - CCI-001891
-      - CAT3
+      - V-205800
 
 - name: "LOW | WN22-CC-000030 | PATCH | Windows Server 2022 internet Protocol version 6 (IPv6) source routing must be configured to the highest protection level to prevent IP source routing."
   ansible.windows.win_regedit:
@@ -61,11 +61,11 @@
       - wn22_cc_000030
   tags:
       - WN22-CC-000030
-      - V-205858
+      - CAT3
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-205858r569188_rule
-      - CCI-000366
-      - CAT3
+      - V-205858
 
 - name: "LOW | WN22-CC-000040 | PATCH | Windows Server 2022 source routing must be configured to the highest protection level to prevent Internet Protocol (IP) source routing."
   ansible.windows.win_regedit:
@@ -77,11 +77,11 @@
       - wn22_cc_000040
   tags:
       - WN22-CC-000040
-      - V-205859
+      - CAT3
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-205859r569188_rule
-      - CCI-000366
-      - CAT3
+      - V-205859
 
 - name: "LOW | WN22-CC-000050 | PATCH | Windows Server 2022 must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF)-generated routes."
   ansible.windows.win_regedit:
@@ -93,11 +93,11 @@
       - wn22_cc_000050
   tags:
       - WN22-CC-000050
-      - V-205860
+      - CAT3
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-205860r569188_rule
-      - CCI-000366
-      - CAT3
+      - V-205860
 
 - name: "LOW | WN22-CC-000060 | PATCH | Windows Server 2022 Must be configured to ignore NetBIOS name release requests except from WINS servers."
   ansible.windows.win_regedit:
@@ -109,11 +109,11 @@
       - wn22_cc_000060
   tags:
       - WN22-CC-000060
-      - V-205822
+      - CAT3
+      - CCI-002385
       - SRG-OS-000420-GPOS-00186
       - SV-205822r569188_rule
-      - CCI-002385
-      - CAT3
+      - V-205822
 
 - name: "LOW | WN22-CC-000200 | PATCH | Windows Server 2022 Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft."
   ansible.windows.win_regedit:
@@ -125,11 +125,11 @@
       - wn22_cc_000200
   tags:
       - WN22-CC-000200
-      - V-205691
+      - CAT3
+      - CCI-000381
       - SRG-OS-000095-GPOS-00049
       - SV-205691r569188_rule
-      - CCI-000381
-      - CAT3
+      - V-205691
 
 - name: "LOW | WN22-CC-000260 | PATCH | Windows Server 2022 Windows Update must not obtain updates from other PCs on the Internet."
   ansible.windows.win_regedit:
@@ -141,11 +141,11 @@
       - wn22_cc_000260
   tags:
       - WN22-CC-000260
-      - V-205870
+      - CAT3
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-205870r569188_rule
-      - CCI-000366
-      - CAT3
+      - V-205870
 
 - name: "LOW | WN22-CC-000320 | AUDIT | Windows Server 2022 turning off File Explorer heap termination on corruption must be disabled."
   ansible.windows.win_regedit:
@@ -158,11 +158,11 @@
       - wn22_cc_000320
   tags:
       - WN22-CC-000320
-      - SV-205871r569188_rule
-      - V-205871
+      - CAT3
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - CAT3
+      - SV-205871r569188_rule
+      - V-205871
 
 - name: "LOW | WN22-DC-000160 | AUDIT | Windows Server 2022 directory service must be configured to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity."
   block:
@@ -178,11 +178,11 @@
       - wn22_dc_000160
   tags:
       - WN22-DC-000160
-      - V-205726
+      - CAT3
+      - CCI-001133
       - SRG-OS-000163-GPOS-00072
       - SV-205726r569188_rule
-      - CCI-001133
-      - CAT3
+      - V-205726
 
 - name: "LOW | WN22-SO-000140 | PATCH | Windows Server 2022 title for the legal banner must be configured with the appropriate text."
   ansible.windows.win_regedit:
@@ -194,16 +194,17 @@
       - wn22_so_000140
   tags:
       - WN22-SO-000140
-      - V-205632
-      - SRG-OS-000023-GPOS-00006
-      - SRG-OS-000228-GPOS-00088
-      - SV-205632r569188_rule
+      - CAT3
       - CCI-000048
       - CCI-001384
       - CCI-001385
       - CCI-001386
       - CCI-001387
       - CCI-001388
+      - SRG-OS-000023-GPOS-00006
+      - SRG-OS-000228-GPOS-00088
+      - SV-205632r569188_rule
+      - V-205632
 
 - name: "LOW | WN22-SO-000370 | PATCH | Windows Server 2022 default permissions of global system objects must be strengthened."
   ansible.windows.win_regedit:
@@ -215,8 +216,8 @@
       - wn22_so_000370
   tags:
       - WN22-SO-000370
-      - V-205871
+      - CAT3
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-205871r569188_rule
-      - CCI-000366
-      - CAT3
+      - V-205871

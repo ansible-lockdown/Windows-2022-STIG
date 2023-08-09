@@ -1,7 +1,7 @@
 ---
 
 # THE FOLLOWING 3 CONTROLS WILL FAIL UNLESS THEY ARE IN THE FOLLOWING ORDER FOR CLOUD BASED SYSTEMS
-# below task is dependent on WN22-AC-000020 and WN22-AC-000030, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'LockoutDuration' in section 'System Access' is not a valid key, cannot set this value"
+# The below task is dependent on WN22-AC-000020 and WN22-AC-000030, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'LockoutDuration' in section 'System Access' is not a valid key, cannot set this value"
 - name: "MEDIUM | WN22-AC-000020 | PATCH | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less."
   block:
       - name: "MEDIUM | WN22-AC-000020 | AUDIT | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less. | Warning For Bad Variable."

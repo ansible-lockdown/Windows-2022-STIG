@@ -19,7 +19,7 @@
       - SRG-OS-000480-GPOS-00227
       - SV-254238r848530_rule
       - V-254238
-      - manual
+      - audit
 
 - name: "MEDIUM | WN22-00-000020 | AUDIT | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age }} days."
   block:
@@ -66,12 +66,12 @@
       - wn22_00_000020
   tags:
       - WN22-00-000020
-      - V-254239
-      - CCI-000199
-      - SV-254239r915618_rule
-      - SRG-OS-000076-GPOS-00044
-      - audit
       - CAT2
+      - CCI-000199
+      - SRG-OS-000076-GPOS-00044
+      - SV-254239r915618_rule
+      - V-254239
+      - audit
 
 - name: "MEDIUM | WN22-00-000040 | AUDIT | Windows Server 2022 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks."
   block:
@@ -103,12 +103,13 @@
       - "'controller' not in ansible_windows_domain_role"
   tags:
       - WN22-00-000040
-      - V-254241
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254241r848539_rule
-      - CCI-000366
+      - V-254241
       - audit
-      - CAT2
+
 
 - name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 15 characters in length."
   block:
@@ -124,11 +125,11 @@
       - wn22_00_000050
   tags:
       - WN22-00-000050
-      - V-254242
+      - CAT2
+      - CCI-000205
       - SRG-OS-000078-GPOS-00046
       - SV-254242r848542_rule
-      - CCI-000205
-      - CAT2
+      - V-254242
 
 - name: "MEDIUM | WN22-00-000060 | AUDIT | Windows Server 2022 manually managed application account passwords must be changed at least annually or when a system administrator with knowledge of the password leaves the organization."
   block:
@@ -144,11 +145,11 @@
       - wn22_00_000060
   tags:
       - WN22-00-000060
-      - V-254243
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254243r848545_rule
-      - CCI-000366
-      - CAT2
+      - V-254243
 
 - name: "MEDIUM | WN22-00-000070 | AUDIT | Windows Server 2022 shared user accounts must not be permitted."
   block:
@@ -164,11 +165,11 @@
       - wn22_00_000070
   tags:
       - WN22-00-000070
-      - V-254244
+      - CAT2
+      - CCI-000764
       - SRG-OS-000104-GPOS-00051
       - SV-254244r848548_rule
-      - CCI-000764
-      - CAT2
+      - V-254244
 
 - name: "MEDIUM | WN22-00-000080 | AUDIT | Windows Server 2022 must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs."
   block:
@@ -184,11 +185,11 @@
       - wn22_00_000080
   tags:
       - WN22-00-000080
-      - V-254245
+      - CAT2
+      - CCI-001774
       - SRG-OS-000370-GPOS-00155
       - SV-254245r890536_rule
-      - CCI-001774
-      - CAT2
+      - V-254245
 
 - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use."
   block:
@@ -204,11 +205,11 @@
       - wn22_00_000090
   tags:
       - WN22-00-000090
-      - V-254246
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254246r848554_rule
-      - CCI-000366
-      - CAT2
+      - V-254246
 
 - name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level."
   block:
@@ -224,11 +225,11 @@
       - wn22_00_000100
   tags:
       - WN22-00-000100
-      - V-254247
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254247r848557_rule
-      - CCI-000366
-      - CAT2
+      - V-254247
 
 - name: "MEDIUM | WN22-00-000110 | AUDIT | Windows Server 2022 must use an antivirus program."
   block:
@@ -244,11 +245,11 @@
       - wn22_00_000110
   tags:
       - WN22-00-000110
-      - V-254248
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254248r848560_rule
-      - CCI-000366
-      - CAT2
+      - V-254248
 
 - name: "MEDIUM | WN22-00-000120 | AUDIT | Windows Server 2022 must have a host-based intrusion detection or prevention system."
   block:
@@ -264,11 +265,11 @@
       - wn22_00_000120
   tags:
       - WN22-00-000120
-      - V-254249
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254249r848563_rule
-      - CCI-000366
-      - CAT2
+      - V-254249
 
 - name: "MEDIUM | WN22-00-000140 | AUDIT | Windows Server 2022 permissions for the system drive root directory usually C:\ must conform to minimum requirements."
   block:
@@ -284,11 +285,11 @@
       - wn22_00_000140
   tags:
       - WN22-00-000140
-      - V-254251
+      - CAT2
+      - CCI-002165
       - SRG-OS-000312-GPOS-00122
       - SV-254251r848569_rule
-      - CCI-002165
-      - CAT2
+      - V-254251
 
 - name: "MEDIUM | WN22-00-000150 | AUDIT | Windows Server 2022 permissions for program file directories must conform to minimum requirements."
   block:
@@ -323,11 +324,12 @@
       - wn22_00_000150
   tags:
       - WN22-00-000150
-      - V-254252
+      - CAT2
+      - CCI-002165
       - SRG-OS-000312-GPOS-00122
       - SV-254252r848572_rule
-      - CCI-002165
-      - CAT2
+      - V-254252
+      - audit
 
 - name: "MEDIUM | WN22-00-000160 | AUDIT | Windows Server 2022 permissions for the Windows installation directory must conform to minimum requirements."
   block:
@@ -352,11 +354,12 @@
       - wn22_00_000160
   tags:
       - WN22-00-000160
-      - V-254253
+      - CAT2
+      - CCI-002165
       - SRG-OS-000312-GPOS-00122
       - SV-254253r848575_rule
-      - CCI-002165
-      - CAT2
+      - V-254253
+      - audit
 
 - name: "MEDIUM | WN22-00-000170 | AUDIT | Windows Server 2022 default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained."
   block:
@@ -372,11 +375,11 @@
       - wn22_00_000170
   tags:
       - WN22-00-000170
-      - V-254254
+      - CAT2
+      - CCI-002235
       - SRG-OS-000324-GPOS-00125
       - SV-254254r877392_rule
-      - CCI-002235
-      - CAT2
+      - V-254254
 
 - name: "MEDIUM | WN22-00-000190 | AUDIT | Windows Server 2022 outdated or unused accounts must be removed from the system or disabled."
   block:
@@ -451,11 +454,11 @@
       - wn22_00_000190
   tags:
       - WN22-00-000190
-      - V-254256
+      - CAT2
+      - CCI-000795
       - SRG-OS-000118-GPOS-00060
       - SV-254256r848584_rule
-      - CCI-000795
-      - CAT2
+      - V-254256
 
 - name: "MEDIUM | WN22-00-000200 | AUDIT | Windows Server 2022 accounts must require passwords."
   block:
@@ -505,12 +508,12 @@
       - wn22_00_000200
   tags:
       - WN22-00-000200
-      - V-254257
+      - CAT2
+      - CCI-000764
       - SRG-OS-000104-GPOS-00051
       - SV-254257r848587_rule
-      - CCI-000764
+      - V-254257
       - audit
-      - CAT2
 
 - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire."
   block:
@@ -533,11 +536,12 @@
       - wn22_00_000210
   tags:
       - WN22-00-000210
-      - V-254258
-      - SRG-OS-000076-GPOS-00044
-      - SV-254258r848590_rule
       - CAT2
       - CCI-000199
+      - SRG-OS-000076-GPOS-00044
+      - SV-254258r848590_rule
+      - V-254258
+      - audit
 
 - name: "MEDIUM | WN22-00-000220 | AUDIT | Windows Server 2022 system files must be monitored for unauthorized changes."
   block:
@@ -553,11 +557,11 @@
       - wn22_00_000220
   tags:
       - WN22-00-000220
-      - V-254259
+      - CAT2
+      - CCI-001744
       - SRG-OS-000363-GPOS-00150
       - SV-254259r890538_rule
-      - CCI-001744
-      - CAT2
+      - V-254259
 
 - name: "MEDIUM | WN22-00-000230 | AUDIT | Windows Server 2022 non-system-created file shares on a system must limit access to groups that require it."
   block:
@@ -583,11 +587,12 @@
       - wn22_00_000230
   tags:
       - WN22-00-000230
-      - V-254260
+      - CAT2
+      - CCI-001090
       - SRG-OS-000138-GPOS-00069
       - SV-254260r848596_rule
-      - CCI-001090
-      - CAT2
+      - V-254260
+      - audit
 
 - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed."
   block:
@@ -614,11 +619,12 @@
       - wn22_00_000240
   tags:
       - WN22-00-000240
-      - V-254261
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254261r848599_rule
-      - CCI-000366
-      - CAT2
+      - V-254261
+      - audit
 
 - name: "MEDIUM | WN22-00-000250 | AUDIT | Windows Server 2022 systems requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest."
   block:
@@ -634,13 +640,13 @@
       - wn22_00_000250
   tags:
       - WN22-00-000250
-      - V-254262
-      - SRG-OS-000185-GPOS-00079
-      - SV-254262r848602_rule
+      - CAT2
       - CCI-001199
       - CCI-002475
       - CCI-002476
-      - CAT2
+      - SRG-OS-000185-GPOS-00079
+      - SV-254262r848602_rule
+      - V-254262
 
 - name: "MEDIUM | WN22-00-000260 | AUDIT | Windows Server 2022 must implement protection methods such as TLS, encrypted VPNs, or IPsec if the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process."
   block:
@@ -656,12 +662,12 @@
       - wn22_00_000260
   tags:
       - WN22-00-000260
-      - V-254263
-      - SRG-OS-000425-GPOS-00189
-      - SV-254263r848605_rule
+      - CAT2
       - CCI-002420
       - CCI-002422
-      - CAT2
+      - SRG-OS-000425-GPOS-00189
+      - SV-254263r848605_rule
+      - V-254263
 
 - name: "MEDIUM | WN22-00-000270 | AUDIT | Windows Server 2022 must have the roles and features required by the system documented."
   block:
@@ -688,11 +694,12 @@
       - wn22_00_000270
   tags:
       - WN22-00-000270
-      - V-254264
+      - CAT2
+      - CCI-000381
       - SRG-OS-000095-GPOS-00049
       - SV-254264r848608_rule
-      - CCI-000381
-      - CAT2
+      - V-254264
+      - audit
 
 - name: "MEDIUM | WN22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled."
   block:
@@ -708,12 +715,12 @@
       - wn22_00_000280
   tags:
       - WN22-00-000280
-      - V-254265
-      - SRG-OS-000480-GPOS-00227
-      - SV-254265r848611_rule
+      - CAT2
       - CCI-000366
       - CCI-002080
-      - CAT2
+      - SRG-OS-000480-GPOS-00227
+      - SV-254265r848611_rule
+      - V-254265
 
 - name: "MEDIUM | WN22-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP)."
   block:
@@ -734,11 +741,11 @@
       - wn22_00_000290
   tags:
       - WN22-00-000290
-      - V-254266
+      - CAT2
+      - CCI-001233
       - SRG-OS-000191-GPOS-00080
       - SV-254266r849353_rule
-      - CCI-001233
-      - CAT2
+      - V-254266
 
 - name: "MEDIUM | WN22-00-000300 | AUDIT | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours."
   block:
@@ -785,11 +792,12 @@
       - wn22_00_000300
   tags:
       - WN22-00-000300
-      - V-254267
+      - CAT2
+      - CCI-000016
       - SRG-OS-000002-GPOS-00002
       - SV-254267r848617_rule
-      - CCI-000016
-      - CAT2
+      - V-254267
+      - audit
 
 - name: "MEDIUM | WN22-00-000310 | AUDIT | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours."
   block:
@@ -836,11 +844,12 @@
       - wn22_00_000310
   tags:
       - WN22-00-000310
-      - V-254268
+      - CAT2
+      - CCI-001682
       - SRG-OS-000123-GPOS-00064
       - SV-254268r848620_rule
-      - CCI-001682
-      - CAT2
+      - V-254268
+      - audit
 
 - name: "MEDIUM | WN22-00-000320 | PATCH | Windows Server 2022 must not have the Fax Server role installed."
   ansible.windows.win_feature:
@@ -851,11 +860,11 @@
       - wn22_00_000320
   tags:
       - WN22-00-000320
-      - V-254269
+      - CAT2
+      - CCI-000381
       - SRG-OS-000095-GPOS-00049
       - SV-254269r848623_rule
-      - CCI-000381
-      - CAT2
+      - V-254269
 
 - name: "MEDIUM | WN22-00-000330 | PATCH | Windows Server 2022 must not have the Microsoft FTP service installed unless required by the organization."
   ansible.windows.win_feature:
@@ -866,11 +875,11 @@
       - wn22_00_000330
   tags:
       - WN22-00-000330
-      - V-254270
+      - CAT2
+      - CCI-000382
       - SRG-OS-000096-GPOS-00050
       - SV-254270r848626_rule
-      - CCI-000382
-      - CAT2
+      - V-254270
 
 - name: "MEDIUM | WN22-00-000340 | PATCH | Windows Server 2022 must not have the Peer Name Resolution Protocol installed."
   ansible.windows.win_feature:
@@ -881,11 +890,11 @@
       - wn22_00_000340
   tags:
       - WN22-00-000340
-      - V-254271
+      - CAT2
+      - CCI-000381
       - SRG-OS-000095-GPOS-00049
       - SV-254271r848629_rule
-      - CCI-000381
-      - CAT2
+      - V-254271
 
 - name: "MEDIUM | WN22-00-000350 | PATCH | Windows Server 2022 must not have Simple TCP/IP Services installed."
   ansible.windows.win_feature:
@@ -895,11 +904,11 @@
       - wn22_00_000350
   tags:
       - WN22-00-000350
-      - V-254272
+      - CAT2
+      - CCI-000381
       - SRG-OS-000095-GPOS-00049
       - SV-254272r848632_rule
-      - CCI-000381
-      - CAT2
+      - V-254272
 
 - name: "MEDIUM | WN22-00-000360 | PATCH | Windows Server 2022 must not have the Telnet Client installed."
   ansible.windows.win_feature:
@@ -909,11 +918,11 @@
       - wn22_00_000360
   tags:
       - WN22-00-000360
-      - V-254273
+      - CAT2
+      - CCI-000382
       - SRG-OS-000096-GPOS-00050
       - SV-254273r848635_rule
-      - CCI-000382
-      - CAT2
+      - V-254273
 
 - name: "MEDIUM | WN22-00-000370 | PATCH | Windows Server 2022 must not have the TFTP Client installed."
   ansible.windows.win_feature:
@@ -923,11 +932,11 @@
       - wn22_00_000370
   tags:
       - WN22-00-000370
-      - V-254274
+      - CAT2
+      - CCI-000381
       - SRG-OS-000095-GPOS-00049
       - SV-254274r848638_rule
-      - CCI-000381
-      - CAT2
+      - V-254274
 
 - name: "MEDIUM | WN22-00-000380 | PATCH | Windows Server 2022 must not have the Server Message Block (SMB) v1 protocol installed."
   ansible.windows.win_feature:
@@ -938,11 +947,11 @@
       - wn22_00_000380
   tags:
       - WN22-00-000380
-      - V-254275
       - CAT2
+      - CCI-000381
       - SRG-OS-000095-GPOS-00049
       - SV-254275r848641_rule
-      - CCI-000381
+      - V-254275
 
 - name: "MEDIUM | WN22-00-000390 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server."
   ansible.windows.win_regedit:
@@ -955,11 +964,11 @@
       - wn22_00_000390
   tags:
       - WN22-00-000390
-      - V-254276
+      - CAT2
+      - CCI-000381
       - SRG-OS-000095-GPOS-00049
       - SV-254276r848644_rule
-      - CCI-000381
-      - CAT2
+      - V-254276
 
 - name: "MEDIUM | WN22-00-000400 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server."
   ansible.windows.win_regedit:
@@ -972,11 +981,11 @@
       - wn22_00_000400
   tags:
       - WN22-00-000400
-      - V-254277
+      - CAT2
+      - CCI-000381
       - SRG-OS-000095-GPOS-00049
       - SV-254277r848647_rule
-      - CCI-000381
-      - CAT2
+      - V-254277
 
 - name: "MEDIUM | WN22-00-000410 | PATCH | Windows Server 2022 must not have Windows PowerShell 2.0 installed."
   ansible.windows.win_feature:
@@ -986,11 +995,11 @@
       - wn22_00_000410
   tags:
       - WN22-00-000410
-      - V-254278
+      - CAT2
+      - CCI-000381
       - SRG-OS-000095-GPOS-00049
       - SV-254278r848650_rule
-      - CCI-000381
-      - CAT2
+      - V-254278
 
 - name: "MEDIUM | WN22-00-000420 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent anonymous logons."
   block:
@@ -1020,11 +1029,12 @@
       - wn22_00_000420
   tags:
       - WN22-00-000420
-      - V-254279
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254279r848653_rule
-      - CCI-000366
-      - CAT2
+      - V-254279
+      - audit
 
 - name: "MEDIUM | WN22-00-000430 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent access to the system drive."
   block:
@@ -1065,11 +1075,12 @@
       - wn22_00_000430
   tags:
       - WN22-00-000430
-      - V-254280
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254280r848656_rule
-      - CCI-000366
-      - CAT2
+      - V-254280
+      - audit
 
 - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights"
   block:
@@ -1085,11 +1096,11 @@
       - wn22_00_000450
   tags:
       - WN22-00-000450
-      - V-254282
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254282r848662_rule
-      - CCI-000366
-      - CAT2
+      - V-254282
 
 - name: "MEDIUM | WN22-00-000460 | AUDIT | Windows Server 2022 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS."
   block:
@@ -1105,11 +1116,11 @@
       - wn22_00_000460
   tags:
       - WN22-00-000460
-      - V-254283
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254283r848665_rule
-      - CCI-000366
-      - CAT2
+      - V-254283
 
 - name: "MEDIUM | WN22-00-000470 | AUDIT | Windows Server 2022 must have Secure Boot enabled."
   block:
@@ -1125,11 +1136,11 @@
       - wn22_00_000470
   tags:
       - WN22-00-000470
-      - V-254284
+      - CAT2
+      - CCI-000366
       - SRG-OS-000480-GPOS-00227
       - SV-254284r848668_rule
-      - CCI-000366
-      - CAT2
+      - V-254284
 
 # THE FOLLOWING 3 CONTROLS WILL FAIL UNLESS THEY ARE IN THE FOLLOWING ORDER FOR LOCAL BASED SYSTEMS.
 # We have found the order of these three tasks varies between cloud based instances
@@ -1172,11 +1183,11 @@
       - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000020
-      - V-254286
+      - CAT2
+      - CCI-000044
       - SRG-OS-000021-GPOS-00005
       - SV-254286r848674_rule
-      - CCI-000044
-      - CAT2
+      - V-254286
 
 # Below task is dependent on WN22-AC-000020, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'ResetLockoutCount' in section 'System Access' is not a valid key, cannot set this value"
 - name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater."
@@ -1207,12 +1218,12 @@
       - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000030
-      - V-254287
-      - SRG-OS-000021-GPOS-00005
-      - SV-254287r848677_rule
+      - CAT2
       - CCI-000044
       - CCI-002238
-      - CAT2
+      - SRG-OS-000021-GPOS-00005
+      - SV-254287r848677_rule
+      - V-254287
 
 - name: "MEDIUM | WN22-AC-000010 | PATCH | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater."
   block:
@@ -1245,11 +1256,11 @@
       - not win22stig_cloud_based_system
   tags:
       - WN22-AC-000010
-      - V-254285
+      - CAT2
+      - CCI-002238
       - SRG-OS-000329-GPOS-00128
       - SV-254285r848671_rule
-      - CCI-002238
-      - CAT2
+      - V-254285
 
 - name: "MEDIUM | WN22-AC-000040 | PATCH | Windows Server 2022 password history must be configured to 24 passwords remembered."
   community.windows.win_security_policy:
@@ -1260,11 +1271,11 @@
       - wn22_ac_000040
   tags:
       - WN22-AC-000040
-      - V-254288
+      - CAT2
+      - CCI-000200
       - SRG-OS-000077-GPOS-00045
       - SV-254288r848680_rule
-      - CCI-000200
-      - CAT2
+      - V-254288
 
 - name: "MEDIUM | WN22-AC-000050 | PATCH | Windows Server 2022 maximum password age must be configured to 60 days or less."
   block:
@@ -1295,11 +1306,11 @@
       - wn22_ac_000050
   tags:
       - WN22-AC-000050
-      - V-254289
+      - CAT2
+      - CCI-000199
       - SRG-OS-000076-GPOS-00044
       - SV-254289r848683_rule
-      - CCI-000199
-      - CAT2
+      - V-254289
 
 - name: "MEDIUM | WN22-AC-000060 | PATCH | Windows Server 2022 minimum password age must be configured to at least one day."
   block:
@@ -1329,11 +1340,11 @@
       - wn22_ac_000060
   tags:
       - WN22-AC-000060
-      - V-254290
+      - CAT2
+      - CCI-000198
       - SRG-OS-000075-GPOS-00043
       - SV-254290r848686_rule
-      - CCI-000198
-      - CAT2
+      - V-254290
 
 - name: "MEDIUM | WN22-AC-000070 | PATCH | Windows Server 2022 minimum password length must be configured to 14 characters."
   block:
@@ -1363,11 +1374,11 @@
       - wn22_ac_000070
   tags:
       - WN22-AC-000070
-      - V-254291
+      - CAT2
+      - CCI-000205
       - SRG-OS-000078-GPOS-00046
       - SV-254291r890539_rule
-      - CCI-000205
-      - CAT2
+      - V-254291
 
 - name: "MEDIUM | WN22-AC-000080 | PATCH | Windows Server 2022 must have the built-in Windows password complexity policy enabled."
   community.windows.win_security_policy:
@@ -1378,14 +1389,14 @@
       - wn22_ac_000080
   tags:
       - WN22-AC-000080
-      - V-254292
-      - SRG-OS-000069-GPOS-00037
-      - SV-254292r848692_rule
+      - CAT2
       - CCI-000192
       - CCI-000193
       - CCI-000194
       - CCI-001619
-      - CAT2
+      - SRG-OS-000069-GPOS-00037
+      - SV-254292r848692_rule
+      - V-254292
 
 - name: "MEDIUM | WN22-AU-000010 | AUDIT | Windows Server 2022 audit records must be backed up to a different system or media than the system being audited."
   block:
@@ -1404,11 +1415,11 @@
       - wn22_au_000010
   tags:
       - WN22-AU-000010
-      - V-254294
+      - CAT2
+      - CCI-001851
       - SRG-OS-000342-GPOS-00133
       - SV-254294r877390_rule
-      - CCI-001851
-      - CAT2
+      - V-254294
 
 - name: "MEDIUM | WN22-AU-000020 | AUDIT | Windows Server 2022 must, at a minimum, offload audit records of interconnected systems in real time and offload standalone or nondomain-joined systems weekly."
   block:
@@ -1426,11 +1437,11 @@
       - wn22_au_000020
   tags:
       - WN22-AU-000020
-      - V-254295
+      - CAT2
+      - CCI-001851
       - SRG-OS-000479-GPOS-00224
       - SV-254295r848701_rule
-      - CCI-001851
-      - CAT2
+      - V-254295
 
 - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows Server 2022 permissions for the Application event log must prevent access by non-privileged accounts."
   block:
@@ -1465,13 +1476,13 @@
       - wn22_au_000030
   tags:
       - WN22-AU-000030
-      - V-254296
-      - SRG-OS-000057-GPOS-00027
-      - SV-254296r848704_rule
+      - CAT2
       - CCI-000162
       - CCI-000163
       - CCI-000164
-      - CAT2
+      - SRG-OS-000057-GPOS-00027
+      - SV-254296r848704_rule
+      - V-254296
 
 - name: "MEDIUM | WN22-AU-000040 | AUDIT | Windows Server 2022 permissions for the Security event log must prevent access by non-privileged accounts."
   block:
@@ -1506,13 +1517,14 @@
       - wn22_au_000040
   tags:
       - WN22-AU-000040
-      - V-254297
-      - SRG-OS-000057-GPOS-00027
-      - SV-254297r848707_rule
+      - CAT2
       - CCI-000162
       - CCI-000163
       - CCI-000164
-      - CAT2
+      - SRG-OS-000057-GPOS-00027
+      - SV-254297r848707_rule
+      - V-254297
+      - audit
 
 - name: "MEDIUM | WN22-AU-000050 | AUDIT | Windows Server 2022 permissions for the System event log must prevent access by non-privileged accounts."
   block:
@@ -1547,13 +1559,14 @@
       - wn22_au_000050
   tags:
       - WN22-AU-000050
-      - V-254298
-      - SRG-OS-000057-GPOS-00027
-      - SV-254298r848710_rule
+      - CAT2
       - CCI-000162
       - CCI-000163
       - CCI-000164
-      - CAT2
+      - SRG-OS-000057-GPOS-00027
+      - SV-254298r848710_rule
+      - V-254298
+      - audit
 
 - name: "MEDIUM | WN22-AU-000060 | AUDIT | Windows Server 2022 Event Viewer must be protected from unauthorized modification and deletion."
   block:
@@ -1584,12 +1597,13 @@
       - wn22_au_000060
   tags:
       - WN22-AU-000060
-      - V-254299
-      - SRG-OS-000257-GPOS-00098
-      - SV-254299r848713_rule
+      - CAT2
       - CCI-001494
       - CCI-001495
-      - CAT2
+      - SRG-OS-000257-GPOS-00098
+      - SV-254299r848713_rule
+      - V-254299
+      - audit
 
 - name: "MEDIUM | WN22-AU-000070 | PATCH | Windows Server 2022 must be configured to audit Account Logon | Credential Validation successes."
   block:
@@ -1607,11 +1621,12 @@
       - wn22_au_000070
   tags:
       - WN22-AU-000070
-      - V-254300
+      - CAT2
+      - CCI-000172
       - SRG-OS-000470-GPOS-00214
       - SV-254300r848716_rule
-      - CCI-000172
-      - CAT2
+      - V-254300
+      - audit
 
 - name: "MEDIUM | WN22-AU-000080 | PATCH | Windows Server 2022 must be configured to audit Account Logon | Credential Validation failures."
   block:
@@ -1629,11 +1644,12 @@
       - wn22_au_000080
   tags:
       - WN22-AU-000080
-      - V-254301
+      - CAT2
+      - CCI-000172
       - SRG-OS-000470-GPOS-00214
       - SV-254301r848719_rule
-      - CCI-000172
-      - CAT2
+      - V-254301
+      - audit
 
 - name: "MEDIUM | WN22-AU-000090 | PATCH | Windows Server 2022 must be configured to audit Account Management | Other Account Management Events successes."
   block:
@@ -1651,12 +1667,13 @@
       - wn22_au_000090
   tags:
       - WN22-AU-000090
-      - V-254302
-      - SRG-OS-000327-GPOS-00127
-      - SV-254302r848722_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254302r848722_rule
+      - V-254302
+      - audit
 
 - name: "MEDIUM | WN22-AU-000100 | PATCH | Windows Server 2022 must be configured to audit Account Management | User Account Management successes."
   block:
@@ -1674,16 +1691,16 @@
       - wn22_au_000100
   tags:
       - WN22-AU-000100
-      - V-254303
-      - SRG-OS-000004-GPOS-00004
-      - SV-254303r848725_rule
+      - CAT2
       - CCI-000018
       - CCI-000172
       - CCI-001403
       - CCI-001404
       - CCI-001405
       - CCI-002130
-      - CAT2
+      - SRG-OS-000004-GPOS-00004
+      - SV-254303r848725_rule
+      - V-254303
 
 - name: "MEDIUM | WN22-AU-000110 | PATCH | Windows Server 2022 must be configured to audit Account Management | User Account Management successes."
   block:
@@ -1701,16 +1718,17 @@
       - wn22_au_000110
   tags:
       - WN22-AU-000110
-      - V-254304
-      - SRG-OS-000004-GPOS-00004
-      - SV-254304r848728_rule
+      - CAT2
       - CCI-000018
       - CCI-000172
       - CCI-001403
       - CCI-001404
       - CCI-001405
       - CCI-002130
-      - CAT2
+      - SRG-OS-000004-GPOS-00004
+      - SV-254304r848728_rule
+      - V-254304
+      - audit
 
 - name: "MEDIUM | WN22-AU-000120 | PATCH | Windows Server 2022 must be configured to audit Account Management | User Account Management failures."
   block:
@@ -1728,16 +1746,17 @@
       - wn22_au_000120
   tags:
       - WN22-AU-000120
-      - V-254305
-      - SRG-OS-000004-GPOS-00004
-      - SV-254305r848731_rule
+      - CAT2
       - CCI-000018
       - CCI-000172
       - CCI-001403
       - CCI-001404
       - CCI-001405
       - CCI-002130
-      - CAT2
+      - SRG-OS-000004-GPOS-00004
+      - SV-254305r848731_rule
+      - V-254305
+      - audit
 
 - name: "MEDIUM | WN22-AU-000130 | PATCH | Windows Server 2022 must be configured to audit Detailed Tracking | Plug and Play Events successes."
   block:
@@ -1755,11 +1774,12 @@
       - wn22_au_000130
   tags:
       - WN22-AU-000130
-      - V-254306
+      - CAT2
+      - CCI-000172
       - SRG-OS-000474-GPOS-00219
       - SV-254306r848734_rule
-      - CCI-000172
-      - CAT2
+      - V-254306
+
 
 - name: "MEDIUM | WN22-AU-000140 | PATCH | Windows Server 2022 must be configured to audit Detailed Tracking | Process Creation successes."
   block:
@@ -1777,12 +1797,13 @@
       - wn22_au_000140
   tags:
       - WN22-AU-000140
-      - V-254307
-      - SRG-OS-000327-GPOS-00127
-      - SV-254307r848737_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254307r848737_rule
+      - V-254307
+      - audit
 
 - name: "MEDIUM | WN22-AU-000150 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff | Account Lockout successes."
   block:
@@ -1809,12 +1830,13 @@
       - wn22_au_000160
   tags:
       - WN22-AU-000160
-      - V-254309
-      - SRG-OS-000240-GPOS-00090
-      - SV-254309r848743_rule
+      - CAT2
       - CCI-000172
       - CCI-001404
-      - CAT2
+      - SRG-OS-000240-GPOS-00090
+      - SV-254309r848743_rule
+      - V-254309
+      - audit
 
 - name: "MEDIUM | WN22-AU-000170 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff | Group Membership successes."
   block:
@@ -1832,11 +1854,12 @@
       - wn22_au_000170
   tags:
       - WN22-AU-000170
-      - V-254310
+      - CAT2
+      - CCI-000172
       - SRG-OS-000470-GPOS-00214
       - SV-254310r848746_rule
-      - CCI-000172
-      - CAT2
+      - V-254310
+      - audit
 
 - name: "MEDIUM | WN22-AU-000180 | PATCH | Windows Server 2022 must be configured to audit logoff successes."
   block:
@@ -1854,11 +1877,12 @@
       - wn22_au_000180
   tags:
       - WN22-AU-000180
-      - V-254311
+      - CAT2
+      - CCI-000172
       - SRG-OS-000472-GPOS-00217
       - SV-254311r848749_rule
-      - CCI-000172
-      - CAT2
+      - V-254311
+      - audit
 
 - name: "MEDIUM | WN22-AU-000190 | PATCH | Windows Server 2022 must be configured to audit logon successes."
   block:
@@ -1876,12 +1900,13 @@
       - wn22_au_000190
   tags:
       - WN22-AU-000190
-      - V-254312
-      - SRG-OS-000032-GPOS-00013
-      - SV-254312r848752_rule
+      - CAT2
       - CCI-000067
       - CCI-000172
-      - CAT2
+      - SRG-OS-000032-GPOS-00013
+      - SV-254312r848752_rule
+      - V-254312
+      - audit
 
 - name: "MEDIUM | WN22-AU-000200 | PATCH | Windows Server 2022 must be configured to audit logon failures"
   block:
@@ -1899,12 +1924,13 @@
       - wn22_au_000200
   tags:
       - WN22-AU-000200
-      - V-254313
-      - SRG-OS-000032-GPOS-00013
-      - SV-254313r848755_rule
+      - CAT2
       - CCI-000067
       - CCI-000172
-      - CAT2
+      - SRG-OS-000032-GPOS-00013
+      - SV-254313r848755_rule
+      - V-254313
+      - audit
 
 - name: "MEDIUM | WN22-AU-000210 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff | Special Logon successes."
   block:
@@ -1922,11 +1948,12 @@
       - wn22_au_000210
   tags:
       - WN22-AU-000210
-      - V-254314
+      - CAT2
+      - CCI-000172
       - SRG-OS-000470-GPOS-00214
       - SV-254314r848758_rule
-      - CCI-000172
-      - CAT2
+      - V-254314
+      - audit
 
 - name: "MEDIUM | WN22-AU-000220 | PATCH | Windows Server 2022 must be configured to audit Object Access | Other Object Access Events successes."
   community.windows.win_audit_policy_system:
@@ -1936,11 +1963,11 @@
       - wn22_au_000220
   tags:
       - WN22-AU-000220
-      - V-254315
+      - CAT2
+      - CCI-000172
       - SRG-OS-000470-GPOS-00214
       - SV-254315r848761_rule
-      - CCI-000172
-      - CAT2
+      - V-254315
 
 - name: "MEDIUM | WN22-AU-000230 | PATCH | Windows Server 2022 must be configured to audit Object Access | Other Object Access Events failures."
   community.windows.win_audit_policy_system:
@@ -1950,11 +1977,11 @@
       - wn22_au_000230
   tags:
       - WN22-AU-000230
-      - V-254316
+      - CAT2
+      - CCI-000172
       - SRG-OS-000470-GPOS-00214
       - SV-254316r848764_rule
-      - CCI-000172
-      - CAT2
+      - V-254316
 
 - name: "MEDIUM | WN22-AU-000240 | PATCH | Windows Server 2022 must be configured to audit Object Access | Removable Storage successes."
   block:
@@ -1972,11 +1999,11 @@
       - wn22_au_000240
   tags:
       - WN22-AU-000240
-      - V-254317
+      - CAT2
+      - CCI-000172
       - SRG-OS-000474-GPOS-00219
       - SV-254317r848767_rule
-      - CCI-000172
-      - CAT2
+      - V-254317
 
 - name: "MEDIUM | WN22-AU-000250 | PATCH | Windows Server 2022 must be configured to audit Object Access | Removable Storage failures."
   block:
@@ -1994,11 +2021,11 @@
       - wn22_au_000250
   tags:
       - WN22-AU-000250
-      - V-254318
+      - CAT2
+      - CCI-000172
       - SRG-OS-000474-GPOS-00219
       - SV-254318r848770_rule
-      - CCI-000172
-      - CAT2
+      - V-254318
 
 - name: "MEDIUM | WN22-AU-000260 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Audit Policy Change successes."
   block:
@@ -2016,12 +2043,12 @@
       - wn22_au_000260
   tags:
       - WN22-AU-000260
-      - V-254319
-      - SRG-OS-000327-GPOS-00127
-      - SV-254319r848773_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254319r848773_rule
+      - V-254319
 
 - name: "MEDIUM | WN22-AU-000270 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Audit Policy Change failures."
   block:
@@ -2039,12 +2066,13 @@
       - wn22_au_000270
   tags:
       - WN22-AU-000270
-      - V-254320
-      - SRG-OS-000327-GPOS-00127
-      - SV-254320r848776_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254320r848776_rule
+      - V-254320
+      - audit
 
 - name: "MEDIUM | WN22-AU-000280 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Authentication Policy Change successes."
   block:
@@ -2062,12 +2090,13 @@
       - wn22_au_000280
   tags:
       - WN22-AU-000280
-      - V-254321
-      - SRG-OS-000327-GPOS-00127
-      - SV-254321r848779_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254321r848779_rule
+      - V-254321
+      - audit
 
 - name: "MEDIUM | WN22-AU-000290 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Authorization Policy Change successes."
   block:
@@ -2085,12 +2114,13 @@
       - wn22_au_000290
   tags:
       - WN22-AU-000290
-      - V-254322
-      - SRG-OS-000327-GPOS-00127
-      - SV-254322r848782_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254322r848782_rule
+      - V-254322
+      - audit
 
 - name: "MEDIUM | WN22-AU-000300 | PATCH | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use successes."
   block:
@@ -2108,12 +2138,13 @@
       - wn22_au_000300
   tags:
       - WN22-AU-000300
-      - V-254323
-      - SRG-OS-000327-GPOS-00127
-      - SV-254323r848785_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254323r848785_rule
+      - V-254323
+      - audit
 
 - name: "MEDIUM | WN22-AU-000310 | PATCH | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use failures."
   block:
@@ -2131,12 +2162,13 @@
       - wn22_au_000310
   tags:
       - WN22-AU-000310
-      - V-254324
-      - SRG-OS-000327-GPOS-00127
-      - SV-254324r848788_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254324r848788_rule
+      - V-254324
+      - audit
 
 - name: "MEDIUM | WN22-AU-000320 | PATCH | Windows Server 2022 must be configured to audit System | IPsec Driver successes."
   block:
@@ -2154,12 +2186,13 @@
       - wn22_au_000320
   tags:
       - WN22-AU-000320
-      - V-254325
-      - SRG-OS-000327-GPOS-00127
-      - SV-254325r848791_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254325r848791_rule
+      - V-254325
+      - audit
 
 - name: "MEDIUM | WN22-AU-000330 | PATCH | Windows Server 2022 must be configured to audit System | IPsec Driver failures."
   block:
@@ -2177,12 +2210,13 @@
       - wn22_au_000330
   tags:
       - WN22-AU-000330
-      - V-254326
-      - SRG-OS-000327-GPOS-00127
-      - SV-254326r848794_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254326r848794_rule
+      - V-254326
+      - audit
 
 - name: "MEDIUM | WN22-AU-000340 | PATCH | Windows Server 2022 must be configured to audit System | Other System Events successes."
   block:
@@ -2200,12 +2234,13 @@
       - wn22_au_000340
   tags:
       - WN22-AU-000340
-      - V-254327
-      - SRG-OS-000327-GPOS-00127
-      - SV-254327r848797_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254327r848797_rule
+      - V-254327
+      - audit
 
 - name: "MEDIUM | WN22-AU-000350 | PATCH | Windows Server 2022 must be configured to audit System | Other System Events failures."
   block:
@@ -2223,12 +2258,13 @@
       - wn22_au_000350
   tags:
       - WN22-AU-000350
-      - V-254328
-      - SRG-OS-000327-GPOS-00127
-      - SV-254328r848800_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254328r848800_rule
+      - V-254328
+      - audit
 
 - name: "MEDIUM | WN22-AU-000360 | PATCH | Windows Server 2022 must be configured to audit System | Security State Change successes."
   block:
@@ -2246,12 +2282,13 @@
       - wn22_au_000360
   tags:
       - WN22-AU-000360
-      - V-254329
-      - SRG-OS-000327-GPOS-00127
-      - SV-254329r848803_rule
+      - CAT2
       - CCI-000172
       - CCI-002234
-      - CAT2
+      - SRG-OS-000327-GPOS-00127
+      - SV-254329r848803_rule
+      - V-254329
+      - audit
 
 - name: "MEDIUM | WN22-AU-000370 | PATCH | Windows Server 2022 must be configured to audit System | Security System Extension successes."
   block:
