@@ -30,7 +30,7 @@
         register: wn22_00_000130_audit
 
       - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes. | Message out"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! This is a manual task. Windows Server 2022 local volumes must use a format that supports NTFS attributes."
                 - "{{ wn22_00_000130_audit.stdout.split('\n') }}"
