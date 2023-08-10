@@ -449,7 +449,9 @@
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000190'
-        when: wn22_00_000190_account_audit_dc is not skipped and wn22_00_000190_account_audit_dc.stdout != "" or wn22_00_000190_account_audit_dm_sa is not skipped and wn22_00_000190_account_audit_dm_sa.stdout != ""
+        when:
+            - wn22_00_000190_account_audit_dc is not skipped and wn22_00_000190_account_audit_dc.stdout != "" or
+              wn22_00_000190_account_audit_dm_sa is not skipped and wn22_00_000190_account_audit_dm_sa.stdout != ""
   when:
       - wn22_00_000190
   tags:
@@ -502,7 +504,8 @@
             warn_control_id: 'WN22-00-000200'
         when:
             - not wn22_00_000200_audit_dc is skipped
-            - wn22_00_000200_audit_dc.stdout != "" or not wn22_00_000200_audit_dm_sa is skipped
+            - wn22_00_000200_audit_dc.stdout != "" or
+              not wn22_00_000200_audit_dm_sa is skipped
             - wn22_00_000200_audit_dm_sa.stdout != ""
   when:
       - wn22_00_000200
@@ -787,7 +790,9 @@
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000300'
-        when: wn22_00_000330_audit_dc is not skipped and wn22_00_000330_audit_dc.stdout != "" or wn22_00_000330_audit_dc is not skipped and wn22_00_000330_audit_dc.stdout != ""
+        when:
+            - wn22_00_000330_audit_dc is not skipped and wn22_00_000330_audit_dc.stdout != "" or
+              wn22_00_000330_audit_dc is not skipped and wn22_00_000330_audit_dc.stdout != ""
   when:
       - wn22_00_000300
   tags:
@@ -839,7 +844,9 @@
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000310'
-        when: wn22_00_000310_audit_dc is not skipped and wn22_00_000310_audit_dc.stdout != "" or wn22_00_000310_audit_dc is not skipped and wn22_00_000310_audit_dc.stdout != ""
+        when:
+            - wn22_00_000310_audit_dc is not skipped and wn22_00_000310_audit_dc.stdout != "" or
+              wn22_00_000310_audit_dc is not skipped and wn22_00_000310_audit_dc.stdout != ""
   when:
       - wn22_00_000310
   tags:
@@ -1058,7 +1065,7 @@
         when: "'Installed' in wn22_00_000430_audit"
 
       - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Warning Message."
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! This is a manual task. For any sites with a Binding that lists FTP, right-click the site and select Explore."
                 - "If the site includes any system areas such as root of the drive, Program Files, or Windows directories, this is a finding"
@@ -1161,14 +1168,16 @@
                 - "Warning!! You have a invalid number of days set for wn22stig_lockoutbadcount please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
-            - wn22stig_lockoutbadcount == 0 or wn22stig_lockoutbadcount > 3
+            - wn22stig_lockoutbadcount == 0 or
+              wn22stig_lockoutbadcount > 3
 
       - name: "MEDIUM | WN22-AC-000020 | AUDIT | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-AC-000020'
         when:
-            - wn22stig_lockoutbadcount == 0 or wn22stig_lockoutbadcount > 3
+            - wn22stig_lockoutbadcount == 0 or
+              wn22stig_lockoutbadcount > 3
 
       - name: "MEDIUM | WN22-AC-000020 | PATCH | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less. | Apply Variable."
         community.windows.win_security_policy:
@@ -1285,14 +1294,16 @@
                 - "Warning!! You have a invalid number of days set for wn22stig_maximumpasswordage please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
-            - wn22stig_maximumpasswordage == 0 or wn22stig_maximumpasswordage > 60
+            - wn22stig_maximumpasswordage == 0 or
+              wn22stig_maximumpasswordage > 60
 
       - name: "MEDIUM | WN22-AC-000050 | AUDIT | Windows Server 2022 maximum password age must be configured to 60 days or less. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-AC-000050'
         when:
-            - wn22stig_maximumpasswordage == 0 or wn22stig_maximumpasswordage > 60
+            - wn22stig_maximumpasswordage == 0 or
+              wn22stig_maximumpasswordage > 60
 
       - name: "MEDIUM | WN22-AC-000050 | PATCH | Windows Server 2022 maximum password age must be configured to 60 days or less. | Apply Variable."
         community.windows.win_security_policy:
@@ -4077,6 +4088,7 @@
       - SRG-OS-000066-GPOS-00034
       - SV-254442r894653_rule
       - V-254442
+      - audit
 
 - name: "MEDIUM | WN22-PK-000020 | AUDIT | Windows Server 2022 must have the DoD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems."
   block:
@@ -4108,6 +4120,7 @@
       - SRG-OS-000066-GPOS-00034
       - SV-254443r890553_rule
       - V-254443
+      - audit
 
 - name: "MEDIUM | WN22-PK-000030 | AUDIT | Windows Server 2022 must have the US DoD CCEB Interoperability Root CA cross-certificates in the Untrusted Certificates Store on unclassified systems."
   block:

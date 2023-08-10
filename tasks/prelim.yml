@@ -16,7 +16,9 @@
   ansible.builtin.set_fact:
       win22stig_cloud_based_system: true
   when:
-      - ansible_virtualization_type == 'Hyper-V' or ansible_virtualization_type == 'hvm' or ansible_virtualization_type == 'kvm'
+      - ansible_virtualization_type == 'Hyper-V' or
+        ansible_virtualization_type == 'hvm' or
+        ansible_virtualization_type == 'kvm'
   tags:
       - always
 

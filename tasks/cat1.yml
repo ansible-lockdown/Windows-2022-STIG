@@ -48,6 +48,7 @@
       - SRG-OS-000080-GPOS-00048
       - SV-254250r848566_rule
       - V-205663
+      - audit
 
 - name: "HIGH | WN22-AC-000090 | PATCH | Windows Server 2022 reversible password encryption must be disabled."
   community.windows.win_security_policy:
@@ -192,6 +193,7 @@
       - SRG-OS-000324-GPOS-00125
       - SV-254385r877392_rule
       - V-254385
+      - audit
 
 - name: "HIGH | WN22-DC-000070 | AUDIT | Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access."
   block:
