@@ -1259,7 +1259,8 @@
             key: LockoutDuration
             value: "{{ wn22stig_lockoutduration }}"
         when:
-            - wn22stig_lockoutduration == 0 or wn22stig_lockoutduration >= 15
+            - wn22stig_lockoutduration == 0 or
+              wn22stig_lockoutduration >= 15
   when:
       - wn22_ac_000010
       - not win22stig_cloud_based_system
