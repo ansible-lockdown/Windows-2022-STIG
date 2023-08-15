@@ -117,7 +117,6 @@
       - V-254241
       - audit
 
-
 - name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 15 characters in length."
   block:
       - name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 15 characters in length. | Message out"
@@ -1871,7 +1870,6 @@
       - SRG-OS-000474-GPOS-00219
       - SV-254306r848734_rule
       - V-254306
-
 
 - name: "MEDIUM | WN22-AU-000140 | PATCH | Windows Server 2022 must be configured to audit Detailed Tracking | Process Creation successes."
   block:
