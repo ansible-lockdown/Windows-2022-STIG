@@ -32,3 +32,17 @@
         wn22_au_000060 or
         wn22_00_000390 or
         wn22_00_000400
+
+- name: Check For SecGuide.admx In PolicyDefinitions
+  ansible.windows.win_find:
+      paths: '{{ item }}:\Windows\PolicyDefinitions'
+      patterns: SecGuide.admx
+      hidden: true
+  changed_when: false
+  failed_when: false
+  with_items:
+      - "{{ wn22_drive_letters.stdout_lines }}"
+  register: wn22_secguide_admx_audit
+  when:
+      - wn22_00_000390 or
+        wn22_00_000400
