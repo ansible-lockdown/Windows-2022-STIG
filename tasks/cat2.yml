@@ -712,7 +712,9 @@
   block:
       - name: "MEDIUM | WN22-00-000250 | AUDIT | Windows Server 2022 systems requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 systems requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest."
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 systems requiring data at rest protections"
+                - "must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest."
 
       - name: "MEDIUM | WN22-00-000250 | AUDIT | Windows Server 2022 systems requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -734,7 +736,10 @@
   block:
       - name: "MEDIUM | WN22-00-000260 | AUDIT | Windows Server 2022 must implement protection methods such as TLS, encrypted VPNs, or IPsec if the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must implement protection methods such as TLS, encrypted VPNs, or IPsec if the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process."
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 must implement protection methods such as TLS, encrypted VPNs,"
+                - "or IPsec if the data owner has a strict requirement for ensuring"
+                - "data integrity and confidentiality is maintained at every step of the data transfer and handling process."
 
       - name: "MEDIUM | WN22-00-000260 | AUDIT | Windows Server 2022 must implement protection methods such as TLS, encrypted VPNs, or IPsec if the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -786,8 +791,55 @@
 - name: "MEDIUM | WN22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled."
   block:
       - name: "MEDIUM | WN22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled."
+        ansible.windows.win_shell: |
+                            $FWProfiles = (Get-NetFirewallProfile);
+                            Write-Host "Windows Firewall Profile Statuses" -Foregroundcolor Yellow;
+                            $FWProfiles | %{
+                                If($_.Enabled -eq 1){
+                                    Write-Host "The Windows Firewall $($_.Name) profile is enabled"
+                                    }Else{
+                                    Write-Host "The Windows Firewall $($_.Name) profile is disabled"
+                                    }
+                                };
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000280_firewall_audit
+
+      - name: "MEDIUM | wn22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message No Windows Firewall Enabled"
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must have a host-based firewall installed and enabled."
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 must have a host-based firewall installed and enabled."
+                - "Windows does not currently have its built in firewall enabled."
+                - "Please check for 3rd party firewall and verify the configuration requirements conform to firewall STIG standards."
+                - "{{ wn22_00_000280_firewall_audit.stdout_lines }}"
+        when:
+            - "'Domain profile is disabled' in wn22_00_000280_firewall_audit.stdout_lines | string"
+            - "'Private profile is disabled' in wn22_00_000280_firewall_audit.stdout_lines | string"
+            - "'Public profile is disabled' in wn22_00_000280_firewall_audit.stdout_lines | string"
+
+      - name: "MEDIUM | wn22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message Windows Firewall On"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 must have a host-based firewall installed and enabled."
+                - "Windows host based firewall currently is enabled on Domain, Private, And Public Profiles."
+                - "Please check the firewall and verify the configuration requirements conform to firewall STIG standards."
+                - "{{ wn22_00_000280_firewall_audit.stdout_lines }}"
+        when:
+            - "'Domain profile is enabled' in wn22_00_000280_firewall_audit.stdout_lines | string"
+            - "'Private profile is enabled' in wn22_00_000280_firewall_audit.stdout_lines | string"
+            - "'Public profile is enabled' in wn22_00_000280_firewall_audit.stdout_lines | string"
+
+      - name: "MEDIUM | wn22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message Windows Firewall Not Completely On"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 must have a host-based firewall installed and enabled."
+                - "Windows host based firewall currently is partially enabled on Domain, Private, And Public Profiles."
+                - "Please check the firewall and verify the configuration requirements conform to firewall STIG standards."
+                - "{{ wn22_00_000280_firewall_audit.stdout_lines }}"
+        when:
+            - "'Domain profile is enabled' not in wn22_00_000280_firewall_audit.stdout_lines | string or
+               'Private profile is enabled' not in wn22_00_000280_firewall_audit.stdout_lines | string or
+               'Public profile is enabled' not in wn22_00_000280_firewall_audit.stdout_lines | string"
 
       - name: "MEDIUM | WN22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -924,8 +976,10 @@
         vars:
             warn_control_id: 'WN22-00-000310'
         when:
-            - wn22_00_000310_audit_dc is not skipped and wn22_00_000310_audit_dc.stdout != "" or
-              wn22_00_000310_audit_dc is not skipped and wn22_00_000310_audit_dc.stdout != ""
+            - wn22_00_000310_audit_dc is not skipped
+            - wn22_00_000310_audit_dc.stdout != "" or
+              wn22_00_000310_audit_sa is not skipped
+            - wn22_00_000310_audit_sa.stdout != ""
   when:
       - wn22_00_000310
   tags:
@@ -1040,12 +1094,39 @@
       - V-254275
 
 - name: "MEDIUM | WN22-00-000390 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server."
-  ansible.windows.win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
-      name: SMB1
-      data: 0x00000000
-      type: dword
-  notify: reboot_windows
+  block:
+      - name: "MEDIUM | WN22-00-000390 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server. | Registry Edit"
+        ansible.windows.win_regedit:
+            path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+            state: present
+            value: SMB1
+            data: 0
+            datatype: dword
+        notify: reboot_windows
+
+      - name: "MEDIUM | WN22-00-000390 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server. | Warning Message No SecGuide.admx"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! SecGuide.admx is not installed in C:\\Windows\\PolicyDefinitions folder."
+                - "This policy setting requires the installation of the SecGuide.admx custom templates"
+                - "included with the STIG package."
+        when: wn22_secguide_admx_audit.results[0].matched != 1
+
+      - name: "MEDIUM | WN22-00-000390 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server. | Warning Message No SecGuide.adml"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! SecGuide.adml is not installed in C:\\Windows\\PolicyDefinitions\\en-US folder"
+                - "This policy setting requires the installation of the SecGuide.adml custom templates"
+                - "included with the STIG package."
+        when: wn22_secguide_adml_audit.results[0].matched != 1
+
+      - name: "MEDIUM | WN22-00-000390 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-00-000390'
+        when:
+            - wn22_secguide_admx_audit.results[0].matched != 1 or
+              wn22_secguide_adml_audit.results[0].matched != 1
   when:
       - wn22_00_000390
   tags:
@@ -1057,12 +1138,39 @@
       - V-254276
 
 - name: "MEDIUM | WN22-00-000400 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server."
-  ansible.windows.win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Services\mrxsmb10
-      name: Start
-      data: 0x00000004
-      type: dword
-  notify: reboot_windows
+  block:
+      - name: "MEDIUM | WN22-00-000400 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Registry Edit."
+        ansible.windows.win_regedit:
+            path: HKLM:\SYSTEM\CurrentControlSet\Services\mrxsmb10
+            state: present
+            value: Start
+            data: 4
+            datatype: dword
+        notify: reboot_windows
+
+      - name: "MEDIUM | WN22-00-000400 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Warning Message No SecGuide.admx"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! SecGuide.admx is not installed in C:\\Windows\\PolicyDefinitions folder."
+                - "This policy setting requires the installation of the SecGuide.admx custom templates"
+                - "included with the STIG package."
+        when: wn22_secguide_admx_audit.results[0].matched != 1
+
+      - name: "MEDIUM | WN22-00-000400 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Warning Message No SecGuide.adml"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! SecGuide.adml is not installed in C:\\Windows\\PolicyDefinitions\\en-US folder"
+                - "This policy setting requires the installation of the SecGuide.adml custom templates"
+                - "included with the STIG package."
+        when: wn22_secguide_adml_audit.results[0].matched != 1
+
+      - name: "MEDIUM | WN22-00-000400 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-00-000400'
+        when:
+            - wn22_secguide_admx_audit.results[0].matched != 1 or
+              wn22_secguide_adml_audit.results[0].matched != 1
   when:
       - wn22_00_000400
   tags:
@@ -1170,14 +1278,43 @@
 
 - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights"
   block:
-      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights"
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights"
+      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2019 must have orphaned security identifiers (SIDs) must be removed from user rights. | Get User List"
+        ansible.windows.win_shell: Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -match "*S"} | Select Name,SID,DOMAIN
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000450_orphaned_user_accounts
 
-      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights | import reuseable task."
+      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2019 must have orphaned security identifiers (SIDs) must be removed from user rights. | Check For Orphaned Group Accounts. | Get Group List"
+        ansible.windows.win_shell: Get-WmiObject -Class Win32_UserAccount | Where-Object {$_.SID -match "*S"} | Select Name,SID,DOMAIN
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000450_orphaned_group_accounts
+
+      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2019 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message User Accounts"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! Please review the User Rights listed for each of any unresolved SID to determine whether they are valid."
+                - "User Accounts"
+                - "----------------------------------------------------------------------"
+                - "{{ wn22_00_000450_orphaned_user_accounts.stdout_lines }}"
+        when: wn22_00_000450_orphaned_user_accounts.stdout_lines | select() | length > 0
+
+      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2019 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message Group Accounts."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! Please review the Group Rights listed for each of any unresolved SID to determine whether they are valid."
+                - "Group Accounts"
+                - "----------------------------------------------------------------------"
+                - "{{ wn22_00_000450_orphaned_group_accounts.stdout_lines }}"
+        when: wn22_00_000450_orphaned_group_accounts.stdout_lines | select() | length > 0
+
+      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2019 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000450'
+        when:
+            - wn22_00_000450_orphaned_user_accounts.stdout_lines | select() | length > 0 or
+              wn22_00_000450_orphaned_group_accounts.stdout_lines | select() | length > 0
   when:
       - wn22_00_000450
   tags:
