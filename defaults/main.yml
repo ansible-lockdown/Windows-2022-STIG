@@ -29,8 +29,11 @@ win2022stig_audit_disruptive: true
 # tweak role to run in a non-privileged container
 win2022stig_system_is_container: false
 
-# set to false to skip long running tasks
-long_running: false
+# This parameter disables controls that could have a very lengthy find. For example
+# removing all files of a specific file type that search the entire drive.
+# If there is an action tied to the lengthy search the action task will be disabled as well.
+# WN22-00-000240 - CAT2
+win22stig_lengthy_search: false
 
 # win22stig_cloud_based_system is a setting built into the playbook for testing locally vs azure.
 # We have found certain controls need to be set in a different order when being applied in the
@@ -335,8 +338,8 @@ wn22_so_000370: true
 
 # WN22-00-000020
 # Windows Server 2022 passwords for the built-in Administrator account must be changed at least every 60 days.
-# If the PasswordLastSet date is greater than wn22stig_pass_age days old, this is a finding.
-wn22stig_pass_age: 60
+# If the PasswordLastSet date is greater than wn22stig_pass_age_administrator days old, this is a finding.
+wn22stig_pass_age_administrator: 60
 
 # WN22-AC-000010
 # Windows Server 2022 account lockout duration must be configured to 15 minutes or greater.

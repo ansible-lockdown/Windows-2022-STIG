@@ -21,38 +21,40 @@
       - V-254238
       - audit
 
-- name: "MEDIUM | WN22-00-000020 | AUDIT | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age }} days."
+- name: "MEDIUM | WN22-00-000020 | AUDIT | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age_administrator }} days."
   block:
-      - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age }} days."
-        ansible.windows.win_shell: "Get-ADUser -Filter * -Property PasswordLastSet | Where SID -like S-1-5-21-*-500 | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ wn22stig_pass_age }}))} | Select Name,PasswordLastSet"
+      - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age_administrator }} days."
+        ansible.windows.win_shell: "Get-ADUser -Filter * -Property PasswordLastSet | Where SID -like S-1-5-21-*-500 | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ wn22stig_pass_age_administrator }}))} | Select Name,PasswordLastSet"
         changed_when: false
         check_mode: false
         register: wn22_00_000020_audit_dc
         when: "'controller' in ansible_windows_domain_role"
 
-      - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age }} days."
+      - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age_administrator }} days."
         ansible.builtin.debug:
             msg:
-                - "The following account appears to be the default admin account and the password does not meet the control specific age of {{ wn22stig_pass_age }}"
-                - "{{ wn9_00_000020_audit_dc.stdout.split('\n') }}"
+                - "The following account appears to be the default admin account and the password does not meet the control specific age of {{ wn22stig_pass_age_administrator }}"
+                - "{{ wn22_00_000020_audit_dc.stdout.split('\n') }}"
         when:
             - not wn22_00_000020_audit_dc is skipped
             - wn22_00_000020_audit_dc.stdout != ""
+            - wn22stig_pass_age_administrator <= 60
 
-      - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age }} days."
-        ansible.windows.win_shell: "Get-Localuser -Name * | Select * | Where SID -like S-1-5-21-*-500 | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ wn22stig_pass_age }}))} | Select Name,PasswordLastSet"
+      - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age_administrator }} days."
+        ansible.windows.win_shell: "Get-Localuser -Name * | Select * | Where SID -like S-1-5-21-*-500 | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ wn22stig_pass_age_administrator }}))} | Select Name,PasswordLastSet"
         changed_when: false
         check_mode: false
         register: wn22_00_000020_audit_dm_sa
 
-      - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age }} days."
+      - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every {{ wn22stig_pass_age_administrator }} days."
         ansible.builtin.debug:
             msg:
-                - "The following account appears to be the default admin account and the password does not meet the control specific age of {{ wn22stig_pass_age }}"
+                - "The following account appears to be the default admin account and the password does not meet the control specific age of {{ wn22stig_pass_age_administrator }}"
                 - "{{ wn22_00_000020_audit_dm_sa.stdout.split('\n') }}"
         when:
             - wn22_00_000020_audit_dm_sa is defined
             - wn22_00_000020_audit_dm_sa.stdout != ""
+            - wn22stig_pass_age_administrator <= 60
 
       - name: Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -60,8 +62,12 @@
             warn_control_id: 'WN22-00-000020'
         when:
             - not wn22_00_000020_audit_dc is skipped
-            - wn22_00_000020_audit_dc.stdout != "" or wn22_00_000020_audit_dm_sa is defined
+            - wn22_00_000020_audit_dc.stdout != ""
+            - wn22stig_pass_age_administrator <= 60 or
+              wn22_00_000020_audit_dm_sa is defined
             - wn22_00_000020_audit_dm_sa.stdout != ""
+            - wn22stig_pass_age_administrator <= 60 or
+              wn22stig_pass_age_administrator > 60
   when:
       - wn22_00_000020
   tags:
@@ -84,7 +90,8 @@
       - name: "MEDIUM | WN22-00-000040 | AUDIT - STAND-ALONE AND MEMBER SERVERS | Windows Server 2022 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks."
         ansible.builtin.debug:
             msg:
-                - The accounts listed are members of the Backup Operators group
+                - "Warning!! This is a manual task. The accounts listed are members of the Backup Operators group."
+                - "Please verify these accounts have separate accounts for backup duties and normal operational tasks."
                 - "{{ wn22_00_000040_audit.stdout.split('\n') }}"
         when:
             - not wn22_00_000040_audit is skipped
@@ -193,16 +200,43 @@
 
 - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use."
   block:
-      - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Message out"
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use."
+      - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Get TPM Settings"
+        ansible.windows.win_command: wmic /namespace:\\root\cimv2\security\microsofttpm path win32_tpm get * /format:textvaluelist.xsl
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000090_tpm_status
 
-      - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | import reuseable task."
+      - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Running Instances Check."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! Please confirm TPM status is Ready for use, there are no instances currently running."
+        when: "'No Instance' in wn22_00_000090_tpm_status.stderr_lines | string"
+
+      - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Full TPM Check."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! Please confirm TPM status is Ready for use. Current settings do not meet STIG requirements."
+        when:
+            - "'No Instance' not in wn22_00_000090_tpm_status.stderr_lines | string"
+            - "'IsActivated_InitialValue=TRUE' in wn22_00_000090_tpm_status.stderr_lines | string"
+            - "'IsEnabled_InitialValue=TRUE' in wn22_00_000090_tpm_status.stderr_lines | string"
+            - "'IsOwned_InitialValue=TRUE' in wn22_00_000090_tpm_status.stderr_lines | string"
+            - "'SpecVersion=2' or 'SpecVersion=1.2' in wn22_00_000090_tpm_status.stderr_lines | string"
+
+      - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Warning Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000090'
+        when:
+            - "'No Instance' not in wn22_00_000090_tpm_status.stderr_lines | string"
+            - "'IsActivated_InitialValue=TRUE' in wn22_00_000090_tpm_status.stderr_lines | string"
+            - "'IsEnabled_InitialValue=TRUE' in wn22_00_000090_tpm_status.stderr_lines | string"
+            - "'IsOwned_InitialValue=TRUE' in wn22_00_000090_tpm_status.stderr_lines | string"
+            - "'SpecVersion=2.0' or 'SpecVersion=1.2' in wn22_00_000090_tpm_status.stderr_lines | string or
+              'No Instance' in wn22_00_000090_tpm_status.stderr_lines | string"
   when:
       - wn22_00_000090
+      - ansible_windows_domain_member
   tags:
       - WN22-00-000090
       - CAT2
@@ -450,8 +484,10 @@
         vars:
             warn_control_id: 'WN22-00-000190'
         when:
-            - wn22_00_000190_account_audit_dc is not skipped and wn22_00_000190_account_audit_dc.stdout != "" or
-              wn22_00_000190_account_audit_dm_sa is not skipped and wn22_00_000190_account_audit_dm_sa.stdout != ""
+            - wn22_00_000190_account_audit_dc is not skipped
+            - wn22_00_000190_account_audit_dc.stdout != "" or
+              wn22_00_000190_account_audit_dm_sa is not skipped
+            - wn22_00_000190_account_audit_dm_sa.stdout != ""
   when:
       - wn22_00_000190
   tags:
@@ -521,20 +557,42 @@
 - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire."
   block:
       - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire."
-        ansible.windows.win_shell: Get-CimInstance -Class Win32_Useraccount -Filter "PasswordExpires=False and LocalAccount=True" | Where-Object -FilterScript {$_.PasswordExpires -EQ $False -AND $_.Disabled -EQ $False} | Format-Table -Property Name,PasswordExpires,Disabled,LocalAccount  # pragma: allowlist secret
+        ansible.windows.win_shell: Search-ADAccount -PasswordNeverExpires -UsersOnly | FT Name, PasswordNeverExpires, Enabled
         changed_when: false
         failed_when: false
         check_mode: false
-        register: wn22_00_000210_audit
+        register: wn22_00_000210_audit_dc
+        when: ansible_windows_domain_role == "Primary domain controller"
 
       - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire.| Message out"
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 passwords must be configured to expire."
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 passwords must be configured to expire."
+                - "The Following Accounts may not conform To STIG Standards."
+                - "{{ wn22_00_000210_audit_dc.stdout.split('\n') }}"
+        when:
+            - wn22_00_000210_audit_dc is not skipped
+            - wn22_00_000210_audit_dc.stdout != ""
 
-      - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire.| import reuseable task."
+      - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire. | Audit Local Accounts."
+        ansible.windows.win_shell: |
+                Get-CimInstance -Class Win32_Useraccount -Filter "PasswordExpires=False and LocalAccount=True" |
+                Where-Object -FilterScript {$_.PasswordExpires -EQ $False -AND $_.Disabled -EQ $False} |
+                Format-Table -Property Name,PasswordExpires,Disabled,LocalAccount
+        changed_when: false
+        failed_when: false
+        register: wn22_00_000210_audit_dm_sa
+        when: not ansible_windows_domain_role == "Primary domain controller"
+
+      - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire. | Warning Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000210'
+        when:
+            - wn22_00_000210_audit_dc is not skipped
+            - wn22_00_000210_audit_dc.stdout != "" or
+              wn22_00_000210_audit_dm_sa is not skipped
+            - wn22_00_000210_audit_dm_sa.stdout != ""
   when:
       - wn22_00_000210
   tags:
@@ -599,27 +657,49 @@
 
 - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed."
   block:
-      - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed."
+      - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed. | Search for files"
         ansible.windows.win_find:
-            paths: c:\
+            paths: '{{ item }}:\'
             patterns: ['*.p12', '*.pfx']
-            hidden: true
             recurse: true
-            follow: true
-        check_mode: false
-        register: wn22_00_000240_audit
-        when: long_running
+            hidden: true
+        register: wn22_00_000240_files
+        with_items: "{{ wn22_drive_letters.stdout_lines }}"
 
-      - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed."
+      - name: "MEDIUM | WN22-00-000240 | PATCH | Windows Server 2022 must have software certificate installation files removed. | Remove Files"
+        ansible.windows.win_file:
+            path: "{{ item.path }}"
+            state: absent
+        with_items:
+            - "{{ wn22_00_000240_files.results[0].files }}"
+        loop_control:
+            label: "{{ item.path }}"
+        when:
+            - win2022stig_disruption_high
+            - wn22_00_000240_files.results[0].files | length > 0
+
+      - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed. | Alert on files if not Disruptive High"
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must have software certificate installation files removed."
+            msg:
+                - "Warning!! You have .p12 and/or .pfx files on your system"
+                - "Please review and remove the following files manually.  If you"
+                - "would like them removed with automation set win2022stig_disruption_high: true"
+                - "Any files not removed must be documented with the ISSO."
+                - "{{ wn22_00_000240_files.results[0].files | map(attribute='path') | list }}"
+        when:
+            - not win2022stig_disruption_high
+            - wn22_00_000240_files.results[0].files | length > 0
 
-      - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed. | import reuseable task."
+      - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000240'
+        when:
+            - not win2022stig_disruption_high
+            - wn22_00_000240_files.results[0].files | length > 0
   when:
       - wn22_00_000240
+      - win22stig_lengthy_search
   tags:
       - WN22-00-000240
       - CAT2
@@ -1158,7 +1238,7 @@
   when:
       - win22stig_cloud_based_system
   tags:
-      - cat2_cloud
+      - cat2_cloud_lockout_order
 
 - name: "MEDIUM | WN22-AC-000020 | PATCH | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less."
   block:
@@ -1198,7 +1278,7 @@
       - SV-254286r848674_rule
       - V-254286
 
-# Below task is dependent on WN22-AC-000020, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'ResetLockoutCount' in section 'System Access' is not a valid key, cannot set this value"
+# The below task is dependent on WN22-AC-000020, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'ResetLockoutCount' in section 'System Access' is not a valid key, cannot set this value"
 - name: "MEDIUM | WN22-AC-000030 | PATCH | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater."
   block:
       - name: MEDIUM | WN22-AC-000030 | AUDIT | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater."
