@@ -28,7 +28,7 @@
   failed_when: false
   register: wn22_drive_letters
   when:
-      - wn19_00_000240 or
-        wn19_au_000060 or
-        wn19_00_000390 or
-        wn19_00_000400
+      - wn22_00_000240 or
+        wn22_au_000060 or
+        wn22_00_000390 or
+        wn22_00_000400
