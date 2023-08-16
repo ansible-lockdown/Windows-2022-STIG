@@ -357,6 +357,13 @@ wn22stig_lockoutbadcount: 3
 # wn22stig_resetlockoutcount is the Reset account lockout counter after value in mintues.
 wn22stig_resetlockoutcount: 15
 
+# WN22-AC-000040
+# Windows Server 2022 password history must be configured to 24 passwords remembered.
+# wn22stig_passwordhistorysize is the number of passwords windows will remember before you may
+# be able to reuse that same password. The default value is "24" for Windows domain systems.
+# DoD has decided this is the appropriate value for all Windows systems.
+wn22stig_passwordhistorysize: 24
+
 # WN22-AC-000050
 # Windows Server 2022 maximum password age must be configured to 60 days or less and cannot be 0.
 # wn22stig_maximumpasswordage is the Maximum password age value in days.
@@ -372,6 +379,68 @@ wn22stig_minimumpasswordage: 1
 # wn22stig_minimumpasswordlength is the Minimum password characters length value.
 wn22stig_minimumpasswordlength: 14
 
+# WN22-CC-000110
+# Windows Server 20122virtualization-based security must be enabled with the platform security
+# level configured to Secure Boot or Secure Boot with DMA Protection.
+# wn22stig_dma_protection is the level that they would like to setup.
+# Valid settings are as follows.
+# 1 (Secure Boot only)
+# 3 (Secure Boot and DMA Protection)
+wn22stig_dma_protection: 3
+
+# WN22-CC-000140
+# Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers identified as bad.
+# wn22stig_driver_load_policy is the registry value that will be applied. The default behavior is for
+# Early Launch Antimalware - Boot-Start Driver Initialization policy to enforce "Good, unknown and bad but
+# critical" (preventing "bad").
+# Approved values are below:
+# 8 - Good only
+# 1 - Good and unknown
+# 3 - Good, unknown and bad but critical
+wn22stig_driver_load_policy: 1
+
+# WN22-CC-000270
+# Windows Server 2022 Application event log size must be configured to 32768 KB or greater.
+# wn22stig_app_maxsize is the EventLog Application max log size value in KB.
+wn22stig_application_event_log_max_size: 32768
+
+# WN22-CC-000280
+# Windows Server 2022 Security event log size must be configured to 196608 KB or greater.
+# wn22stig_security_event_log_max_size: 196608 is the EventLog Security max log size value in KB.
+wn22stig_security_event_log_max_size: 196608
+
+# WN22-CC-000290
+# Windows Server 2022 System event log size must be configured to 32768 KB or greater.
+# wn22stig_system_event_log_max_size is the EventLog System max log size value in KB.
+wn22stig_system_event_log_max_size: 32768
+
+# WN22-DC-000340
+# Windows Server 2022 Access this computer from the network user right must only be assigned to the
+# Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers.
+# If any SIDs other than the following are granted the "SeNetworkLogonRight" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators,Authenticated Users,Enterprise Domain Controllers
+wn22stig_senetworklogonright_dc: Administrators,Authenticated Users,Enterprise Domain Controllers
+
+# WN22-DC-000430
+# The password for the krbtgt account on a domain must be reset at least every 180 days.
+# The default setting here matches the STIG requirements. If you would like to
+# enforce a more strcit policy you may do so for auditing purposes.
+# NOTE: Valid Days are 180 or less.
+wn22stig_krbtgt_account_pass_age: 180
+
+# WN22-MS-000070
+# Windows Server 2022 "Access this computer from the network" user right must only be assigned to the Administrators
+# and Authenticated Users groups on domain-joined member servers and standalone or nondomain-joined systems.
+# If any SIDs other than the following are granted the "SeNetworkLogonRight" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators,Authenticated Users
+wn22stig_senetworklogonright: Administrators,Authenticated Users
+
 # WN22-SO-000030
 # Windows Server 2022 built-in administrator account must be renamed.
 # wn22stig_newadministratorname is the non-default name for the Administror Account.
@@ -381,6 +450,20 @@ wn22stig_newadministratorname: adminchangethis
 # Windows Server 2022 built-in guest account must be renamed.
 # wn22stig_newguestname is the non-default name for the guest Account.
 wn22stig_newguestname: guestchangethis
+
+# WN22-SO-000100
+# The maximum age for machine account passwords must be configured to 30 days or less.
+# wn22stig_machineaccountpsswd_max_age is the setting for the Computer account passwords
+# are changed automatically on a regular basis. This setting controls the maximum password
+# age that a machine account may have. This must be set to no more than 30 days, ensuring
+# the machine changes its password monthly.
+wn22stig_machineaccountpsswd_max_age: 30
+
+# WN22-SO-000120
+# The machine inactivity limit must be set to 15 minutes, locking the system with the screen saver.
+# wn22stig_inactivitytimeoutsecs is the time in seconds that will be set in the registry that
+# enagages the screen saver. Default setting is "900" seconds or less excluding "0"
+wn22stig_inactivitytimeoutsecs: 900
 
 # WN22-SO-000130
 # Windows Server 2022 required legal notice must be configured to display before console logon.
@@ -415,14 +498,128 @@ wn22stig_sec_maxsize: 196608
 # wn22stig_sys_maxsize is the EventLog System max log size value in KB.
 wn22stig_sys_maxsize: 32768
 
+# WN22-SO-000400
+# User Account Control must, at a minimum, prompt administrators for consent on the secure desktop.
+# The more secure option for this setting, "Prompt for credenti
+# Default setting is 2
+# 2 -(Prompt for consent on the secure desktop)
+# 1 -(Prompt for credentials on the secure desktop)
+wn22stig_consentprompt: 2
+
 # WN22-DC-000430
 # The password for the krbtgt account on a domain must be reset at least every 180 days.
 # wn22stig_krbtgt_pass_age is the PasswordLastSet value in days for the krbtgt account.
 wn22stig_krbtgt_pass_age: 180
 
+# WN22-UR-000030
+# The Allow log on locally user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeInteractiveLogonRight" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_seinteractivelogonright: Administrators
+
+# WN22-UR-000040
+# The Back up files and directories user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeBackupPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_sebackuprivilege: Administrators
+
+# WN22-UR-000070
+# The Create global objects user right must only be assigned to Administrators, Service, Local Service, and Network Service.
+# If any SIDs other than the following are granted the "SeCreateGlobalPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators,Service,Local Service,Network Service
+wn22stig_secreateglobalprivilege: Administrators,Service,Local Service,Network Service
+
+# WN22-UR-000120
+# The Generate security audits user right must only be assigned to Local Service and Network Service.
+# If any SIDs other than the following are granted the "SeAuditPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Local Service,Network Service
+wn22stig_seauditprivilege: Local Service,Network Service
+
+# WN22-UR-000130
+# The Impersonate a client after authentication user right must only be assigned to Administrators, Service, Local Service, and Network Service.
+# If any SIDs other than the following are granted the "SeImpersonatePrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators,Service,Local Service,Network Service
+wn22stig_seimpersonateprivilege: Administrators,Service,Local Service,Network Service
+
+# WN22-UR-000140
+# The Increase scheduling priority user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeIncreaseBasePriorityPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_seincreasebasepriorityprivilege: Administrators
+
+# WN22-UR-000160
+# The Lock pages in memory user right must not be assigned to any groups or accounts.
+# If any SIDs are granted the "SeLockMemoryPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: ""
+wn22stig_selockmemorprivilege: ""
+
+# WN22-UR-000170
+# The Manage auditing and security log user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeSecurityPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# If the organization has an Auditors group, the assignment of this group to the user right would not be a finding.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_sesecurityprivilege: Administrators
+
+# WN22-UR-000210
+# The Restore files and directories user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeRestorePrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_serestoreprivilege: Administrators
+
+# WN22-UR-000220
+# The Take ownership of files or other objects user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeTakeOwnershipPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_setakeownershipprivilege: Administrators
+
 # CAT 3 defaults
 
+# WN22-CC-000260
+# Windows Server 2022 Windows Update must not obtain updates from other PCs on the Internet.
+# Valid Settings are as follows.
+# 0x00000000 (0) - No peering (HTTP Only)
+# 0x00000001 (1) - Peers on same NAT only (LAN)
+# 0x00000002 (2) - Local Network / Private group peering (Group)
+# 0x00000063 (99) - Simple download mode, no peering (Simple)
+# 0x00000064 (100) - Bypass mode, Delivery Optimization not used (Bypass)
+wn22stig_dodownloadmode: 1
+
 # WN22-SO-000140
-# Windows Server 2022 title for legal banner dialog box must be configured with the appropriate text.
-# wn22stig_legalnoticecaption is the DoD Notice and Consent Banner text.
-wn22stig_legalnoticecaption: "DoD Notice and Consent Banner"
+# The Windows dialog box title for the legal banner must be configured with the appropriate text.
+# "DoD Notice and Consent Banner", "US Department of Defense Warning Statement", or an organization-defined equivalent.
+# If an organization-defined title is used, it can in no case contravene or modify the language of the banner text required in WN22-SO-000130.
+# Automated tools may only search for the titles defined above. If an organization-defined title is used, a manual review will be required.
+# "{{ wn22stig_legalnoticetext }}" will call to the default DoD Notice and Consent Banner.
+# Upon creating this both "DoD Notice and Consent Banner", "US Department of Defense Warning Statement" are the same:
+# wn22stig_legalnoticecaption: "{{ wn22stig_legalnoticetext }}"
+wn22stig_legalnoticecaption: "{{ wn22stig_legalnoticetext }}"

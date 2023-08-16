@@ -9,11 +9,6 @@ galaxy_info:
     namespace: mindpointgroup
     min_ansible_version: 2.10.1
 
-    platforms:
-        - name: Windows Server
-          versions:
-              - 2022
-
     galaxy_tags:
         - system
         - security

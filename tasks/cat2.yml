@@ -1212,13 +1212,13 @@
             msg:
                 - "Warning!! This is a manual task. Internet Information Services (IIS) Manager FTP is currently"
                 - "installed on the system. Anonymous Authentication must be set to diabled per STIG Requirements."
-        when: "'Installed' in wn22_00_000420_audit"
+        when: "'Installed' in wn22_00_000420_ftp_audit"
 
       - name: "MEDIUM | WN22-00-000420 | AUDIT | FTP servers must be configured to prevent anonymous logons. | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000420'
-        when: "'Installed' in wn22_00_000420_audit"
+        when: "'Installed' in wn22_00_000420_ftp__audit"
   when:
       - wn22_00_000420
   tags:
@@ -1240,7 +1240,7 @@
 
       - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Set Fact."
         ansible.builtin.set_fact:
-            wn22_00_000430_audit: "{{ wn22_00_000430_audit.stdout_lines | regex_search('Installed') }}"
+            wn22_00_000430_ftp_audit: "{{ wn22_00_000430_audit.stdout_lines | regex_search('Installed') }}"
 
       - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Get Sites Info."
         ansible.windows.win_shell: |
@@ -1249,7 +1249,7 @@
         changed_when: false
         failed_when: false
         register: wn22_00_000430_isssite_audit
-        when: "'Installed' in wn22_00_000430_audit"
+        when: "'Installed' in wn22_00_000430_ftp_audit"
 
       - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Warning Message."
         ansible.builtin.debug:
@@ -1258,13 +1258,13 @@
                 - "If the site includes any system areas such as root of the drive, Program Files, or Windows directories, this is a finding"
                 - "Configure the FTP sites to allow access only to specific FTP shared resources. Do not allow access to other areas of the system."
                 - "{{ wn22_00_000430_isssite_audit.stdout.split('\n') }}"
-        when: "'Installed' in wn22_00_000430_audit"
+        when: "'Installed' in wn22_00_000430_ftp_audit"
 
       - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000430'
-        when: "'Installed' in wn22_00_000430_audit"
+        when: "'Installed' in wn22_00_000430_ftp_audit"
   when:
       - wn22_00_000430
   tags:
@@ -1278,19 +1278,19 @@
 
 - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights"
   block:
-      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2019 must have orphaned security identifiers (SIDs) must be removed from user rights. | Get User List"
+      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Get User List"
         ansible.windows.win_shell: Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -match "*S"} | Select Name,SID,DOMAIN
         changed_when: false
         failed_when: false
         register: wn22_00_000450_orphaned_user_accounts
 
-      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2019 must have orphaned security identifiers (SIDs) must be removed from user rights. | Check For Orphaned Group Accounts. | Get Group List"
+      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Check For Orphaned Group Accounts. | Get Group List"
         ansible.windows.win_shell: Get-WmiObject -Class Win32_UserAccount | Where-Object {$_.SID -match "*S"} | Select Name,SID,DOMAIN
         changed_when: false
         failed_when: false
         register: wn22_00_000450_orphaned_group_accounts
 
-      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2019 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message User Accounts"
+      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message User Accounts"
         ansible.builtin.debug:
             msg:
                 - "Warning!! Please review the User Rights listed for each of any unresolved SID to determine whether they are valid."
@@ -1299,7 +1299,7 @@
                 - "{{ wn22_00_000450_orphaned_user_accounts.stdout_lines }}"
         when: wn22_00_000450_orphaned_user_accounts.stdout_lines | select() | length > 0
 
-      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2019 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message Group Accounts."
+      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message Group Accounts."
         ansible.builtin.debug:
             msg:
                 - "Warning!! Please review the Group Rights listed for each of any unresolved SID to determine whether they are valid."
@@ -1308,7 +1308,7 @@
                 - "{{ wn22_00_000450_orphaned_group_accounts.stdout_lines }}"
         when: wn22_00_000450_orphaned_group_accounts.stdout_lines | select() | length > 0
 
-      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2019 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warn Count."
+      - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000450'
@@ -1381,7 +1381,7 @@
       - name: "MEDIUM | WN22-AC-000020 | AUDIT | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less. | Warning For Bad Variable."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have a invalid number of days set for wn22stig_lockoutbadcount please read"
+                - "Warning!! You have an invalid number of days set for wn22stig_lockoutbadcount please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
             - wn22stig_lockoutbadcount == 0 or
@@ -1420,7 +1420,7 @@
       - name: MEDIUM | WN22-AC-000030 | AUDIT | Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have a invalid number of days set for wn22stig_resetlockoutcount please read"
+                - "Warning!! You have an invalid number of days set for wn22stig_resetlockoutcount please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
             - wn22stig_resetlockoutcount < 15
@@ -1455,7 +1455,7 @@
       - name: "MEDIUM | WN22-AC-000010 | PATCH | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater. | Warning For Bad Variable."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have a invalid number of minutes set for wn22stig_lockoutduration please read"
+                - "Warning!! You have an invalid number of minutes set for wn22stig_lockoutduration please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
             - wn22stig_lockoutduration < 15
@@ -1489,26 +1489,33 @@
       - V-254285
 
 - name: "MEDIUM | WN22-AC-000040 | PATCH | Windows Server 2022 password history must be configured to 24 passwords remembered."
-  community.windows.win_security_policy:
-      section: System Access
-      key: PasswordHistorySize
-      value: 24
-  when:
-      - wn22_ac_000040
-  tags:
-      - WN22-AC-000040
-      - CAT2
-      - CCI-000200
-      - SRG-OS-000077-GPOS-00045
-      - SV-254288r848680_rule
-      - V-254288
+  block:
+      - name: "MEDIUM | WN22-22-000040 | AUDIT | Windows Server 2022 password history must be configured to 24 passwords remembered. | Warning Message"
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! You have an invalid number remembered passwords set for wn22stig_passwordhistorysize please read"
+                - "the notes for the variable and make the necessary change to the variable to be in compliance."
+        when: wn22stig_passwordhistorysize < 24
+
+      - name: "MEDIUM | WN22-AC-000040 | AUDIT | Windows Server 2022 password history must be configured to 24 passwords remembered. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-AC-000040 '
+        when: wn22stig_passwordhistorysize < 24
+
+      - name: "MEDIUM | WN22-AC-000040 | PATCH | Windows Server 2022 password history must be configured to 24 passwords remembered. | Apply Variable"
+        community.windows.win_security_policy:
+            section: System Access
+            key: PasswordHistorySize
+            value: "{{ wn22stig_passwordhistorysize }}"
+        when: wn22stig_passwordhistorysize >= 24
 
 - name: "MEDIUM | WN22-AC-000050 | PATCH | Windows Server 2022 maximum password age must be configured to 60 days or less."
   block:
       - name: "MEDIUM | WN22-AC-000050 | AUDIT | Windows Server 2022 maximum password age must be configured to 60 days or less. | Warning For Bad Variable."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have a invalid number of days set for wn22stig_maximumpasswordage please read"
+                - "Warning!! You have an invalid number of days set for wn22stig_maximumpasswordage please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
             - wn22stig_maximumpasswordage == 0 or
@@ -1545,7 +1552,7 @@
       - name: "MEDIUM | WN22-AC-000060 | AUDIT | Windows Server 2022 minimum password age must be configured to at least one day. | Warning For Bad Variable."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have a invalid number of days set for wn22stig_minimumpasswordage please read"
+                - "Warning!! You have an invalid number of days set for wn22stig_minimumpasswordage please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
             - wn22stig_minimumpasswordage == 0
@@ -1579,7 +1586,7 @@
       - name: "MEDIUM | WN22-AC-000070 | AUDIT | Windows Server 2022 minimum password length must be configured to 14 characters. | Warning For Bad Variable."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have a invalid password length for wn22stig_minimumpasswordlength please read"
+                - "Warning!! You have an invalid password length for wn22stig_minimumpasswordlength please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
             - wn22stig_minimumpasswordlength < 14
@@ -2032,15 +2039,6 @@
       - V-254307
       - audit
 
-- name: "MEDIUM | WN22-AU-000150 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff | Account Lockout successes."
-  block:
-      - name: "MEDIUM | WN22-AU-000150 | AUDIT | Windows Server 2022 must be configured to audit Logon/Logoff | Account Lockout successes."
-        ansible.windows.win_shell: AuditPol /get /subcategory:"Account Lockout" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: wn22_au_000150_audit
-
 - name: "MEDIUM | WN22-AU-000160 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff | Account Lockout failures."
   block:
       - name: "MEDIUM | WN22-AU-000160 | AUDIT | Windows Server 2022 must be configured to audit Logon/Logoff | Account Lockout failures."
@@ -2182,33 +2180,25 @@
       - V-254314
       - audit
 
-- name: "MEDIUM | WN22-AU-000220 | PATCH | Windows Server 2022 must be configured to audit Object Access | Other Object Access Events successes."
+- name: |
+    "MEDIUM | WN22-AU-000220 | PATCH | Windows Server 2022 must be configured to audit Object Access | Other Object Access Events successes."
+    "MEDIUM | WN22-AU-000230 | PATCH | Windows Server 2022 must be configured to audit Object Access | Other Object Access Events failures."
   community.windows.win_audit_policy_system:
       subcategory: Other Object Access Events
       audit_type: success, failure
   when:
-      - wn22_au_000220
+      - wn22_au_000220 or
+        wn22_au_000230
   tags:
+      - WN22-AU-000230
       - WN22-AU-000220
       - CAT2
       - CCI-000172
       - SRG-OS-000470-GPOS-00214
       - SV-254315r848761_rule
-      - V-254315
-
-- name: "MEDIUM | WN22-AU-000230 | PATCH | Windows Server 2022 must be configured to audit Object Access | Other Object Access Events failures."
-  community.windows.win_audit_policy_system:
-      subcategory: Other Object Access Events
-      audit_type: success, failure
-  when:
-      - wn22_au_000230
-  tags:
-      - WN22-AU-000230
-      - CAT2
-      - CCI-000172
-      - SRG-OS-000470-GPOS-00214
       - SV-254316r848764_rule
       - V-254316
+      - V-254315
 
 - name: "MEDIUM | WN22-AU-000240 | PATCH | Windows Server 2022 must be configured to audit Object Access | Removable Storage successes."
   block:
@@ -2690,14 +2680,42 @@
 
 - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection."
   block:
-      - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection."
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection."
+      - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | EnableVirtualizationBasedSecurity Registry Add"
+        ansible.windows.win_regedit:
+            path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard\
+            state: present
+            value: EnableVirtualizationBasedSecurity
+            data: 1
+            datatype: dword
 
-      - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | import reuseable task."
+      - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | RequirePlatformSecurityFeatures Registry Add"
+        ansible.windows.win_regedit:
+            path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard\
+            state: present
+            value: RequirePlatformSecurityFeatures
+            data: "{{ wn22stig_dma_protection }}"
+            datatype: dword
+
+      - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | Get Status Of Device Guard Virtualization."
+        ansible.windows.win_shell: Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard | Select-Object VirtualizationBasedSecurityStatus | ft -hidetableheaders
+        changed_when: false
+        failed_when: false
+        register: wn22_cc_000110_audit
+
+      - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | Device Guard Virtualization based security Not Running Warning Message."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! This is a manual task. Windows Server 2022 virtualization-based security must be enabled with the platform security"
+                - "level configured to Secure Boot or Secure Boot with DMA Protection. The policy settings referenced in the Fix section will"
+                - "configure the following registry values. However, due to hardware requirements, the registry values alone do not ensure proper"
+                - "function."
+        when: "'2' not in wn22_cc_000110_audit.stdout | trim"
+
+      - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-CC-000110'
+        when: "'2' not in wn22_cc_000110_audit.stdout | trim"
   when:
       - wn22_cc_000110
       - ansible_windows_domain_member
@@ -2712,8 +2730,9 @@
 - name: "MEDIUM | WN22-CC-000130 | PATCH | Windows Server 2022 early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers identified as bad."
   ansible.windows.win_regedit:
       path: HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch
+      state: present
       value: DriverLoadPolicy
-      data: 1
+      data: "{{ wn22stig_driver_load_policy }}"
       datatype: dword
   when:
       - wn22_cc_000130
@@ -2855,22 +2874,27 @@
 
 - name: "MEDIUM | WN22-CC-000270 | PATCH | Windows Server 2022 Application event log size must be configured to 32768 KB or greater."
   block:
-      - name: "MEDIUM | WN22-CC-000270 | AUDIT | Windows Server 2022 Application event log size must be configured to 32768 KB or greater."
-        ansible.windows.win_reg_stat:
-            path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Application
-            name: MaxSize
-        register: wn22_cc_000270_audit
+      - name: "MEDIUM | WN22-CC-000270 | PATCH | Windows Server 2022 Application event log size must be configured to 32768 KB or greater. | Warning Message."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! You have a invalid file size set for wn22stig_application_event_log_max_size please read"
+                - "the notes for the variable and make the necessary change to the variable to be in compliance."
+        when: wn22stig_application_event_log_max_size < 32768
 
-      - name: "MEDIUM | WN22-CC-000270 | PATCH | Windows Server 2022 Application event log size must be configured to 32768 KB or greater."
+      - name: "MEDIUM | WN22-CC-000270 | PATCH | Windows Server 2022 Application event log size must be configured to 32768 KB or greater. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-CC-000270'
+        when: wn22stig_application_event_log_max_size < 32768
+
+      - name: "MEDIUM | WN22-CC-000270 | PATCH | Windows Server 2022 Application event log size must be configured to 32768 KB or greater. | Apply Log Size"
         ansible.windows.win_regedit:
             path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Application
+            state: present
             value: MaxSize
-            data: "{{ wn22stig_app_maxsize }}"
+            data: "{{ wn22stig_application_event_log_max_size }}"
             datatype: dword
-        when:
-            - wn22_cc_000270_audit is defined
-            - not wn22_cc_000270_audit.exists or
-              wn22_cc_000270_audit.value < 32768
+        when: wn22stig_application_event_log_max_size >= 32768
   when:
       - wn22_cc_000270
   tags:
@@ -2883,22 +2907,27 @@
 
 - name: "MEDIUM | WN22-CC-000280 | PATCH | Windows Server 2022 Security event log size must be configured to 196608 KB or greater."
   block:
-      - name: "MEDIUM | WN22-CC-000280 | AUDIT | Windows Server 2022 Security event log size must be configured to 196608 KB or greater."
-        ansible.windows.win_reg_stat:
-            path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Security
-            name: MaxSize
-        register: wn22_cc_000280_audit
+      - name: "MEDIUM | WN22-CC-000280 | AUDIT | Windows Server 2022 Security event log size must be configured to 196608 KB or greater. | Warning Message."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! You have a invalid file size set for wn22stig_security_event_log_max_size please read"
+                - "the notes for the variable and make the necessary change to the variable to be in compliance."
+        when: wn22stig_security_event_log_max_size < 196608
 
-      - name: "MEDIUM | WN22-CC-000280 | PATCH | Windows Server 2022 Security event log size must be configured to 196608 KB or greater."
+      - name: "MEDIUM | WN22-CC-000280 | AUDIT | Windows Server 2022 Security event log size must be configured to 196608 KB or greater. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-CC-000280'
+        when: wn22stig_security_event_log_max_size < 196608
+
+      - name: "MEDIUM | WN22-CC-000280 | PATCH | Windows Server 2022 Security event log size must be configured to 196608 KB or greater. |Apply Log Size"
         ansible.windows.win_regedit:
             path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Security
+            state: present
             value: MaxSize
-            data: "{{ wn22stig_sec_maxsize }}"
+            data: "{{ wn22stig_security_event_log_max_size }}"
             datatype: dword
-        when:
-            - wn22_cc_000280_audit is defined
-            - not wn22_cc_000280_audit.exists or
-              wn22_cc_000280_audit.value < 196608
+        when: wn22stig_security_event_log_max_size >= 196608
   when:
       - wn22_cc_000280
   tags:
@@ -2911,22 +2940,27 @@
 
 - name: "MEDIUM | WN22-CC-000290 | PATCH | Windows Server 2022 System event log size must be configured to 32768 KB or greater."
   block:
-      - name: "MEDIUM | WN22-CC-000290 | AUDIT | Windows Server 2022 System event log size must be configured to 32768 KB or greater."
-        ansible.windows.win_reg_stat:
-            path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\System
-            name: MaxSize
-        register: wn22_cc_000290_audit
+      - name: "MEDIUM | WN22-CC-000290 | AUDIT | Windows Server 2022 System event log size must be configured to 32768 KB or greater. | Warning Message."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! You have a invalid file size set for wn22stig_system_event_log_max_size please read"
+                - "the notes for the variable and make the necessary change to the variable to be in compliance."
+        when: wn22stig_system_event_log_max_size < 32768
 
-      - name: "MEDIUM | WN22-CC-000290 | PATCH | Windows Server 2022 System event log size must be configured to 32768 KB or greater."
+      - name: "MEDIUM | WN22-CC-000290 | AUDIT | Windows Server 2022 System event log size must be configured to 32768 KB or greater. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-CC-000290'
+        when: wn22stig_system_event_log_max_size < 32768
+
+      - name: "MEDIUM | WN22-CC-000290 | PATCH | Windows Server 2022 System event log size must be configured to 32768 KB or greater. | Apply Log Size"
         ansible.windows.win_regedit:
             path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\System
+            state: present
             value: MaxSize
-            data: "{{ wn22stig_sys_maxsize }}"
+            data: "{{ wn22stig_system_event_log_max_size }}"
             datatype: dword
-        when:
-            - wn22_cc_000290_audit is defined
-            - not wn22_cc_000290_audit.exists or
-              wn22_cc_000290_audit.value < 32768
+        when: wn22stig_system_event_log_max_size >= 32768
   when:
       - wn22_cc_000290
   tags:
@@ -3755,7 +3789,9 @@
   block:
       - name: "MEDIUM | WN22-DC-000280 | AUDIT | Windows Server 2022 domain controllers must have a PKI server certificate."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 domain controllers must have a PKI server certificate."
+            msg:
+                - "Warning!! This is a manual task. Domain controllers must have a PKI server certificate."
+                - "Please review the STIG documentation for proper direction on auditing this control."
 
       - name: "MEDIUM | WN22-DC-000280 | AUDIT | Windows Server 2022 domain controllers must have a PKI server certificate. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
@@ -3774,11 +3810,24 @@
 
 - name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication."
   block:
-      - name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication."
-        ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication."
+      - name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication. | Obtain Accounts"
+        ansible.windows.win_shell: Get-ADUser -Filter {(Enabled -eq $True) -and (SmartcardLogonRequired -eq $False)} | FT Name
+        changed_when: false
+        failed_when: false
+        register: wn22_dc_000310_audit
 
-      - name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication. | import reuseable task."
+      - name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication. | Warning Message."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! This is a manual task. Active Directory user accounts, including administrators,"
+                - "must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification"
+                - "(PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication."
+                - "If any user accounts, including administrators, are listed below, this is a finding."
+                - "Configure all user accounts, including administrator accounts, in Active Directory to enable"
+                - "the option Smart card is required for interactive logon"
+                - "{{ wn22_dc_000310_audit.stdout_lines | trim }}"
+
+      - name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication. | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-DC-000310'
@@ -3840,10 +3889,7 @@
 - name: "MEDIUM | WN22-DC-000340 | PATCH | Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers."
   ansible.windows.win_user_right:
       name: SeNetworkLogonRight
-      users:
-          - Administrators
-          - Authenticated Users
-          - Enterprise Domain Controllers
+      users: "{{ wn22stig_senetworklogonright_dc }}"
       action: set
   when:
       - wn22_dc_000340
@@ -3987,20 +4033,37 @@
 - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days."
   block:
       - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days."
-        ansible.windows.win_shell: "Get-ADUser krbtgt -Property PasswordLastSet | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ wn22stig_krbtgt_pass_age }}))} | Select-Object -ExpandProperty PasswordLastSet"
+        ansible.windows.win_shell: "Get-ADUser krbtgt -Property PasswordLastSet | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ wn22stig_krbtgt_account_pass_age }}))} | Select-Object -ExpandProperty PasswordLastSet"
         changed_when: false
         failed_when: false
-        check_mode: false
         register: wn22_dc_000430_audit
+        when: wn22stig_krbtgt_account_pass_age <= 180
 
-      - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days."
+      - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days. | Warning Message Variable."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. The password for the krbtgt account on a domain must be reset at least every 180 days."
+            msg:
+                - "Warning!! You have a invalid number of days set for wn22stig_krbtgt_account_pass_age please read"
+                - "the notes for the variable and make the necessary change to the variable to be in compliance."
+        when: wn22stig_krbtgt_account_pass_age > 180
+
+      - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days. | Warning Message Account."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! The password for the krbtgt account on a domain must be reset at least every 180 days."
+                - "Your password is currently out of STIG compliance and has not been reset in the last 180 days."
+                - "{{ wn22_dc_000430_audit.stdout_lines | trim }}"
+        when:
+            - wn22stig_krbtgt_account_pass_age <= 180
+            - wn22_dc_000430_audit.stdout | length > 0
 
       - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days. | import reuseable task."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-DC-000430'
+        when:
+            - wn22stig_krbtgt_account_pass_age <= 180
+            - wn22_dc_000430_audit.stdout | length > 0 or
+              wn22stig_krbtgt_account_pass_age > 180
   when:
       - wn22_dc_000430
       - ansible_windows_domain_role == "Primary domain controller"
@@ -4101,9 +4164,7 @@
 - name: "MEDIUM | WN22-MS-000070 | PATCH | Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and standalone systems."
   ansible.windows.win_user_right:
       name: SeNetworkLogonRight
-      users:
-          - Administrators
-          - Authenticated Users
+      users: "{{ wn22stig_senetworklogonright }}"
       action: set
   when:
       - wn22_ms_000070
@@ -4155,6 +4216,7 @@
             users:
                 - Enterprise Admins
                 - Domain Admins
+                - Guests
             action: set
         when: ansible_windows_domain_role == "Member server"
 
@@ -4176,26 +4238,15 @@
       - V-254436
 
 - name: "MEDIUM | WN22-MS-000100 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
-  block:
-      - name: "MEDIUM | WN22-MS-000100 | PATCH | DOMAIN MEMBER | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
-        ansible.windows.win_user_right:
-            name: SeDenyBatchLogonRight
-            users:
-                - Enterprise Admins
-                - Domain Admins
-                - Guests
-            action: set
-        when: ansible_windows_domain_role == "Member server"
-
-      - name: "MEDIUM | WN22-MS-000100 | PATCH | STAND-ALONE | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
-        ansible.windows.win_user_right:
-            name: SeDenyBatchLogonRight
-            users:
-                - Guests
-            action: set
-        when: not ansible_windows_domain_member
+  ansible.windows.win_user_right:
+      name: SeDenyServiceLogonRight
+      users:
+          - Enterprise Admins
+          - Domain Admins
+      action: set
   when:
       - wn22_ms_000100
+      - ansible_windows_domain_role == "Member server"
   tags:
       - WN22-MS-000100
       - CAT2
@@ -4280,20 +4331,56 @@
 
 - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store."
   block:
-      - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store."
-        ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\root | Where Subject -Like "*DoD*" | FL Subject, Thumbprint, NotAfter
+      - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | Check For DOD Root CA 3."
+        ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\root | Where {$_.Subject -Like "*DoD Root CA 3*" -and $_.Thumbprint -Like "D73CA91102A2204A36459ED32213B467D7CE97FB"} | FL Subject, Issuer, Thumbprint, NotAfter
         changed_when: false
-        check_mode: false
-        register: wn22_PK_000010_audit
+        failed_when: false
+        register: wn22_pk_000010_root_3_Check
 
-      - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store."
+      - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | Check For DOD Root CA 4."
+        ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\root | Where {$_.Subject -Like "*DoD Root CA 4*" -and $_.Thumbprint -Like "B8269F25DBD937ECAFD4C35A9838571723F2D026"} | FL Subject, Issuer, Thumbprint, NotAfter
+        changed_when: false
+        failed_when: false
+        register: wn22_pk_000010_root_4_Check
+
+      - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | Check For DOD Root CA 5."
+        ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\root | Where {$_.Subject -Like "*DoD Root CA 5*" -and $_.Thumbprint -Like "4ECB5CC3095670454DA1CBD410FC921F46B8564B"} | FL Subject, Issuer, Thumbprint, NotAfter
+        changed_when: false
+        failed_when: false
+        register: wn22_pk_000010_root_5_Check
+
+      - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | Warning!! No DOD Root CA 3 Certificate Installed."
         ansible.builtin.debug:
-            msg: "Warning!! This is a manual task. Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store."
+            msg:
+                - "Warning!! The DOD Root CA 3 is not installed on the system or"
+                - "contains an incorrect Thumbprint for the Root CA Certificate."
+                - "Please refer to STIG documentation for proper cert to be installed."
+        when: wn22_pk_000010_root_3_Check.stdout == ""
 
-      - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | import reuseable task."
+      - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | Warning!! No DOD Root CA 4 Certificate Installed."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! The DOD Root CA 4 is not installed on the system or"
+                - "contains an incorrect Thumbprint for the Root CA Certificate."
+                - "Please refer to STIG documentation for proper cert to be installed."
+        when: wn22_pk_000010_root_4_Check.stdout == ""
+
+      - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | Warning!! No DOD Root CA 5 Certificate Installed."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! The DOD Root CA 5 is not installed on the system or"
+                - "contains an incorrect Thumbprint for the Root CA Certificate."
+                - "Please refer to STIG documentation for proper cert to be installed."
+        when: wn22_pk_000010_root_5_Check.stdout == ""
+
+      - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-PK-000010'
+        when:
+            - wn22_pk_000010_root_3_Check.stdout == "" or
+              wn22_pk_000010_root_4_Check.stdout == "" or
+              wn22_pk_000010_root_5_Check.stdout == ""
   when:
       - wn22_pk_000010
   tags:
@@ -4407,8 +4494,7 @@
             section: System Access
             key: NewAdministratorName
             value: "{{ wn22stig_newadministratorname }}"
-        when:
-            - "'adminchangethis' not in wn22stig_newadministratorname"
+        when: "'adminchangethis' not in wn22stig_newadministratorname"
   when:
       - wn22_so_000030
   tags:
