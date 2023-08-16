@@ -1205,7 +1205,7 @@
 
       - name: set_fact
         ansible.builtin.set_fact:
-            wn22_00_000420_audit: "{{ wn22_00_000420_audit.stdout_lines | regex_search('Installed') }}"
+            wn22_00_000420__ftp_audit: "{{ wn22_00_000420_audit.stdout_lines | regex_search('Installed') }}"
 
       - name: "MEDIUM | WN22-00-000420 | AUDIT | FTP servers must be configured to prevent anonymous logons. | Warning Message"
         ansible.builtin.debug:
