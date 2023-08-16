@@ -1218,7 +1218,7 @@
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000420'
-        when: "'Installed' in wn22_00_000420_ftp__audit"
+        when: "'Installed' in wn22_00_000420_ftp_audit"
   when:
       - wn22_00_000420
   tags:
