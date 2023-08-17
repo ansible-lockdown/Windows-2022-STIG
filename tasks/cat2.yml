@@ -4270,8 +4270,7 @@
       - name: "MEDIUM | WN22-MS-000110 | PATCH | STAND-ALONE | Windows Server 2022 Deny log on locally user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
         ansible.windows.win_user_right:
             name: SeDenyInteractiveLogonRight
-            users:
-                - Guests
+            users: Guests
             action: set
         when: not ansible_windows_domain_member
   when:
@@ -4300,8 +4299,7 @@
       - name: "MEDIUM | WN22-MS-000120 | PATCH | STAND-ALONE | Windows Server 2022 Deny log on through Remote Desktop Services user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems."
         ansible.windows.win_user_right:
             name: SeDenyRemoteInteractiveLogonRight
-            users:
-                - Guests
+            users: Guests
             action: set
         when: not ansible_windows_domain_member
   when:
@@ -4479,15 +4477,13 @@
             msg:
                 - "Warning!! You have not changed the default name for wn22stig_newadministratorname, please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
-        when:
-            - "'adminchangethis' in wn22stig_newadministratorname"
+        when: "'adminchangethis' in wn22stig_newadministratorname"
 
       - name: "MEDIUM | WN22-SO-000030 | AUDIT | Windows Server 2022 built-in administrator account must be renamed. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-SO-000030'
-        when:
-            - "'adminchangethis' in wn22stig_newadministratorname"
+        when: "'adminchangethis' in wn22stig_newadministratorname"
 
       - name: "MEDIUM | WN22-SO-000030 | PATCH | Windows Server 2022 built-in administrator account must be renamed. | Set Variable."
         community.windows.win_security_policy:
@@ -4519,16 +4515,14 @@
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-SO-000040'
-        when:
-            - "'guestchangethis' in wn22stig_newguestname"
+        when: "'guestchangethis' in wn22stig_newguestname"
 
       - name: "MEDIUM | WN22-SO-000040 | PATCH | Windows Server 2022 built-in guest account must be renamed. | Set Variable."
         community.windows.win_security_policy:
             section: System Access
             key: NewGuestName
             value: "{{ wn22stig_newguestname }}"
-        when:
-            - "'guestchangethis' not in wn22stig_newguestname"
+        when: "'guestchangethis' not in wn22stig_newguestname"
   when:
       - wn22_so_000040
   tags:
@@ -4620,7 +4614,6 @@
       datatype: dword
   when:
       - wn22_so_000090
-      - ansible_windows_domain_role == "Member server"
   tags:
       - WN22-SO-000090
       - CAT2
@@ -4630,11 +4623,34 @@
       - V-254453
 
 - name: "MEDIUM | WN22-SO-000100 | PATCH | Windows Server 2022 maximum age for machine account passwords must be configured to 30 days or less."
-  ansible.windows.win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
-      value: MaximumPasswordAge
-      data: 30
-      datatype: dword
+  block:
+      - name: "MEDIUM | WN22-SO-000100 | AUDIT | Windows Server 2022 maximum age for machine account passwords must be configured to 30 days or less. | Number Of Days Check."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! You have not set the right number of days for wn22stig_machineaccountpsswd_max_age"
+                - "Please read the notes for the variable and make the necessary change to the variable to be in compliance."
+        when:
+            - wn22stig_machineaccountpsswd_max_age > 30 or
+              wn22stig_machineaccountpsswd_max_age == 0
+
+      - name: "MEDIUM | WN22-SO-000100 | AUDIT | Windows Server 2022 maximum age for machine account passwords must be configured to 30 days or less. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-SO-000100'
+        when:
+            - wn22stig_machineaccountpsswd_max_age > 30 or
+              wn22stig_machineaccountpsswd_max_age == 0
+
+      - name: "MEDIUM | WN22-SO-000100 | PATCH | Windows Server 2022 maximum age for machine account passwords must be configured to 30 days or less. | Apply Variable."
+        ansible.windows.win_regedit:
+            path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+            state: present
+            value: MaximumPasswordAge
+            data: "{{ wn22stig_machineaccountpsswd_max_age }}"
+            datatype: dword
+        when:
+            - wn22stig_machineaccountpsswd_max_age <= 30
+            - wn22stig_machineaccountpsswd_max_age != 0
   when:
       - wn22_so_000100
   tags:
@@ -4663,11 +4679,34 @@
       - V-254455
 
 - name: "MEDIUM | WN22-SO-000120 | PATCH | Windows Server 2022 machine inactivity limit must be set to 15 minutes or less, locking the system with the screen saver."
-  ansible.windows.win_regedit:
-      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
-      value: InactivityTimeoutSecs
-      data: 900
-      datatype: dword
+  block:
+      - name: "MEDIUM | WN22-SO-000120 | AUDIT | Windows Server 2022 machine inactivity limit must be set to 15 minutes or less, locking the system with the screen saver. | Number Of Seconds Check."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! You have not set the right number of seconds for wn22stig_inactivitytimeoutsecs"
+                - "Please read the notes for the variable and make the necessary change to the variable to be in compliance."
+        when:
+            - wn22stig_inactivitytimeoutsecs > 900 or
+              wn22stig_inactivitytimeoutsecs == 0
+
+      - name: "MEDIUM | WN22-SO-000120 | AUDIT | Windows Server 2022 machine inactivity limit must be set to 15 minutes or less, locking the system with the screen saver. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-SO-000120'
+        when:
+            - wn22stig_inactivitytimeoutsecs > 900 or
+              wn22stig_inactivitytimeoutsecs == 0
+
+      - name: "MEDIUM | WN22-SO-000120 | PATCH | Windows Server 2022 machine inactivity limit must be set to 15 minutes or less, locking the system with the screen saver. | Apply Variable."
+        ansible.windows.win_regedit:
+            path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+            state: present
+            value: InactivityTimeoutSecs
+            data: "{{ wn22stig_inactivitytimeoutsecs }}"
+            datatype: dword
+        when:
+            - wn22stig_inactivitytimeoutsecs <= 900
+            - wn22stig_inactivitytimeoutsecs != 0
   when:
       - wn22_so_000120
   tags:
@@ -4950,8 +4989,9 @@
 
 - name: "MEDIUM | WN22-SO-000360 | PATCH | Windows Server 2022 must be configured to use FIPS-compliant algorithms for encryption, hashing, and signing."
   ansible.windows.win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager
-      value: ProtectionMode
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\FIPSAlgorithmPolicy
+      state: present
+      value: Enabled
       data: 1
       datatype: dword
   when:
@@ -4997,11 +5037,34 @@
       - V-254483
 
 - name: "MEDIUM | WN22-SO-000400 | PATCH | Windows Server 2022 User Account Control must, at a minimum, prompt administrators for consent on the secure desktop."
-  ansible.windows.win_regedit:
-      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
-      value: ConsentPromptBehaviorAdmin
-      data: 2
-      datatype: dword
+  block:
+      - name: "MEDIUM | WN22-SO-000400 | PATCH | Windows Server 2022 User Account Control must, at a minimum, prompt administrators for consent on the secure desktop. | Variable Check."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! You have have not choosen a correct setting for wn22stig_consentprompt"
+                - "Please read the notes for the variable and make the necessary change to the variable to be in compliance."
+        when:
+            - wn22stig_consentprompt < 1 or
+              wn22stig_consentprompt > 2
+
+      - name: "MEDIUM | WN22-SO-000400 | PATCH | Windows Server 2022 User Account Control must, at a minimum, prompt administrators for consent on the secure desktop. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'WN22-SO-000400'
+        when:
+            - wn22stig_consentprompt < 1 or
+              wn22stig_consentprompt > 2
+
+      - name: "MEDIUM | WN22-SO-000400 | PATCH | Windows Server 2022 User Account Control must, at a minimum, prompt administrators for consent on the secure desktop. | Apply Variable."
+        ansible.windows.win_regedit:
+            path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+            state: present
+            value: ConsentPromptBehaviorAdmin
+            data: "{{ wn22stig_consentprompt }}"
+            datatype: dword
+        when:
+            - wn22stig_consentprompt == 1 or
+              wn22stig_consentprompt == 2
   when:
       - wn22_so_000400
   tags:
@@ -5130,7 +5193,7 @@
 - name: "MEDIUM | WN22-UR-000030 | PATCH | Windows Server 2022 Allow log on locally user right must only be assigned to the Administrators group."
   ansible.windows.win_user_right:
       name: SeInteractiveLogonRight
-      users: Administrators
+      users: "{{ wn22stig_seinteractivelogonright }}"
       action: set
   when:
       - wn22_ur_000030
@@ -5145,7 +5208,7 @@
 - name: "MEDIUM | WN22-UR-000040 | PATCH | Windows Server 2022 Back up files and directories user right must only be assigned to the Administrators group."
   ansible.windows.win_user_right:
       name: SeBackupPrivilege
-      users: Administrators
+      users: "{{ wn22stig_sebackuprivilege }}"
       action: set
   when:
       - wn22_ur_000040
@@ -5175,11 +5238,7 @@
 - name: "MEDIUM | WN22-UR-000070 | PATCH |  Windows Server 2022 Create global objects user right must only be assigned to Administrators, Service, Local Service, and Network Service."
   ansible.windows.win_user_right:
       name: SeCreateGlobalPrivilege
-      users:
-          - Administrators
-          - Service
-          - "Local Service"
-          - Network Service
+      users: "{{ wn22stig_secreateglobalprivilege }}"
       action: set
   when:
       - wn22_ur_000070
@@ -5239,9 +5298,7 @@
 - name: "MEDIUM | WN22-UR-000120 | PATCH | Windows Server 2022 Generate security audits user right must only be assigned to Local Service and Network Service."
   ansible.windows.win_user_right:
       name: SeAuditPrivilege
-      users:
-          - Local Service
-          - Network Service
+      users: "{{ wn22stig_seauditprivilege }}"
       action: set
   when:
       - wn22_ur_000120
@@ -5256,11 +5313,7 @@
 - name: "MEDIUM | WN22-UR-000130 | PATCH | Windows Server 2022 Impersonate a client after authentication user right must only be assigned to Administrators, Service, Local Service, and Network Service."
   ansible.windows.win_user_right:
       name: SeImpersonatePrivilege
-      users:
-          - Administrators
-          - Service
-          - Local Service
-          - Network Service
+      users: "{{ wn22stig_seimpersonateprivilege }}"
       action: set
   when:
       - wn22_ur_000130
@@ -5275,7 +5328,7 @@
 - name: "MEDIUM | WN22-UR-000140 | PATCH | Windows Server 2022 Increase scheduling priority: user right must only be assigned to the Administrators group."
   ansible.windows.win_user_right:
       name: SeIncreaseBasePriorityPrivilege
-      users: Administrators
+      users: "{{ wn22stig_seincreasebasepriorityprivilege }}"
       action: set
   when:
       - wn22_ur_000140
@@ -5306,7 +5359,7 @@
   community.windows.win_security_policy:
       section: Privilege Rights
       key: SeLockMemoryPrivilege
-      value: ""
+      value: "{{ wn22stig_selockmemorprivilege }}"
   when:
       - wn22_ur_000160
   tags:
@@ -5321,7 +5374,7 @@
 - name: "MEDIUM | WN22-UR-000170 | PATCH | Windows Server 2022 Manage auditing and security log user right must only be assigned to the Administrators group."
   ansible.windows.win_user_right:
       name: SeSecurityPrivilege
-      users: Administrators
+      users: "{{ wn22stig_sesecurityprivilege }}"
       action: set
   when:
       - wn22_ur_000170
@@ -5385,7 +5438,7 @@
 - name: "MEDIUM | WN22-UR-000210 | PATCH | Windows Server 2022 Restore files and directories user right must only be assigned to the Administrators group."
   ansible.windows.win_user_right:
       name: SeRestorePrivilege
-      users: Administrators
+      users: "{{ wn22stig_serestoreprivilege }}"
       action: set
   when:
       - wn22_ur_000210
@@ -5400,7 +5453,7 @@
 - name: "MEDIUM | WN22-UR-000220 | PATCH | Windows Server 2022 Take ownership of files or other objects user right must only be assigned to the Administrators group."
   ansible.windows.win_user_right:
       name: SeTakeOwnershipPrivilege
-      users: Administrators
+      users: "{{ wn22stig_setakeownershipprivilege }}"
       action: set
   when:
       - wn22_ur_000220
