@@ -344,7 +344,7 @@ wn22stig_pass_age_administrator: 60
 # WN22-AC-000010
 # Windows Server 2022 account lockout duration must be configured to 15 minutes or greater.
 # Configuring this to "0", requiring an administrator to unlock the account, is more restrictive and is not a finding.
-# Valid Variables are 15 or more or 0.
+# Valid Variables are equal to greater than 15 or 0.
 wn22stig_lockoutduration: 15
 
 # WN22-AC-000020
@@ -361,7 +361,7 @@ wn22stig_resetlockoutcount: 15
 # Windows Server 2022 password history must be configured to 24 passwords remembered.
 # wn22stig_passwordhistorysize is the number of passwords windows will remember before you may
 # be able to reuse that same password. The default value is "24" for Windows domain systems.
-# DoD has decided this is the appropriate value for all Windows systems.
+# DoD determined appropriate the value for all Windows systems.
 wn22stig_passwordhistorysize: 24
 
 # WN22-AC-000050
