@@ -114,7 +114,7 @@ Package 'python-xmltodict' is required if you enable the OpenSCAP tool installat
 
 ## Role Variables
 
-This role is designed so that the end user should not have to edit the tasks themselves. All customizing should be done via the defaults/main.yml file or with extra vars within the project, job, workflow, etc. Non-disruptive CAT I, CAT II, and CAT III findings will be corrected by default. Disruptive finding remediation can be enabled by setting `win22stig_disruption_high` to `yes`.
+This role is designed so that the end user should not have to edit the tasks themselves. All customizing should be done via the defaults/main.yml file or with extra vars within the project, job, workflow, etc. Non-disruptive CAT I, CAT II, and CAT III findings will be corrected by default. Disruptive finding remediation can be enabled by setting `win22stig_disruption_high` to `true`.
 
 ## Tags
 

@@ -2877,7 +2877,7 @@
       - name: "MEDIUM | WN22-CC-000270 | PATCH | Windows Server 2022 Application event log size must be configured to 32768 KB or greater. | Warning Message."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have a invalid file size set for wn22stig_application_event_log_max_size please read"
+                - "Warning!! You have an invalid file size set for wn22stig_application_event_log_max_size please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when: wn22stig_application_event_log_max_size < 32768
 
@@ -2910,7 +2910,7 @@
       - name: "MEDIUM | WN22-CC-000280 | AUDIT | Windows Server 2022 Security event log size must be configured to 196608 KB or greater. | Warning Message."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have a invalid file size set for wn22stig_security_event_log_max_size please read"
+                - "Warning!! You have an invalid file size set for wn22stig_security_event_log_max_size please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when: wn22stig_security_event_log_max_size < 196608
 
@@ -2943,7 +2943,7 @@
       - name: "MEDIUM | WN22-CC-000290 | AUDIT | Windows Server 2022 System event log size must be configured to 32768 KB or greater. | Warning Message."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have a invalid file size set for wn22stig_system_event_log_max_size please read"
+                - "Warning!! You have an invalid file size set for wn22stig_system_event_log_max_size please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when: wn22stig_system_event_log_max_size < 32768
 
@@ -4042,7 +4042,7 @@
       - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days. | Warning Message Variable."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have a invalid number of days set for wn22stig_krbtgt_account_pass_age please read"
+                - "Warning!! You have an invalid number of days set for wn22stig_krbtgt_account_pass_age please read"
                 - "the notes for the variable and make the necessary change to the variable to be in compliance."
         when: wn22stig_krbtgt_account_pass_age > 180
 

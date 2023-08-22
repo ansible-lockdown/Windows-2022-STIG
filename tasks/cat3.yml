@@ -51,7 +51,7 @@
       - SV-205800r859311_rule
       - V-205800
 
-- name: "LOW | WN22-CC-000030 | PATCH | Windows Server 2022 internet Protocol version 6 (IPv6) source routing must be configured to the highest protection level to prevent IP source routing."
+- name: "LOW | WN22-CC-000030 | PATCH | Windows Server 2022 Internet Protocol version 6 (IPv6) source routing must be configured to the highest protection level to prevent IP source routing."
   ansible.windows.win_regedit:
       path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters
       value: DisableIPSourceRouting
