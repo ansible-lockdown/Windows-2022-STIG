@@ -1,7 +1,7 @@
 ---
 
 galaxy_info:
-    author: "George Nalen"
+    author: "Frederick Witty, George Nalen, Stephen Williams, Mark 'Bolly' Bolwell"
     description: "Ansible Role to Apply the DISA Windows Server 2022 STIG"
     company: "MindPoint Group"
     license: MIT
