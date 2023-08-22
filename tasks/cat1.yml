@@ -32,10 +32,10 @@
       - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes. | Message out"
         ansible.builtin.debug:
             msg:
-                - "Warning!! This is a manual task. Windows Server 2022 local volumes must use a format"
+                - "Warning!! This is a manual task. Windows Server 2022 local volumes must use the format"
                 - "that supports NTFS attributes. Please check to verify your system is in compliance."
                 - "ReFS (resilient file system) is also acceptable and would not be a finding."
-                - "This does not apply to system partitions such the Recovery and EFI System Partition."
+                - "This does not apply to system partitions such as the Recovery and EFI System Partition."
                 - "{{ wn22_00_000130_audit.stdout.split('\n') }}"
 
       - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes. | import reuseable task."
