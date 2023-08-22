@@ -38,7 +38,7 @@
         ansible.builtin.debug:
             msg: "Warning!! This is a manual task. The Windows Server 2022 time service must synchronize with an appropriate DoD time source. "
 
-      - name: "LOW | WN22-00-000440 | AUDIT |  The Windows Server 2022 time service must synchronize with an appropriate DoD time source. | import reuseable task."
+      - name: "LOW | WN22-00-000440 | AUDIT |  The Windows Server 2022 time service must synchronize with an appropriate DoD time source. | import reusable task."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000440'
@@ -170,7 +170,7 @@
         ansible.builtin.debug:
             msg: "Warning!! This is a manual task. Windows Server 2022 directory service must be configured to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity."
 
-      - name: "LOW | WN22-DC-000160 | AUDIT | Windows Server 2022 directory service must be configured to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity. | import reuseable task."
+      - name: "LOW | WN22-DC-000160 | AUDIT | Windows Server 2022 directory service must be configured to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity. | import reusable task."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-DC-000160'
