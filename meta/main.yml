@@ -1,0 +1,28 @@
+---
+
+galaxy_info:
+    author: "Frederick Witty Jr., George Nalen, Stephen Williams, Mark 'Bolly' Bolwell"
+    description: "Ansible Role to Apply the DISA Windows Server 2022 STIG"
+    company: "MindPoint Group"
+    license: MIT
+    role_name: windows22_stig
+    namespace: mindpointgroup
+    min_ansible_version: 2.10.1
+
+    galaxy_tags:
+        - system
+        - security
+        - stig
+        - hardening
+        - benchmark
+        - microsoft
+        - windows
+        - complianceascode
+        - compliance
+
+    collections:
+        - ansible.windows
+        - community.windows
+        - community.general
+
+    dependencies: []

@@ -1,0 +1,62 @@
+---
+
+- name: "PRELIM | Detect if Trusted Platform Module (TPM) is Available"
+  ansible.windows.win_shell: (Get-CimInstance -ClassName Win32_OperatingSystem).ProductType
+  changed_when: false
+  failed_when: false
+  register: win2022_tpm_enabled
+  tags:
+      - always
+
+# HVM is Amazon AMI's, Hyper-V is Azure's, KVM is used for ('QEMU', 'Amazon EC2', 'DigitalOcean', 'Google', 'Scaleway', 'Nutanix', 'KVM', 'KVM Server', 'Bochs', 'AHV')
+# Current list is elastic and will be updated as we test more cloud based services.
+# Current testing is working in Azure using Hyper-V. We are currently using this for reference:
+# https://github.com/ansible/ansible/blob/905131fc76a07cf89dbc8d33e7a4910da3f10a16/lib/ansible/module_utils/facts/virtual/linux.py#L205
+- name: Set Fact If Cloud Based System.
+  ansible.builtin.set_fact:
+      win22stig_cloud_based_system: true
+  when:
+      - ansible_virtualization_type == 'Hyper-V' or
+        ansible_virtualization_type == 'hvm' or
+        ansible_virtualization_type == 'kvm'
+  tags:
+      - always
+
+- name: Get Drive Letters"
+  ansible.windows.win_shell: Get-Volume | ?{ $_.DriveType -eq 'Fixed' } | Select-Object -ExpandProperty 'DriveLetter'
+  changed_when: false
+  failed_when: false
+  register: wn22_drive_letters
+  when:
+      - wn22_00_000240 or
+        wn22_au_000060 or
+        wn22_00_000390 or
+        wn22_00_000400
+
+- name: Check For SecGuide.admx In PolicyDefinitions
+  ansible.windows.win_find:
+      paths: '{{ item }}:\Windows\PolicyDefinitions'
+      patterns: SecGuide.admx
+      hidden: true
+  changed_when: false
+  failed_when: false
+  with_items:
+      - "{{ wn22_drive_letters.stdout_lines }}"
+  register: wn22_secguide_admx_audit
+  when:
+      - wn22_00_000390 or
+        wn22_00_000400
+
+- name: Check For SecGuide.admx In PolicyDefinitions\en-US
+  ansible.windows.win_find:
+      paths: '{{ item }}:\Windows\PolicyDefinitions\en-US'
+      patterns: SecGuide.adml
+      hidden: true
+  changed_when: false
+  failed_when: false
+  with_items:
+      - "{{ wn22_drive_letters.stdout_lines }}"
+  register: wn22_secguide_adml_audit
+  when:
+      - wn22_00_000390 or
+        wn22_00_000400

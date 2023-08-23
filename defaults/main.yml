@@ -1,0 +1,625 @@
+---
+
+# defaults file for Windows-2022-STIG
+win2022stig_cat1_patch: true
+win2022stig_cat2_patch: true
+win2022stig_cat3_patch: true
+
+win2022stig_min_ansible_version: "2.10.1"
+
+# We've defined complexity-high as cannot automatically remediate
+# the rule in question.  In the future, this might mean that the remediation
+# may fail in some cases.
+win2022stig_complexity_high: false
+
+# Show "changed" for complex items not remediated per complexity-high setting
+# to make them stand out.  "changed" items on a second run of the role would
+# indicate items requiring manual review.
+win2022stig_audit_complex: true
+
+# We've defined disruption-high to indicate items that are likely to cause
+# disruption in a normal workflow.  These items can be remediated automatically
+# but are disabled by default to avoid disruption.
+win2022stig_disruption_high: false
+
+# Show "changed" for disruptive items not remediated per disruption-high
+# setting to make them stand out.
+win2022stig_audit_disruptive: true
+
+# tweak role to run in a non-privileged container
+win2022stig_system_is_container: false
+
+# This parameter disables controls that could have a very lengthy find. For example,
+# removing all files of a specific file type that search the entire drive.
+# If there is an action tied to the lengthy search the action task will be disabled as well.
+# WN22-00-000240 - CAT2
+win22stig_lengthy_search: false
+
+# win22stig_cloud_based_system is a setting built into the playbook for testing locally vs Azure.
+# We have found certain controls need to be set in a different order when being applied in the
+# different environments. By Default This is set to false.
+win22stig_cloud_based_system: false
+
+# win2022stig_skip_secure_winrm is used in the playbook to skip over WINRM based controls that
+# may cause WINRM Basic Connection Type to be disabled.
+# Setting win2022stig_skip_secure_winrm to 'false' will enable Secure Connection types only.
+# WINRM Controls that will be skipped:
+# WN22-CC-000470 - CAT1
+# WN22-CC-000500 - CAT1
+# WN22-CC-000480 - CAT2
+# WN22-CC-000510 - CAT2
+# WN22-CC-000520 - CAT2
+win2022stig_skip_secure_winrm: false
+
+# CAT 1 rules
+wn22_00_000030: true
+wn22_00_000130: true
+wn22_ac_000090: true
+wn22_cc_000210: true
+wn22_cc_000220: true
+wn22_cc_000230: true
+wn22_cc_000430: true
+# WINRM CONTROL
+wn22_cc_000470: true
+wn22_cc_000500: true
+# WINRM CONTROL END
+wn22_dc_000010: true
+wn22_dc_000070: true
+wn22_dc_000080: true
+wn22_dc_000090: true
+wn22_dc_000100: true
+wn22_dc_000110: true
+wn22_dc_000150: true
+wn22_dc_000290: true
+wn22_dc_000300: true
+wn22_ms_000010: true
+wn22_ms_000140: true
+wn22_so_000020: true
+wn22_so_000210: true
+wn22_so_000220: true
+wn22_so_000230: true
+wn22_so_000250: true
+wn22_so_000300: true
+wn22_so_000310: true
+wn22_ur_000020: true
+wn22_ur_000060: true
+wn22_ur_000100: true
+
+# CAT 2 rules
+wn22_00_000010: true
+wn22_00_000020: true
+wn22_00_000040: true
+wn22_00_000050: true
+wn22_00_000060: true
+wn22_00_000070: true
+wn22_00_000080: true
+wn22_00_000090: true
+wn22_00_000100: true
+wn22_00_000110: true
+wn22_00_000120: true
+wn22_00_000140: true
+wn22_00_000150: true
+wn22_00_000160: true
+wn22_00_000170: true
+wn22_00_000190: true
+wn22_00_000200: true
+wn22_00_000210: true
+wn22_00_000220: true
+wn22_00_000230: true
+wn22_00_000240: true
+wn22_00_000250: true
+wn22_00_000260: true
+wn22_00_000270: true
+wn22_00_000280: true
+wn22_00_000290: true
+wn22_00_000300: true
+wn22_00_000310: true
+wn22_00_000320: true
+wn22_00_000330: true
+wn22_00_000340: true
+wn22_00_000350: true
+wn22_00_000360: true
+wn22_00_000370: true
+wn22_00_000380: true
+wn22_00_000390: true
+wn22_00_000400: true
+wn22_00_000410: true
+wn22_00_000420: true
+wn22_00_000430: true
+wn22_00_000450: true
+wn22_00_000460: true
+wn22_00_000470: true
+wn22_ac_000020: true
+wn22_ac_000030: wn22_ac_000020
+wn22_ac_000010: wn22_ac_000030
+wn22_ac_000040: true
+wn22_ac_000050: true
+wn22_ac_000060: true
+wn22_ac_000070: true
+wn22_ac_000080: true
+wn22_au_000010: true
+wn22_au_000020: true
+wn22_au_000030: true
+wn22_au_000040: true
+wn22_au_000050: true
+wn22_au_000060: true
+wn22_au_000070: true
+wn22_au_000080: true
+wn22_au_000090: true
+wn22_au_000100: true
+wn22_au_000110: true
+wn22_au_000120: true
+wn22_au_000130: true
+wn22_au_000140: true
+wn22_au_000160: true
+wn22_au_000170: true
+wn22_au_000180: true
+wn22_au_000190: true
+wn22_au_000200: true
+wn22_au_000210: true
+wn22_au_000220: true
+wn22_au_000230: true
+wn22_au_000240: true
+wn22_au_000250: true
+wn22_au_000260: true
+wn22_au_000270: true
+wn22_au_000280: true
+wn22_au_000290: true
+wn22_au_000300: true
+wn22_au_000310: true
+wn22_au_000320: true
+wn22_au_000330: true
+wn22_au_000340: true
+wn22_au_000350: true
+wn22_au_000360: true
+wn22_au_000370: true
+wn22_au_000380: true
+wn22_au_000390: true
+wn22_cc_000010: true
+wn22_cc_000020: true
+wn22_cc_000070: true
+wn22_cc_000080: true
+wn22_cc_000090: true
+wn22_cc_000100: true
+wn22_cc_000110: true
+wn22_cc_000130: true
+wn22_cc_000140: true
+wn22_cc_000150: true
+wn22_cc_000160: true
+wn22_cc_000170: true
+wn22_cc_000180: true
+wn22_cc_000190: true
+wn22_cc_000240: true
+wn22_cc_000250: true
+wn22_cc_000270: true
+wn22_cc_000280: true
+wn22_cc_000290: true
+wn22_cc_000300: true
+wn22_cc_000310: true
+wn22_cc_000330: true
+wn22_cc_000340: true
+wn22_cc_000350: true
+wn22_cc_000360: true
+wn22_cc_000370: true
+wn22_cc_000380: true
+wn22_cc_000390: true
+wn22_cc_000400: true
+wn22_cc_000410: true
+wn22_cc_000420: true
+wn22_cc_000440: true
+wn22_cc_000450: true
+wn22_cc_000460: true
+wn22_cc_000530: true
+# WINRM CONTROL
+wn22_cc_000480: true
+wn22_cc_000490: true
+wn22_cc_000510: true
+wn22_cc_000520: true
+# WINRM CONTROL END
+wn22_dc_000020: true
+wn22_dc_000030: true
+wn22_dc_000040: true
+wn22_dc_000050: true
+wn22_dc_000060: true
+wn22_dc_000120: true
+wn22_dc_000130: true
+wn22_dc_000140: true
+wn22_dc_000170: true
+wn22_dc_000180: true
+wn22_dc_000190: true
+wn22_dc_000200: true
+wn22_dc_000210: true
+wn22_dc_000220: true
+wn22_dc_000230: true
+wn22_dc_000240: true
+wn22_dc_000250: true
+wn22_dc_000260: true
+wn22_dc_000280: true
+wn22_dc_000310: true
+wn22_dc_000320: true
+wn22_dc_000330: true
+wn22_dc_000340: true
+wn22_dc_000350: true
+wn22_dc_000360: true
+wn22_dc_000370: true
+wn22_dc_000380: true
+wn22_dc_000390: true
+wn22_dc_000400: true
+wn22_dc_000410: true
+wn22_dc_000420: true
+wn22_dc_000430: true
+wn22_ms_000020: true
+wn22_ms_000030: true
+wn22_ms_000040: true
+wn22_ms_000050: true
+wn22_ms_000060: true
+wn22_ms_000070: true
+wn22_ms_000080: true
+wn22_ms_000090: true
+wn22_ms_000100: true
+wn22_ms_000110: true
+wn22_ms_000120: true
+wn22_ms_000130: true
+wn22_pk_000010: true
+wn22_pk_000020: true
+wn22_pk_000030: true
+wn22_so_000010: true
+wn22_so_000030: true
+wn22_so_000040: true
+wn22_so_000050: true
+wn22_so_000060: true
+wn22_so_000070: true
+wn22_so_000080: true
+wn22_so_000090: true
+wn22_so_000100: true
+wn22_so_000110: true
+wn22_so_000120: true
+wn22_so_000130: true
+wn22_so_000150: true
+wn22_so_000160: true
+wn22_so_000170: true
+wn22_so_000180: true
+wn22_so_000190: true
+wn22_so_000200: true
+wn22_so_000240: true
+wn22_so_000260: true
+wn22_so_000270: true
+wn22_so_000280: true
+wn22_so_000290: true
+wn22_so_000320: true
+wn22_so_000330: true
+wn22_so_000340: true
+wn22_so_000350: true
+wn22_so_000360: true
+wn22_so_000380: true
+wn22_so_000390: true
+wn22_so_000400: true
+wn22_so_000410: true
+wn22_so_000420: true
+wn22_so_000430: true
+wn22_so_000440: true
+wn22_so_000450: true
+wn22_uc_000010: true
+wn22_ur_000010: true
+wn22_ur_000030: true
+wn22_ur_000040: true
+wn22_ur_000050: true
+wn22_ur_000070: true
+wn22_ur_000080: true
+wn22_ur_000090: true
+wn22_ur_000110: true
+wn22_ur_000120: true
+wn22_ur_000130: true
+wn22_ur_000140: true
+wn22_ur_000150: true
+wn22_ur_000160: true
+wn22_ur_000170: true
+wn22_ur_000180: true
+wn22_ur_000190: true
+wn22_ur_000200: true
+wn22_ur_000210: true
+wn22_ur_000220: true
+
+# CAT 3 rules
+wn22_00_000180: true
+wn22_00_000440: true
+wn22_cc_000030: true
+wn22_cc_000040: true
+wn22_cc_000050: true
+wn22_cc_000060: true
+wn22_cc_000200: true
+wn22_cc_000260: true
+wn22_cc_000320: true
+wn22_dc_000160: true
+wn22_so_000140: true
+wn22_so_000370: true
+
+# CAT 2 defaults
+
+# WN22-00-000020
+# Windows Server 2022 passwords for the built-in Administrator account must be changed at least every 60 days.
+# If the PasswordLastSet date is greater than wn22stig_pass_age_administrator days old, this is a finding.
+wn22stig_pass_age_administrator: 60
+
+# WN22-AC-000010
+# Windows Server 2022 account lockout duration must be configured to 15 minutes or greater.
+# Configuring this to "0", requiring an administrator to unlock the account, is more restrictive and is not a finding.
+# Valid Variables are equal to 0 or greater than or equal to 15.
+wn22stig_lockoutduration: 15
+
+# WN22-AC-000020
+# Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less.
+# and may not be set to 0.
+wn22stig_lockoutbadcount: 3
+
+# WN22-AC-000030
+# Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater.
+# wn22stig_resetlockoutcount is the Reset account lockout counter after value in minutes.
+wn22stig_resetlockoutcount: 15
+
+# WN22-AC-000040
+# Windows Server 2022 password history must be configured to 24 passwords remembered.
+# wn22stig_passwordhistorysize is the number of passwords Windows will remember before you may
+# be able to reuse that same password. The default value is "24" for Windows domain systems.
+# DoD determined appropriate the value for all Windows systems.
+wn22stig_passwordhistorysize: 24
+
+# WN22-AC-000050
+# Windows Server 2022 maximum password age must be configured to 60 days or less and cannot be 0.
+# wn22stig_maximumpasswordage is the Maximum password age value in days.
+wn22stig_maximumpasswordage: 60
+
+# WN22-AC-000060
+# Windows Server 2022 minimum password age must be configured to at least one day and cannot be set to 0.
+# wn22stig_minimumpasswordage is the Minimum password age value in days.
+wn22stig_minimumpasswordage: 1
+
+# WN22-AC-000070
+# Windows Server 2022 minimum password length must be configured to 14 characters or more.
+# wn22stig_minimumpasswordlength is the Minimum password characters length value.
+wn22stig_minimumpasswordlength: 14
+
+# WN22-CC-000110
+# Windows Server 2022 virtualization-based security must be enabled with the platform security
+# level configured to Secure Boot or Secure Boot with DMA Protection.
+# wn22stig_dma_protection is the level that they would like to set up.
+# Valid settings are as follows.
+# 1 (Secure Boot only)
+# 3 (Secure Boot and DMA Protection)
+wn22stig_dma_protection: 3
+
+# WN22-CC-000140
+# Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers identified as bad.
+# wn22stig_driver_load_policy is the registry value that will be applied. The default behavior is for
+# Early Launch Antimalware - Boot-Start Driver Initialization policy to enforce "Good, unknown and bad but
+# critical" (preventing "bad").
+# Approved values are below:
+# 8 - Good only
+# 1 - Good and unknown
+# 3 - Good, unknown, and bad but critical
+wn22stig_driver_load_policy: 1
+
+# WN22-CC-000270
+# Windows Server 2022 Application event log size must be configured to 32768 KB or greater.
+# wn22stig_app_maxsize is the EventLog Application max log size value in KB.
+wn22stig_application_event_log_max_size: 32768
+
+# WN22-CC-000280
+# Windows Server 2022 Security event log size must be configured to 196608 KB or greater.
+# wn22stig_security_event_log_max_size: 196608 is the EventLog Security max log size value in KB.
+wn22stig_security_event_log_max_size: 196608
+
+# WN22-CC-000290
+# Windows Server 2022 System event log size must be configured to 32768 KB or greater.
+# wn22stig_system_event_log_max_size is the EventLog System max log size value in KB.
+wn22stig_system_event_log_max_size: 32768
+
+# WN22-DC-000340
+# Windows Server 2022 Access this computer from the network user right must only be assigned to the
+# Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers.
+# If any SIDs other than the following are granted the "SeNetworkLogonRight" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators,Authenticated Users,Enterprise Domain Controllers
+wn22stig_senetworklogonright_dc: Administrators,Authenticated Users,Enterprise Domain Controllers
+
+# WN22-DC-000430
+# The password for the krbtgt account on a domain must be reset at least every 180 days.
+# The default setting here matches the STIG requirements. If you would like to
+# enforce a more strict policy you may do so for auditing purposes.
+# NOTE: Valid Days are 180 or less.
+wn22stig_krbtgt_account_pass_age: 180
+
+# WN22-MS-000070
+# Windows Server 2022 "Access this computer from the network" user right must only be assigned to the Administrators
+# and Authenticated Users groups on domain-joined member servers and standalone or nondomain-joined systems.
+# If any SIDs other than the following are granted the "SeNetworkLogonRight" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators,Authenticated Users
+wn22stig_senetworklogonright: Administrators,Authenticated Users
+
+# WN22-SO-000030
+# Windows Server 2022 built-in administrator account must be renamed.
+# wn22stig_newadministratorname is the non-default name for the Administrator Account.
+wn22stig_newadministratorname: adminchangethis
+
+# WN22-SO-000040
+# Windows Server 2022 built-in guest account must be renamed.
+# wn22stig_newguestname is the non-default name for the guest Account.
+wn22stig_newguestname: guestchangethis
+
+# WN22-SO-000100
+# The maximum age for machine account passwords must be configured to 30 days or less.
+# wn22stig_machineaccountpsswd_max_age is the setting for the Computer account passwords
+# that are changed automatically on a regular basis. This setting controls the maximum password
+# age that a machine account may have. This must be set to no more than 30 days, ensuring
+# the machine changes its password monthly.
+wn22stig_machineaccountpsswd_max_age: 30
+
+# WN22-SO-000120
+# The machine inactivity limit must be set to 15 minutes, locking the system with the screen saver.
+# wn22stig_inactivitytimeoutsecs is the time in seconds that will be set in the registry that
+# enagages the screen saver. The default setting is "900" seconds or less excluding "0"
+wn22stig_inactivitytimeoutsecs: 900
+
+# WN22-SO-000130
+# Windows Server 2022 required legal notice must be configured to display before console logon.
+# wn22stig_legalnoticetext is the LegalNoticeText for Win logon.
+wn22stig_legalnoticetext: |
+    You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
+
+    By using this IS (which includes any device attached to this IS), you consent to the following conditions:
+
+    -The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.
+
+    -At any time, the USG may inspect and seize data stored on this IS.
+
+    -Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose.
+
+    -This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.
+
+    -Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.
+
+# WN22-CC-000270
+# Windows Server 2022 Application event log size must be configured to 32768 KB or greater.
+# wn22stig_app_maxsize is the EventLog Application max log size value in KB.
+wn22stig_app_maxsize: 32768
+
+# WN22-CC-000280
+# Windows Server 2022 Security event log size must be configured to 196608 KB or greater.
+# wn22stig_sec_maxsize is the EventLog Security max log size value in KB.
+wn22stig_sec_maxsize: 196608
+
+# WN22-CC-000290
+# Windows Server 2022 System event log size must be configured to 32768 KB or greater.
+# wn22stig_sys_maxsize is the EventLog System max log size value in KB.
+wn22stig_sys_maxsize: 32768
+
+# WN22-SO-000400
+# User Account Control must, at a minimum, prompt administrators for consent on the secure desktop.
+# The more secure option for this setting, "Prompt for credentials on the secure desktop"
+# Default setting is 2
+# 2 -(Prompt for consent on the secure desktop)
+# 1 -(Prompt for credentials on the secure desktop)
+wn22stig_consentprompt: 2
+
+# WN22-DC-000430
+# The password for the krbtgt account on a domain must be reset at least every 180 days.
+# wn22stig_krbtgt_pass_age is the PasswordLastSet value in days for the krbtgt account.
+wn22stig_krbtgt_pass_age: 180
+
+# WN22-UR-000030
+# The Allow log on locally user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeInteractiveLogonRight" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_seinteractivelogonright: Administrators
+
+# WN22-UR-000040
+# The Backup files and directories user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeBackupPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_sebackuprivilege: Administrators
+
+# WN22-UR-000070
+# The Create global objects user right must only be assigned to Administrators, Service, Local Service, and Network Service.
+# If any SIDs other than the following are granted the "SeCreateGlobalPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators,Service,Local Service,Network Service
+wn22stig_secreateglobalprivilege: Administrators,Service,Local Service,Network Service
+
+# WN22-UR-000120
+# The Generate security audits user right must only be assigned to Local Service and Network Service.
+# If any SIDs other than the following are granted the "SeAuditPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Local Service,Network Service
+wn22stig_seauditprivilege: Local Service,Network Service
+
+# WN22-UR-000130
+# The "Impersonate a client after authentication" user right must only be assigned to Administrators, Service, Local Service, and Network Service.
+# If any SIDs other than the following are granted the "SeImpersonatePrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators,Service,Local Service,Network Service
+wn22stig_seimpersonateprivilege: Administrators,Service,Local Service,Network Service
+
+# WN22-UR-000140
+# The Increase scheduling priority user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeIncreaseBasePriorityPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_seincreasebasepriorityprivilege: Administrators
+
+# WN22-UR-000160
+# The Lock pages in memory user right must not be assigned to any groups or accounts.
+# If any SIDs are granted the "SeLockMemoryPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: ""
+wn22stig_selockmemorprivilege: ""
+
+# WN22-UR-000170
+# The Manage auditing and security log user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeSecurityPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# If the organization has an Auditors group, the assignment of this group to the user right would not be a finding.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_sesecurityprivilege: Administrators
+
+# WN22-UR-000210
+# The Restore files and directories user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeRestorePrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_serestoreprivilege: Administrators
+
+# WN22-UR-000220
+# The Take ownership of files or other objects user right must only be assigned to the Administrators group.
+# If any SIDs other than the following are granted the "SeTakeOwnershipPrivilege" user right, this is a finding.
+# If an application requires this user right, this would not be a finding. Vendor documentation must support the
+# requirement for having the user right. The requirement must be documented with the ISSO.
+# NOTE: Improper Accounts Or Groups listed here will FAIL task.
+# Default: Administrators
+wn22stig_setakeownershipprivilege: Administrators
+
+# CAT 3 defaults
+
+# WN22-CC-000260
+# Windows Server 2022 Windows Update must not obtain updates from other PCs on the Internet.
+# Valid Settings are as follows.
+# 0x00000000 (0) - No peering (HTTP Only)
+# 0x00000001 (1) - Peers on same NAT only (LAN)
+# 0x00000002 (2) - Local Network / Private group peering (Group)
+# 0x00000063 (99) - Simple download mode, no peering (Simple)
+# 0x00000064 (100) - Bypass mode, Delivery Optimization not used (Bypass)
+wn22stig_dodownloadmode: 1
+
+# WN22-SO-000140
+# The Windows dialog box title for the legal banner must be configured with the appropriate text.
+# "DoD Notice and Consent Banner", "US Department of Defense Warning Statement", or an organization-defined equivalent.
+# If an organization-defined title is used, it can in no case contravene or modify the language of the banner text required in WN22-SO-000130.
+# Automated tools may only search for the titles defined above. If an organization-defined title is used, a manual review will be required.
+# "{{ wn22stig_legalnoticetext }}" will call to the default DoD Notice and Consent Banner.
+# Upon creating this both "DoD Notice and Consent Banner", "US Department of Defense Warning Statement" are the same:
+# wn22stig_legalnoticecaption: "{{ wn22stig_legalnoticetext }}"
+wn22stig_legalnoticecaption: "{{ wn22stig_legalnoticetext }}"
