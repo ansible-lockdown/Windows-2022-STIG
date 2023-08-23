@@ -833,7 +833,7 @@
         ansible.builtin.debug:
             msg:
                 - "Warning!! This is a manual task. Windows Server 2022 must have a host-based firewall installed and enabled."
-                - "Windows host based firewall currently is partially enabled on Domain, Private, And Public Profiles."
+                - "Windows host-based firewall currently is partially enabled on Domain, Private, And Public Profiles."
                 - "Please check the firewall and verify the configuration requirements conform to firewall STIG standards."
                 - "{{ wn22_00_000280_firewall_audit.stdout_lines }}"
         when:
@@ -856,18 +856,18 @@
       - SV-254265r848611_rule
       - V-254265
 
-- name: "MEDIUM | WN22-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP)."
+- name: "MEDIUM | WN22-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where host-based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP)."
   block:
-      - name: "MEDIUM | WN22-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | Warning Message"
+      - name: "MEDIUM | WN22-00-000290 | AUDIT | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where host-based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | Warning Message"
         ansible.builtin.debug:
             msg:
                 - "Warning!! This is a manual task. Windows Server 2022 must employ automated mechanisms to determine the state of system"
-                - "components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System"
+                - "components with regard to flaw remediation using the following frequency: continuously, where host-based Security System"
                 - "(HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans"
                 - "by Computer Network Defense Service Provider (CNDSP). Verify DoD-approved ESS software is installed and properly operating."
                 - "Ask the site ISSM for documentation of the ESS software installation and configuration."
 
-      - name: "MEDIUM | WN22-00-000290 | PATCH | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Host Based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | Warn Count"
+      - name: "MEDIUM | WN22-00-000290 | PATCH | Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where host-based Security System (HBSS) is used; 30 days, for any additional internal network scans not covered by HBSS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP). | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000290'
@@ -1211,7 +1211,7 @@
         ansible.builtin.debug:
             msg:
                 - "Warning!! This is a manual task. Internet Information Services (IIS) Manager FTP is currently"
-                - "installed on the system. Anonymous Authentication must be set to diabled per STIG Requirements."
+                - "installed on the system. Anonymous Authentication must be set to disabled per STIG Requirements."
         when: "'Installed' in wn22_00_000420_ftp_audit"
 
       - name: "MEDIUM | WN22-00-000420 | AUDIT | FTP servers must be configured to prevent anonymous logons. | Warn Count"
@@ -1255,7 +1255,7 @@
         ansible.builtin.debug:
             msg:
                 - "Warning!! This is a manual task. For any sites with a Binding that lists FTP, right-click the site and select Explore."
-                - "If the site includes any system areas such as root of the drive, Program Files, or Windows directories, this is a finding"
+                - "If the site includes any system areas such as the root of the drive, Program Files, or Windows directories, this is a finding"
                 - "Configure the FTP sites to allow access only to specific FTP shared resources. Do not allow access to other areas of the system."
                 - "{{ wn22_00_000430_isssite_audit.stdout.split('\n') }}"
         when: "'Installed' in wn22_00_000430_ftp_audit"
@@ -1293,7 +1293,7 @@
       - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message User Accounts"
         ansible.builtin.debug:
             msg:
-                - "Warning!! Please review the User Rights listed for each of any unresolved SID to determine whether they are valid."
+                - "Warning!! Please review the User Rights listed for each of any unresolved SIDs to determine whether they are valid."
                 - "User Accounts"
                 - "----------------------------------------------------------------------"
                 - "{{ wn22_00_000450_orphaned_user_accounts.stdout_lines }}"
@@ -1302,7 +1302,7 @@
       - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message Group Accounts."
         ansible.builtin.debug:
             msg:
-                - "Warning!! Please review the Group Rights listed for each of any unresolved SID to determine whether they are valid."
+                - "Warning!! Please review the Group Rights listed for each of any unresolved SIDs to determine whether they are valid."
                 - "Group Accounts"
                 - "----------------------------------------------------------------------"
                 - "{{ wn22_00_000450_orphaned_group_accounts.stdout_lines }}"
@@ -3336,7 +3336,7 @@
                 - "Warning!! The Kerberos service ticket maximum lifetime must be limited to 600 minutes or less."
                 - "Configure the policy value in the Default Domain Policy for Computer Configuration"
                 - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
-                - ">> Maximum lifetime for service ticket to a maximum of 600 minutes, but not 0, which equates to"
+                - ">> Maximum lifetime for a service ticket to a maximum of 600 minutes, but not 0, which equates to"
                 - "Ticket doesn't expire"
 
       - name: "MEDIUM | WN22-DC-000030 | AUDIT | Windows Server 2022 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less. | import reusable task."
@@ -3454,7 +3454,7 @@
                 - "from the directory server data files. Ignore system shares (e.g., NETLOGON, SYSVOL, and administrative"
                 - "shares ending in $). User shares that are hidden (ending with $) should not be ignored."
                 - "If user shares are located on the same logical partition as the directory server data files, this is a finding."
-                - "Note the directory locations in the values for DSA Database file"
+                - "Note the directory locations in the values for the DSA Database file"
                 - "{{ wn22_dc_000120_audit_dirlocation.stdout_lines | trim }}"
                 - "Note the logical drive(s) or file system partition for any organization-created data shares."
                 - "{{ wn22_dc_000120_audit_shares.stdout_lines | trim }}"
@@ -5041,7 +5041,7 @@
       - name: "MEDIUM | WN22-SO-000400 | PATCH | Windows Server 2022 User Account Control must, at a minimum, prompt administrators for consent on the secure desktop. | Variable Check."
         ansible.builtin.debug:
             msg:
-                - "Warning!! You have have not choosen a correct setting for wn22stig_consentprompt"
+                - "Warning!! You have not chosen the correct setting for wn22stig_consentprompt"
                 - "Please read the notes for the variable and make the necessary change to the variable to be in compliance."
         when:
             - wn22stig_consentprompt < 1 or
