@@ -140,7 +140,7 @@
       datatype: dword
   when:
       - wn22_cc_000470
-      - not win2022stig_skip_secure_winrm
+      - not win_skip_for_test
   tags:
       - WN22-CC-000470
       - CAT1
@@ -158,7 +158,7 @@
       datatype: dword
   when:
       - wn22_cc_000500
-      - not win2022stig_skip_secure_winrm
+      - not win_skip_for_test
   tags:
       - WN22-CC-000500
       - CAT1
@@ -179,7 +179,7 @@
       - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
         ansible.builtin.debug:
             msg:
-                - "Alert! Below are the users in the administrators group. Please review and confirm all users should be in this group"
+                - "Alert! Below are the users in the Administrators group. Please review and confirm all users should be in this group"
                 - "{{ wn22_dc_000010_admin_usrs.stdout_lines }}"
 
       - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system. | Warn Count."
