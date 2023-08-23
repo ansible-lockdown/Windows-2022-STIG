@@ -3222,7 +3222,7 @@
       datatype: dword
   when:
       - wn22_cc_000480
-      - not win2022stig_skip_secure_winrm
+      - not win_skip_for_test
   tags:
       - WN22-CC-000480
       - CAT2
@@ -3257,7 +3257,7 @@
       datatype: dword
   when:
       - wn22_cc_000510
-      - not win2022stig_skip_secure_winrm
+      - not win_skip_for_test
   tags:
       - WN22-CC-000510
       - CAT2
@@ -3276,7 +3276,7 @@
       datatype: dword
   when:
       - wn22_cc_000520
-      - not win2022stig_skip_secure_winrm
+      - not win_skip_for_test
   tags:
       - WN22-CC-000520
       - CAT2
