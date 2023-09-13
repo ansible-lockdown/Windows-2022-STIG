@@ -1,7 +1,7 @@
 ---
 
 # vars file for Windows-2022-STIG
-# Used to control warning summary
+# Used to control warning summary:
 warn_control_list: ""
 warn_count: 0
 
