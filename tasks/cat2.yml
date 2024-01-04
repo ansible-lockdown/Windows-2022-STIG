@@ -1110,7 +1110,7 @@
                 - "Warning!! SecGuide.admx is not installed in C:\\Windows\\PolicyDefinitions folder."
                 - "This policy setting requires the installation of the SecGuide.admx custom templates"
                 - "included with the STIG package."
-        when: wn22_secguide_admx_audit.results[0].matched != 1
+        when: wn22_secguide_admx_audit.matched != 1
 
       - name: "MEDIUM | WN22-00-000390 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server. | Warning Message No SecGuide.adml"
         ansible.builtin.debug:
@@ -1118,15 +1118,15 @@
                 - "Warning!! SecGuide.adml is not installed in C:\\Windows\\PolicyDefinitions\\en-US folder"
                 - "This policy setting requires the installation of the SecGuide.adml custom templates"
                 - "included with the STIG package."
-        when: wn22_secguide_adml_audit.results[0].matched != 1
+        when: wn22_secguide_adml_audit.matched != 1
 
       - name: "MEDIUM | WN22-00-000390 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server. | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000390'
         when:
-            - wn22_secguide_admx_audit.results[0].matched != 1 or
-              wn22_secguide_adml_audit.results[0].matched != 1
+            - wn22_secguide_admx_audit.matched != 1 or
+              wn22_secguide_adml_audit.matched != 1
   when:
       - wn22_00_000390
   tags:
@@ -1154,7 +1154,7 @@
                 - "Warning!! SecGuide.admx is not installed in C:\\Windows\\PolicyDefinitions folder."
                 - "This policy setting requires the installation of the SecGuide.admx custom templates"
                 - "included with the STIG package."
-        when: wn22_secguide_admx_audit.results[0].matched != 1
+        when: wn22_secguide_admx_audit.matched != 1
 
       - name: "MEDIUM | WN22-00-000400 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Warning Message No SecGuide.adml"
         ansible.builtin.debug:
@@ -1162,15 +1162,15 @@
                 - "Warning!! SecGuide.adml is not installed in C:\\Windows\\PolicyDefinitions\\en-US folder"
                 - "This policy setting requires the installation of the SecGuide.adml custom templates"
                 - "included with the STIG package."
-        when: wn22_secguide_adml_audit.results[0].matched != 1
+        when: wn22_secguide_adml_audit.matched != 1
 
       - name: "MEDIUM | WN22-00-000400 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Warn Count."
         ansible.builtin.import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'WN22-00-000400'
         when:
-            - wn22_secguide_admx_audit.results[0].matched != 1 or
-              wn22_secguide_adml_audit.results[0].matched != 1
+            - wn22_secguide_admx_audit.matched != 1 or
+              wn22_secguide_adml_audit.matched != 1
   when:
       - wn22_00_000400
   tags:
