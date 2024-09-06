@@ -2,5 +2,7 @@
 # handlers file for Windows-2022-STIG
 
 - name: reboot_windows
-  ansible.windows.win_reboot:
-      reboot_timeout: 3600
+  ansible.builtin.set_fact:
+      reboot_host: true
+  tags:
+      - always
