@@ -29,8 +29,11 @@
       - CAT3
       - CCI-000213
       - SRG-OS-000080-GPOS-00048
-      - SV-205664r569188_rule
+      - SV-254255r958472_rule
       - V-205664
+      - NIST800-53_AC-3
+      - NIST800-53_A_AC-3_1
+      - NIST800-53_4_AC-3
 
 - name: "LOW | WN22-00-000440 | AUDIT | The Windows Server 2022 time service must synchronize with an appropriate DoD time source."
   block:
@@ -48,8 +51,9 @@
       - CAT3
       - CCI-001891
       - SRG-OS-000355-GPOS-00143
-      - SV-205800r859311_rule
-      - V-205800
+      - SV-254281r1051090_rule
+      - V-254281
+      - NIST800-53_4_AU-8_1_a
 
 - name: "LOW | WN22-CC-000030 | PATCH | Windows Server 2022 Internet Protocol version 6 (IPv6) source routing must be configured to the highest protection level to prevent IP source routing."
   ansible.windows.win_regedit:
@@ -64,8 +68,11 @@
       - CAT3
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-205858r569188_rule
+      - SV-254335r991589_rule
       - V-205858
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 
 - name: "LOW | WN22-CC-000040 | PATCH | Windows Server 2022 source routing must be configured to the highest protection level to prevent Internet Protocol (IP) source routing."
   ansible.windows.win_regedit:
@@ -80,8 +87,11 @@
       - CAT3
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-205859r569188_rule
+      - SV-254336r991589_rule	
       - V-205859
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 
 - name: "LOW | WN22-CC-000050 | PATCH | Windows Server 2022 must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF)-generated routes."
   ansible.windows.win_regedit:
@@ -96,8 +106,11 @@
       - CAT3
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-205860r569188_rule
+      - SV-254337r991589_rule
       - V-205860
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 
 - name: "LOW | WN22-CC-000060 | PATCH | Windows Server 2022 Must be configured to ignore NetBIOS name release requests except from WINS servers."
   ansible.windows.win_regedit:
@@ -112,8 +125,9 @@
       - CAT3
       - CCI-002385
       - SRG-OS-000420-GPOS-00186
-      - SV-205822r569188_rule
+      - SV-254338r958902_rule
       - V-205822
+      - NIST800-53_4_SC-5
 
 - name: "LOW | WN22-CC-000200 | PATCH | Windows Server 2022 Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft."
   ansible.windows.win_regedit:
@@ -128,8 +142,11 @@
       - CAT3
       - CCI-000381
       - SRG-OS-000095-GPOS-00049
-      - SV-205691r569188_rule
+      - SV-254351r958478_rule
       - V-205691
+      - NIST800-53_CM-7
+      - NIST800-53_A_CM-7_1_ii
+      - NIST800-53_4_CM-7_a
 
 - name: "LOW | WN22-CC-000260 | PATCH | Windows Server 2022 Windows Update must not obtain updates from other PCs on the Internet."
   ansible.windows.win_regedit:
@@ -144,8 +161,11 @@
       - CAT3
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-205870r569188_rule
+      - SV-254357r991589_rule
       - V-205870
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 
 - name: "LOW | WN22-CC-000320 | AUDIT | Windows Server 2022 turning off File Explorer heap termination on corruption must be disabled."
   ansible.windows.win_regedit:
@@ -161,8 +181,11 @@
       - CAT3
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-205871r569188_rule
+      - SV-254363r991589_rule
       - V-205871
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 
 - name: "LOW | WN22-DC-000160 | AUDIT | Windows Server 2022 directory service must be configured to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity."
   block:
@@ -181,8 +204,12 @@
       - CAT3
       - CCI-001133
       - SRG-OS-000163-GPOS-00072
-      - SV-205726r569188_rule
+      - SV-254400r970703_rule
       - V-205726
+      - NIST800-53_SC-10
+      - NIST800-53_A_SC-10_1_ii
+      - NIST800-53_4_SC-10
+      - NIST800-53_4_AC-12
 
 - name: "LOW | WN22-SO-000140 | PATCH | Windows Server 2022 title for the legal banner must be configured with the appropriate text."
   ansible.windows.win_regedit:
@@ -203,8 +230,20 @@
       - CCI-001388
       - SRG-OS-000023-GPOS-00006
       - SRG-OS-000228-GPOS-00088
-      - SV-205632r569188_rule
+      - SV-254458r958390_rule
       - V-205632
+      - NIST800-53-AC-8_a
+      - NIST800-53_A_AC-8_1_ii
+      - NIST800-53_4_AC-8_a
+      - NIST800-53-AC-8_c
+      - NIST800-53_A_AC-8_2_i
+      - NIST800-53_4_AC-8_c_1
+      - NIST800-53-AC-8_c
+      - NIST800-53_A_AC-8_2_ii
+      - NIST800-53_4_AC-8_c_2
+      - NIST800-53-AC-8_c
+      - NIST800-53_A_AC-8_2_iii
+      - NIST800-53_4_AC-8_c_3
 
 - name: "LOW | WN22-SO-000370 | PATCH | Windows Server 2022 default permissions of global system objects must be strengthened."
   ansible.windows.win_regedit:
@@ -219,5 +258,8 @@
       - CAT3
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-205871r569188_rule
+      - SV-254481r991589_rule
       - V-205871
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_

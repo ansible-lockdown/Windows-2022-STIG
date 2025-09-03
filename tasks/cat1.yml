@@ -16,9 +16,12 @@
       - WN22-00-000030
       - CAT1
       - CCI-000366
+      - CCI-001312
       - SRG-OS-000480-GPOS-00227
-      - SV-254240r848536_rule
+      - SV-254240r991589_rule
       - V-254240
+      - NIST800-53_CM-6_b
+      - NIST800-53_SI-11_B
 
 - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes."
   block:
@@ -49,9 +52,12 @@
       - CAT1
       - CCI-000213
       - SRG-OS-000080-GPOS-00048
-      - SV-254250r848566_rule
+      - SV-254250r958472_rule
       - V-205663
       - audit
+      - NIST800-53_AC-3
+      - NIST800-53_AC-3_1
+      - NIST800-53_4_AC-3
 
 - name: "HIGH | WN22-AC-000090 | PATCH | Windows Server 2022 reversible password encryption must be disabled."
   community.windows.win_security_policy:
@@ -65,8 +71,11 @@
       - CAT1
       - CCI-000226
       - SRG-OS-000073-GPOS-00041
-      - SV-254293r877397_rule
+      - SV-254293r1016480_rule
       - V-254293
+      - NIST800-53_IA-5_1_c
+      - NIST800-53A_IA-5_1_1_v
+      - NIST800-53_4_IA-5_1_c
 
 - name: "HIGH | WN22-CC-000210 | PATCH | Windows Server 2022 AutoPlay must be turned off for non-volume devices."
   ansible.windows.win_regedit:
@@ -81,8 +90,9 @@
       - CAT1
       - CCI-001764
       - SRG-OS-000368-GPOS-00154
-      - SV-254352r848872_rule
+      - SV-2254352r958804_rule
       - V-254352
+      - NIST800-53_4_CM-7
 
 - name: "HIGH | WN22-CC-000220 | PATCH | Windows Server 2022 default AutoRun behavior must be configured to prevent AutoRun commands."
   ansible.windows.win_regedit:
@@ -97,8 +107,9 @@
       - CAT1
       - CCI-001764
       - SRG-OS-000368-GPOS-00154
-      - SV-254353r848875_rule
+      - SV-254353r958804_rule
       - V-254353
+      - NIST800-53_4_CM-7_2
 
 - name: "HIGH | WN22-CC-000230 | PATCH | Windows Server 2022 AutoPlay must be disabled for all drives."
   ansible.windows.win_regedit:
@@ -112,8 +123,9 @@
       - CAT1
       - CCI-001764
       - SRG-OS-000368-GPOS-00154
-      - SV-254354r848878_rule
+      - SV-254354r958804_rule
       - V-254354
+      - NIST800-53_4_CM-7_2
 
 - name: "HIGH | WN22-CC-000430 | PATCH | Windows Server 2022 must disable the Windows Installer Always install with elevated privileges option."
   ansible.windows.win_regedit:
@@ -129,8 +141,9 @@
       - CAT1
       - CCI-001812
       - SRG-OS-000362-GPOS-00149
-      - SV-254374r848938_rule
+      - SV-254374r1051099_rule
       - V-254374
+      - NIST800-53_4_CM-11_2
 
 - name: "HIGH | WN22-CC-000470 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) client must not use Basic authentication."
   ansible.windows.win_regedit:
@@ -146,9 +159,11 @@
       - CAT1
       - CCI-000877
       - SRG-OS-000125-GPOS-00065
-      - SV-254378r877395_rule
+      - SV-254378r958510_rule
       - V-254378
       - winrm
+      - NIST800-53_MA-4_c
+      - NIST800-53_4_MA-4_c
 
 - name: "HIGH | WN22-CC-000500 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) service must not use Basic authentication."
   ansible.windows.win_regedit:
@@ -164,9 +179,11 @@
       - CAT1
       - CCI-000877
       - SRG-OS-000125-GPOS-00065
-      - SV-254381r877395_rule
+      - SV-254381r958510_rule
       - V-254381
       - winrm
+      - NIST800-53_MA-4_c
+      - NIST800-53_4_MA-4_c
 
 - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
   block:
@@ -194,9 +211,10 @@
       - CAT1
       - CCI-002235
       - SRG-OS-000324-GPOS-00125
-      - SV-254385r877392_rule
+      - SV-254385r958726_rule
       - V-254385
       - audit
+      - NIST800-53_4_AC-6_10
 
 - name: "HIGH | WN22-DC-000070 | AUDIT | Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access."
   block:
@@ -216,8 +234,12 @@
       - CAT1
       - CCI-002235
       - SRG-OS-000324-GPOS-00125
-      - SV-254391r877392_rule
+      - SV-254391r958726_rule
       - V-254391
+      - NIST800-53_SI-11_c
+      - NIST800-53_SI-11_1_iv
+      - NIST800-53_4_SI-11_b
+      - NIST800-53_4_AC-6_10
 
 - name: "HIGH | WN22-DC-000080 | AUDIT | Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions."
   block:
@@ -237,8 +259,9 @@
       - CAT1
       - CCI-002235
       - SRG-OS-000324-GPOS-00125
-      - SV-254392r877392_rule
+      - SV-254392r958726_rule
       - V-254392
+      - NIST800-53_4_AC-6_10
 
 - name: "HIGH | WN22-DC-000090 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must have proper access control permissions."
   block:
@@ -258,8 +281,9 @@
       - CAT1
       - CCI-002235
       - SRG-OS-000324-GPOS-00125
-      - SV-205741r569188_rule
-      - V-205741
+      - SV-254393r958726_rule
+      - V-254393
+      - NIST800-53_4_AC-6_10
 
 - name: "HIGH | WN22-DC-000100 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must have the proper access control permissions."
   block:
@@ -279,8 +303,9 @@
       - CAT1
       - CCI-002235
       - SRG-OS-000324-GPOS-00125
-      - SV-254394r877392_rule
+      - SV-254394r958726_rule
       - V-254394
+      - NIST800-53_4_AC-6_10
 
 - name: "HIGH | WN22-DC-000110 | AUDIT | Windows Server 2022 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions."
   block:
@@ -299,9 +324,10 @@
       - WN22-DC-000110
       - CAT1
       - CCI-002235
-      - SV-254395r877392_rule
+      - SV-254395r958726_rule
       - SRG-OS-000324-GPOS-00125
       - V-254395
+      - NIST800-53_4_AC-6_10
 
 - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
   block:
@@ -321,8 +347,11 @@
       - CAT1
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-254399r849013_rule
+      - SV-254399r991589_rule
       - V-254399
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_AC-6_10
 
 - name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA)."
   block:
@@ -342,8 +371,11 @@
       - CAT1
       - CCI-000185
       - SRG-OS-000066-GPOS-00034
-      - SV-254413r849055_rule
+      - SV-254413r958448_rule
       - V-254413
+      - NIST800-53_IA-5_2
+      - NIST800-53_A_IA-5_2_1
+      - NIST800-53_4_IA-5_2_a
 
 - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
   block:
@@ -363,8 +395,11 @@
       - CAT1
       - CCI-000185
       - SRG-OS-000066-GPOS-00034
-      - SV-254414r849058_rule
+      - SV-254414r958448_rule
       - V-254414
+      - NIST800-53_IA-5_2
+      - NIST800-53_A_IA-5_2_1
+      - NIST800-53_4_IA-5_2_a
 
 - name: "HIGH | WN22-MS-000010 | AUDIT | Windows Server 2022 must only allow Administrators responsible for the member server or standalone or nondomain-joined system to have Administrator rights on the system"
   block:
@@ -393,9 +428,10 @@
       - CAT1
       - CCI-002235
       - SRG-OS-000324-GPOS-00125
-      - SV-254428r877392_rule
+      - SV-254428r958726_rule
       - V-254428
       - audit
+      - NIST800-53_4_AC-6_10
 
 - name: "HIGH | WN22-MS-000140 | PATCH | Windows Server 2022 must be running Credential Guard on domain-joined member servers."
   ansible.windows.win_regedit:
@@ -417,8 +453,11 @@
       - CAT1
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-254441r849139_rule
+      - SV-254441r991589_rule
       - V-254441
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 
 - name: "HIGH | WN22-SO-000020 | PATCH | Windows Server 2022 must prevent local accounts with blank passwords from being used from the network."
   ansible.windows.win_regedit:
@@ -432,9 +471,12 @@
       - WN22-SO-000020
       - CAT1
       - CCI-000366
-      - SV-254446r849154_rule
+      - SV-254446r991589_rule
       - SRG-OS-000480-GPOS-00227
       - V-254446
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 
 - name: "HIGH | WN22-SO-000210 | PATCH | Windows Server 2022 must not allow anonymous SID/Name translation."
   community.windows.win_security_policy:
@@ -448,8 +490,11 @@
       - CAT1
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-254465r849211_rule
+      - SV-254465r991589_rule
       - V-254465
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 
 - name: "HIGH | WN22-SO-000220 | PATCH | Windows Server 2022 must not allow anonymous enumeration of Security Account Manager (SAM) accounts."
   ansible.windows.win_regedit:
@@ -465,8 +510,11 @@
       - CAT1
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-254466r849214_rule
+      - SV-254466r991589_rule
       - V-254466
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 
 - name: "HIGH | WN22-SO-000230 | PATCH | Windows Server 2022 must not allow anonymous enumeration of shares."
   ansible.windows.win_regedit:
@@ -481,8 +529,11 @@
       - CAT1
       - CCI-001090
       - SRG-OS-000138-GPOS-00069
-      - SV-254467r849217_rule
+      - SV-254467r958524_rule
       - V-254467
+      - NIST800-53_SC-4
+      - NIST800-53_A_SC-4_1
+      - NIST800-53_4_SC-4
 
 - name: "HIGH | WN22-SO-000250 | PATCH | Windows Server 2022 must restrict anonymous access to Named Pipes and Shares."
   ansible.windows.win_regedit:
@@ -497,8 +548,11 @@
       - CAT1
       - CCI-001090
       - SRG-OS-000138-GPOS-00069
-      - SV-254469r849223_rule
+      - 254469r958524_rule
       - V-254469
+      - NIST800-53_SC-4
+      - NIST800-53_A_SC-4_1
+      - NIST800-53_4_SC-4
 
 - name: "HIGH | WN22-SO-000300 | PATCH | Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords."
   ansible.windows.win_regedit:
@@ -513,8 +567,11 @@
       - CAT1
       - CCI-000226
       - SRG-OS-000073-GPOS-00041
-      - SV-254474r877397_rule
+      - SV-254474r1051107_rule
       - V-254474
+      - NIST800-53_IA-5_1_c
+      - NIST800-53A_IA-5_1_1_v
+      - NIST800-53_4_IA-5_1_c
 
 - name: "HIGH | WN22-SO-000310 | PATCH | Windows Server 2022 LAN Manager authentication level must be configured to send NTLMv2 response only and to refuse LM and NTLM."
   ansible.windows.win_regedit:
@@ -529,8 +586,11 @@
       - CAT1
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-254467r849217_rule
+      - SV-254475r991589_rule
       - V-254467
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 
 - name: "HIGH | WN22-UR-000020 | PATCH | Windows Server 2022 Act as part of the operating system user right must not be assigned to any groups or accounts."
   ansible.windows.win_user_right:
@@ -544,14 +604,15 @@
       - CAT1
       - CCI-002235
       - SRG-OS-000324-GPOS-00125
-      - SV-254492r877392_rule
+      - SV-254492r958726_rule
       - V-254492
+      - NIST800-53_4_AC-6_10
 
 - name: "HIGH | WN22-UR-000060 | PATCH | Windows Server 2022 Create a token object user right must not be assigned to any groups or accounts."
-  ansible.windows.win_user_right:
-      name: SeCreateTokenPrivilege
-      users: []
-      action: set
+  community.windows.win_security_policy:
+      section: Privilege Rights
+      key: SeCreateTokenPrivilege
+      value: ""
   when:
       - wn22_ur_000060
   tags:
@@ -559,8 +620,9 @@
       - CAT1
       - CCI-002235
       - SRG-OS-000324-GPOS-00125
-      - SV-254496r877392_rule
+      - SV-254496r958726_rule
       - V-254496
+      - NIST800-53_4_AC-6_10
 
 - name: "HIGH | WN22-UR-000100 | PATCH | Windows Server 2022 Debug programs: user right must only be assigned to the Administrators group."
   ansible.windows.win_user_right:
@@ -574,5 +636,6 @@
       - CAT1
       - CCI-002235
       - SRG-OS-000324-GPOS-00125
-      - SV-254500r877392_rule
+      - SV-254500r958726_rule
       - V-254500
+      - NIST800-53_4_AC-6_10

@@ -55,11 +55,6 @@
   tags:
       - CAT3
 
-- name: Run Post Tasks
-  ansible.builtin.import_tasks: post.yml
-  tags:
-      - always
-
 - name: If Warnings Found Output Count and Control IDs Affected
   ansible.builtin.debug:
       msg:
