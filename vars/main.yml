@@ -7,3 +7,7 @@ warn_count: 0
 
 # This sets the variable that is created for the banner.
 lockdown_banner: "{{lookup('file', './templates/banner.txt')}}"
+
+# Default setting, this should not be changed
+# and is overridden if a task that changed sets the value if required.
+reboot_host: false

@@ -998,6 +998,7 @@
   notify: reboot_windows
   when:
       - wn22_00_000320
+      - not win22stig_is_server_core
   tags:
       - WN22-00-000320
       - CAT2
@@ -1070,6 +1071,7 @@
       state: absent
   when:
       - wn22_00_000370
+      - not win22stig_is_server_core
   tags:
       - WN22-00-000370
       - CAT2

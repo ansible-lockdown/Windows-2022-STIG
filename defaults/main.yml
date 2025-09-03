@@ -40,6 +40,9 @@ win22stig_lengthy_search: false
 # different environments. By Default This is set to false.
 win22stig_cloud_based_system: false
 
+# This will be changed to true if discovered for server core type.
+win22stig_is_server_core: false
+
 # win_skip_for_test is used in the playbook to skip over WINRM based controls that
 # may cause WINRM Basic Connection Type to be disabled.
 # Setting win_skip_for_test to 'false' will enable Secure Connection types only.
@@ -50,6 +53,11 @@ win22stig_cloud_based_system: false
 # WN22-CC-000510 - CAT2
 # WN22-CC-000520 - CAT2
 win_skip_for_test: false
+
+# Changes will be made that will require a system reboot.
+# The following option will allow whether or not to skip the reboot.
+# Default: true
+skip_reboot: true
 
 # CAT 1 rules
 wn22_00_000030: true
@@ -483,6 +491,13 @@ wn22stig_legalnoticetext: |
 
     -Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.
 
+# WN22-SO-000140
+# The Windows dialog box title for the legal banner must be configured with the appropriate text.
+# "DoD Notice and Consent Banner", "US Department of Defense Warning Statement", or an organization-defined equivalent.
+# If an organization-defined title is used, it can in no case contravene or modify the language of the banner text required in WN22-SO-000130.
+# Automated tools may only search for the titles defined above. If an organization-defined title is used, a manual review will be required.
+wn22stig_legalnoticecaption: "DoD Notice and Consent Banner"
+
 # WN22-CC-000270
 # Windows Server 2022 Application event log size must be configured to 32768 KB or greater.
 # wn22stig_app_maxsize is the EventLog Application max log size value in KB.
@@ -613,13 +628,3 @@ wn22stig_setakeownershipprivilege: Administrators
 # 0x00000063 (99) - Simple download mode, no peering (Simple)
 # 0x00000064 (100) - Bypass mode, Delivery Optimization not used (Bypass)
 wn22stig_dodownloadmode: 1
-
-# WN22-SO-000140
-# The Windows dialog box title for the legal banner must be configured with the appropriate text.
-# "DoD Notice and Consent Banner", "US Department of Defense Warning Statement", or an organization-defined equivalent.
-# If an organization-defined title is used, it can in no case contravene or modify the language of the banner text required in WN22-SO-000130.
-# Automated tools may only search for the titles defined above. If an organization-defined title is used, a manual review will be required.
-# "{{ wn22stig_legalnoticetext }}" will call to the default DoD Notice and Consent Banner.
-# Upon creating this both "DoD Notice and Consent Banner", "US Department of Defense Warning Statement" are the same:
-# wn22stig_legalnoticecaption: "{{ wn22stig_legalnoticetext }}"
-wn22stig_legalnoticecaption: "{{ wn22stig_legalnoticetext }}"

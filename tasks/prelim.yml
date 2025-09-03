@@ -16,6 +16,7 @@
   ansible.builtin.set_fact:
       win22stig_cloud_based_system: true
   when:
+      - ansible_system_vendor == 'Microsoft Corporation'
       - ansible_virtualization_type == 'Hyper-V' or
         ansible_virtualization_type == 'hvm' or
         ansible_virtualization_type == 'kvm'
@@ -60,3 +61,10 @@
   when:
       - wn22_00_000390 or
         wn22_00_000400
+
+- name: Set Fact If Server Core installation
+  ansible.builtin.set_fact:
+      win22stig_is_server_core: true
+  when: ansible_os_installation_type == 'Server Core'
+  tags:
+      - always
