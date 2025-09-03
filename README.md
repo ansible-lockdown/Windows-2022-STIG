@@ -2,7 +2,7 @@
 
 ## Configure a Windows 2022 system to be [DISA STIG](https://public.cyber.mil/stigs/downloads/) compliant
 
-### Based on [Windows DISA STIG Version 1, Rel 3 released on May 17, 2023](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V1R3_STIG.zip)
+### Based on [Windows DISA STIG Version 2, Rel 3 released on January 30, 2025](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V2R3_STIG.zip)
 
 ---
 
