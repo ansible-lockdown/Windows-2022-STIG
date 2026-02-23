@@ -2052,8 +2052,8 @@
         register: wn22_au_000090_audit
 
       - name: "MEDIUM | WN22-AU-000090 | PATCH | Windows Server 2022 must be configured to audit Account Management | Other Account Management Events successes."
-        ansible.windows.win_shell: AuditPol /set /subcategory:"Other Account Management Events" /failure:enable
-        when: "'Failure' not in wn22_au_000090_audit.stdout"
+        ansible.windows.win_shell: AuditPol /set /subcategory:"Other Account Management Events" /success:enable
+        when: "'Success' not in wn22_au_000090_audit.stdout"
   when:
       - wn22_au_000090
   tags:
