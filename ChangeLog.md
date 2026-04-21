@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026 ALD Demo
+
+April 2026 Updates
+  - Removed conditional check on Gather Distribution Info task to ensure facts are always freshly gathered.
+  - Updated OS check assertion to use `is search()` test instead of `regex_search` filter to return a proper boolean and avoid Ansible 2.19 NoneType deprecation warning.
+
 ## Release 2.3.0
 
 January 2025 Release Updates

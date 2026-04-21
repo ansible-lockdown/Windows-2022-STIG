@@ -10,8 +10,6 @@
 - name: Gather Distribution Info
   ansible.builtin.setup:
       gather_subset: distribution,!all,!min
-  when:
-      - ansible_distribution is not defined
   tags:
       - always
 
@@ -19,7 +17,7 @@
   ansible.builtin.assert:
       that:
           - ansible_os_family == 'Windows'
-          - ansible_distribution | regex_search('(Microsoft Windows Server 2022)')
+          - ansible_distribution is search('Microsoft Windows Server 2022')
       success_msg: "{{ ansible_distribution }} {{ ansible_distribution_major_version }} is the detected operating system."
       fail_msg: "This role can only be run against Windows Server 2022 Editions. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
   tags:
