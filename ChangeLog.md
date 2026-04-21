@@ -5,6 +5,8 @@
 April 2026 Updates
   - Removed conditional check on Gather Distribution Info task to ensure facts are always freshly gathered.
   - Updated OS check assertion to use `is search()` test instead of `regex_search` filter to return a proper boolean and avoid Ansible 2.19 NoneType deprecation warning.
+  - Added `platform` to gather_subset for reliable fact collection in AAP.
+  - Replaced string-based OS check with version-based detection using `os_family`, `os_installation_type`, and `distribution_version` (build 10.0.20348 = Server 2022).
 
 ## Release 2.3.0
 
