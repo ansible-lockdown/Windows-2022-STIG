@@ -9,7 +9,7 @@
 
 - name: Gather Distribution Info
   ansible.builtin.setup:
-      gather_subset: distribution,!all,!min
+      gather_subset: distribution,platform,!all,!min
   tags:
       - always
 
@@ -17,9 +17,10 @@
   ansible.builtin.assert:
       that:
           - ansible_os_family == 'Windows'
-          - ansible_os_name is search('Microsoft Windows Server 2022')
-      success_msg: "{{ ansible_os_name }} is the detected operating system."
-      fail_msg: "This role can only be run against Windows Server 2022 Editions. {{ ansible_os_name }} is not supported."
+          - ansible_os_installation_type == 'Server'
+          - ansible_distribution_version is version('10.0.20348', '>=')
+      success_msg: "{{ ansible_os_name | default(ansible_distribution) }} {{ ansible_distribution_version }} is the detected operating system."
+      fail_msg: "This role can only be run against Windows Server 2022 Editions. {{ ansible_os_name | default(ansible_distribution) }} {{ ansible_distribution_version }} is not supported."
   tags:
       - always
 
