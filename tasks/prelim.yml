@@ -26,6 +26,7 @@
   ansible.windows.win_shell: Get-Volume | ?{ $_.DriveType -eq 'Fixed' } | Select-Object -ExpandProperty 'DriveLetter'
   changed_when: false
   failed_when: false
+  check_mode: false
   register: wn22_drive_letters
   when:
       - wn22_00_000240 or

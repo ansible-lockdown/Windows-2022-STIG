@@ -6,6 +6,7 @@
         ansible.windows.win_shell: Get-Printer | where Shared -eq $true | fl Name, Type
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000180_audit
 
       - name: "LOW | WN22-00-000180 | AUDIT | Non-administrative accounts or groups must only have print permissions on printer shares. | Warning Message."
