@@ -191,6 +191,7 @@
         ansible.windows.win_shell: get-localgroupmember administrators | Select name | Format-Table -HideTableHeaders
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_dc_000010_admin_usrs
 
       - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."

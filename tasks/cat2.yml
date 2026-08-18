@@ -222,6 +222,7 @@
         ansible.windows.win_command: wmic /namespace:\\root\cimv2\security\microsofttpm path win32_tpm get * /format:textvaluelist.xsl
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000090_tpm_status
 
       - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Running Instances Check."
@@ -362,6 +363,7 @@
         ansible.windows.win_shell: icacls "c:\Program Files"
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000150_program_files_audit
 
       - name: "MEDIUM | WN22-00-000150 | AUDIT | Permissions for program file directories must conform to minimum requirements. | Manual Audit icacls for Program Files."
@@ -375,6 +377,7 @@
         ansible.windows.win_shell: icacls "c:\Program Files (x86)"
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000150_program_files_86_audit
 
       - name: "MEDIUM | WN22-00-000150 | AUDIT | Permissions for program file directories must conform to minimum requirements. | Manual Audit icacls for Program Files x86."
@@ -403,6 +406,7 @@
         ansible.windows.win_shell: icacls "c:\windows"
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000160_windows_dir_audit
 
       - name: "MEDIUM | WN22-00-000160 | AUDIT | Permissions for the Windows installation directory must conform to minimum requirements. | Warning Message."
@@ -455,6 +459,7 @@
         ansible.windows.win_shell: Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000190_account_audit_dc
         when: ansible_windows_domain_role == "Primary domain controller"
 
@@ -491,6 +496,7 @@
                                 }
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000190_account_audit_dm_sa
         when: not ansible_windows_domain_role == "Primary domain controller"
 
@@ -621,6 +627,7 @@
                 Format-Table -Property Name,PasswordExpires,Disabled,LocalAccount
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000210_audit_dm_sa
         when: not ansible_windows_domain_role == "Primary domain controller"
 
@@ -674,6 +681,7 @@
         ansible.windows.win_shell: Get-SmbShare | Where-Object { ($_.Name -notlike "ADMIN$") -and ($_.Name -notlike 'C$') -and ($_.Name -notlike 'IPC$') } | Select-Object -Property Name | format-table -hidetableheaders
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000230_audit
 
       - name: "MEDIUM | WN22-00-000230 | AUDIT | Non-system-created file shares on a system must limit access to groups that require it. | Warning Message."
@@ -818,6 +826,7 @@
         ansible.windows.win_shell: Get-WindowsFeature | Where-Object -FilterScript {$_.Installed -EQ $True}
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000270_audit
 
       - name: "MEDIUM | WN22-00-000270 | AUDIT | The roles and features required by the system must be documented. | Warning Message."
@@ -862,6 +871,7 @@
                                 };
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000280_firewall_audit
 
       - name: "MEDIUM | wn22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message No Windows Firewall Enabled"
@@ -953,6 +963,7 @@
         ansible.windows.win_shell: Search-ADAccount -AccountExpiring | FT Name, AccountExpirationDate
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000330_audit_dc
         when: ansible_windows_domain_role == "Primary domain controller"
 
@@ -970,6 +981,7 @@
         ansible.windows.win_shell: Get-LocalUser
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000330_audit_sa
         when: not ansible_windows_domain_role == "Primary domain controller"
 
@@ -1010,6 +1022,7 @@
         ansible.windows.win_shell: Search-ADAccount -AccountExpiring | FT Name, AccountExpirationDate
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000310_audit_dc
         when: ansible_windows_domain_role == "Primary domain controller"
 
@@ -1027,6 +1040,7 @@
         ansible.windows.win_shell: Get-LocalUser
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000310_audit_sa
         when: not ansible_windows_domain_role == "Primary domain controller"
 
@@ -1303,6 +1317,7 @@
         ansible.windows.win_shell: Get-WindowsFeature | Where Name -eq Web-Ftp-Service
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000420_audit
 
       - name: set_fact
@@ -1341,6 +1356,7 @@
         ansible.windows.win_shell: Get-WindowsFeature | Where Name -eq Web-Ftp-Service
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000430_audit
 
       - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Set Fact."
@@ -1353,6 +1369,7 @@
                                 Get-IISSite
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000430_isssite_audit
         when: "'Installed' in wn22_00_000430_ftp_audit"
 
@@ -1390,12 +1407,14 @@
         ansible.windows.win_shell: Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -match "*S"} | Select Name,SID,DOMAIN
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000450_orphaned_user_accounts
 
       - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Check For Orphaned Group Accounts. | Get Group List"
         ansible.windows.win_shell: Get-WmiObject -Class Win32_UserAccount | Where-Object {$_.SID -match "*S"} | Select Name,SID,DOMAIN
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_00_000450_orphaned_group_accounts
 
       - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message User Accounts"
@@ -1822,12 +1841,14 @@
         ansible.windows.win_shell: Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\ | Select-Object File | ft -HideTableHeaders
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_au_000030_app_log_location
 
       - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Get Current Permissions For Default Application Log."
         ansible.windows.win_shell: get-acl "{{ wn22_au_000030_app_log_location.stdout | trim }}" | FL AccessToString
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_au_000030_app_log_permissions
 
       - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Permissions warning for accounts."
@@ -1866,12 +1887,14 @@
         ansible.windows.win_shell: Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Security\ | Select-Object File | ft -HideTableHeaders
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_au_000040_sec_log_location
 
       - name: "MEDIUM | WN22-AU-000040 | AUDIT | Permissions for the Security event log must prevent access by non-privileged accounts. | Get Current Permissions For Default Security Log."
         ansible.windows.win_shell: get-acl "{{ wn22_au_000040_sec_log_location.stdout | trim }}" | FL AccessToString
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_au_000040_sec_log_permissions
 
       - name: "MEDIUM | WN22-AU-000040 | AUDIT | Permissions for the Security event log must prevent access by non-privileged accounts. | Permissions warning for accounts."
@@ -1911,12 +1934,14 @@
         ansible.windows.win_shell: Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\System\ | Select-Object File | ft -HideTableHeaders
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_au_000050_system_log_location
 
       - name: "MEDIUM | WN22-AU-000050 | AUDIT | Permissions for the System event log must prevent access by non-privileged accounts. | Get Current Permissions For Default System Log."
         ansible.windows.win_shell: get-acl "{{ wn22_au_000050_system_log_location.stdout | trim }}" | FL AccessToString
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_au_000050_system_log_permissions
 
       - name: "MEDIUM | WN22-AU-000050 | AUDIT | Permissions for the System event log must prevent access by non-privileged accounts. | Permissions warning for accounts."
@@ -1956,6 +1981,7 @@
         ansible.windows.win_shell: get-acl {{ item }}:\Windows\system32\Eventvwr.exe | FL AccessToString
         changed_when: false
         failed_when: false
+        check_mode: false
         with_items:
             - "{{ wn22_drive_letters.stdout_lines }}"
         register: wn22_au_000060_event_viewer_permissions
@@ -2989,6 +3015,7 @@
         ansible.windows.win_shell: Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard | Select-Object VirtualizationBasedSecurityStatus | ft -hidetableheaders
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_cc_000110_audit
 
       - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | Device Guard Virtualization based security Not Running Warning Message."
@@ -3817,12 +3844,14 @@
         ansible.windows.win_shell: Get-ItemProperty Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NTDS\Parameters -Name "Database log files path","DSA Database file"
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_dc_000120_audit_dirlocation
 
       - name: "MEDIUM | WN22-DC-000120 | AUDIT | Data files owned by users must be on a different logical partition from the directory server data files. | Get Shared Drives"
         ansible.windows.win_shell: net share
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_dc_000120_audit_shares
 
       - name: "MEDIUM | WN22-DC-000120 | AUDIT | Data files owned by users must be on a different logical partition from the directory server data files. | Warning Message."
@@ -4244,6 +4273,7 @@
         ansible.windows.win_shell: Get-ADUser -Filter {(Enabled -eq $True) -and (SmartcardLogonRequired -eq $False)} | FT Name
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_dc_000310_audit
 
       - name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication. | Warning Message."
@@ -4550,6 +4580,7 @@
         ansible.windows.win_shell: "Get-ADUser krbtgt -Property PasswordLastSet | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ wn22stig_krbtgt_account_pass_age }}))} | Select-Object -ExpandProperty PasswordLastSet"
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_dc_000430_audit
         when: wn22stig_krbtgt_account_pass_age <= 180
 
@@ -4878,18 +4909,21 @@
         ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\root | Where {$_.Subject -Like "*DoD Root CA 3*" -and $_.Thumbprint -Like "D73CA91102A2204A36459ED32213B467D7CE97FB"} | FL Subject, Issuer, Thumbprint, NotAfter
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_pk_000010_root_3_Check
 
       - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | Check For DOD Root CA 4."
         ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\root | Where {$_.Subject -Like "*DoD Root CA 4*" -and $_.Thumbprint -Like "B8269F25DBD937ECAFD4C35A9838571723F2D026"} | FL Subject, Issuer, Thumbprint, NotAfter
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_pk_000010_root_4_Check
 
       - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | Check For DOD Root CA 5."
         ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\root | Where {$_.Subject -Like "*DoD Root CA 5*" -and $_.Thumbprint -Like "4ECB5CC3095670454DA1CBD410FC921F46B8564B"} | FL Subject, Issuer, Thumbprint, NotAfter
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_pk_000010_root_5_Check
 
       - name: "MEDIUM | WN22-PK-000010 | AUDIT | Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store. | Check For DOD Root CA 6."
@@ -4961,6 +4995,7 @@
         ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\disallowed | Where {$_.Issuer -Like "*DoD Interoperability*" -and $_.Subject -Like "*DoD*" -and $_.Thumbprint -Like "49CBE933151872E17C8EAE7F0ABA97FB610F6477"} | FL Subject, Issuer, Thumbprint, NotAfter
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_pk_000020_interop_check_for_49
 
       - name: "MEDIUM | WN22-PK-000020 | AUDIT | The DoD Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems. | Warning!! No DoD Interoperability Root CA 2 Certificate Installed."
@@ -4997,6 +5032,7 @@
         ansible.windows.win_shell: Get-ChildItem -Path Cert:Localmachine\disallowed | Where {$_.Issuer -Like "*US DoD CCEB Interoperability Root CA 2*" -and $_.Subject -Like "*DoD Root CA 3*" -and $_.Thumbprint -Like "9B74964506C7ED9138070D08D5F8B969866560C8"} | FL Subject, Issuer, Thumbprint, NotAfter
         changed_when: false
         failed_when: false
+        check_mode: false
         register: wn22_pk_000030_cceb_interop_check
 
       - name: "MEDIUM | WN22-PK-000030 | AUDIT | The US DoD CCEB Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems. | Warning!! No DoD Root CA 3 - US DoD CCEB Interoperability Certificate Installed."
