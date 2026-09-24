@@ -1,0 +1,792 @@
+---
+
+- name: "MEDIUM | WN22-CC-000010 | PATCH | Windows Server 2022 must prevent the display of slide shows on the lock screen."
+  when: wn22_cc_000010 | bool
+  tags:
+    - WN22-CC-000010
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254333r958478_rule
+    - V-254333
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization
+    value: NoLockScreenSlideshow
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000020 | PATCH | Windows Server 2022 must have WDigest Authentication disabled."
+  when: wn22_cc_000020 | bool
+  tags:
+    - WN22-CC-000020
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254334r958478_rule
+    - V-254334
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\Wdigest
+    value: UseLogonCredential
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000070 | PATCH | Windows Server 2022 insecure logons to an SMB server must be disabled."
+  when: wn22_cc_000070 | bool
+  tags:
+    - WN22-CC-000070
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254339r991589_rule
+    - V-254339
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanWorkstation
+    value: AllowInsecureGuestAuth
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000080 | PATCH | Windows Server 2022 hardened Universal Naming Convention (UNC) paths must be defined to require mutual authentication and integrity for at least the SYSVOL and NETLOGON shares."
+  when:
+    - wn22_cc_000080 | bool
+    - ansible_facts['windows_domain_member']
+  tags:
+    - WN22-CC-000080
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254340r991589_rule
+    - V-254340
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths
+    value: "{{ item }}"
+    data: RequireMutualAuthentication=1, RequireIntegrity=1
+    datatype: string
+  with_items:
+    - \\*\SYSVOL
+    - \\*\NETLOGON
+
+- name: "MEDIUM | WN22-CC-000090 | PATCH | Windows Server 2022 command line data must be included in process creation events."
+  when: wn22_cc_000090 | bool
+  tags:
+    - WN22-CC-000090
+    - CAT2
+    - CCI-000135
+    - SRG-OS-000042-GPOS-00020
+    - SV-254341r958422_rule
+    - V-254341
+    - NIST800-53_AU-3_1
+    - NIST800-53_A_AU-3_1_1_iii
+    - NIST800-53_4_AU-3_1
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit\
+    value: ProcessCreationIncludeCmdLine_Enabled
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000100 | PATCH | Windows Server 2022 must be configured to enable Remote host allows delegation of nonexportable credentials."
+  when: wn22_cc_000100 | bool
+  tags:
+    - WN22-CC-000100
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254342r991589_rule
+    - V-254342
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\
+    value: AllowProtectedCreds
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000110 | PATCH | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection."
+  when:
+    - wn22_cc_000110 | bool
+    - ansible_facts['windows_domain_member']
+  tags:
+    - WN22-CC-000110
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254343r991589_rule
+    - V-254343
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-CC-000110 | PATCH | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | EnableVirtualizationBasedSecurity Registry Add"
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard\
+        state: present
+        value: EnableVirtualizationBasedSecurity
+        data: 1
+        datatype: dword
+
+    - name: "MEDIUM | WN22-CC-000110 | PATCH | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | RequirePlatformSecurityFeatures Registry Add"
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard\
+        state: present
+        value: RequirePlatformSecurityFeatures
+        data: "{{ win22stig_dma_protection }}"
+        datatype: dword
+
+    - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | Get Status Of Device Guard Virtualization."
+      ansible.windows.win_shell: Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard | Select-Object VirtualizationBasedSecurityStatus | ft -hidetableheaders
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_cc_000110_audit
+
+    - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | Device Guard Virtualization based security Not Running Warning Message."
+      when: "'2' not in discovered_cc_000110_audit.stdout | trim"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 virtualization-based security must be enabled with the platform security"
+          - "level configured to Secure Boot or Secure Boot with DMA Protection. The policy settings referenced in the Fix section will"
+          - "configure the following registry values. However, due to hardware requirements, the registry values alone do not ensure proper"
+          - "function."
+
+    - name: "MEDIUM | WN22-CC-000110 | AUDIT | Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection. | Warn Count"
+      when: "'2' not in discovered_cc_000110_audit.stdout | trim"
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-CC-000110"
+
+- name: "MEDIUM | WN22-CC-000130 | PATCH | Windows Server 2022 early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers identified as bad."
+  when: wn22_cc_000130 | bool
+  tags:
+    - WN22-CC-000130
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254344r991589_rule
+    - V-254344
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch
+    state: present
+    value: DriverLoadPolicy
+    data: "{{ win22stig_driver_load_policy }}"
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000140 | PATCH | Windows Server 2022 group policy objects must be reprocessed even if they have not changed."
+  # XCCDF: not applicable for domain controllers.
+  when:
+    - wn22_cc_000140 | bool
+    - "'controller' not in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-CC-000140
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254345r1135378_rule
+    - V-254345
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Group Policy\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}
+    value: NoGPOListChanges
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000150 | PATCH | Windows Server 2022 downloading print driver packages over HTTP must be turned off."
+  when: wn22_cc_000150 | bool
+  tags:
+    - WN22-CC-000150
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254346r958478_rule
+    - V-254346
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers
+    value: DisableWebPnPDownload
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000160 | PATCH | Windows Server 2022 printing over HTTP must be turned off."
+  when: wn22_cc_000160 | bool
+  tags:
+    - WN22-CC-000160
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254347r958478_rule
+    - V-254347
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers
+    value: DisableHTTPPrinting
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000170 | PATCH | Windows Server 2022 network selection user interface (UI) must not be displayed on the logon screen."
+  when: wn22_cc_000170 | bool
+  tags:
+    - WN22-CC-000170
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254348r958478_rule
+    - V-254348
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    value: DontDisplayNetworkSelectionUI
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000180 | PATCH | Windows Server 2022 users must be prompted to authenticate when the system wakes from sleep (on battery)."
+  when: wn22_cc_000180 | bool
+  tags:
+    - WN22-CC-000180
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254349r991589_rule
+    - V-254349
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
+    value: DCSettingIndex
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000190 | PATCH | Windows Server 2022 users must be prompted to authenticate when the system wakes from sleep (plugged in)."
+  when: wn22_cc_000190 | bool
+  tags:
+    - WN22-CC-000190
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254350r991589_rule
+    - V-254350
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
+    value: ACSettingIndex
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000240 | PATCH | Windows Server 2022 administrator accounts must not be enumerated during elevation."
+  when: wn22_cc_000240 | bool
+  tags:
+    - WN22-CC-000240
+    - CAT2
+    - CCI-001084
+    - SRG-OS-000134-GPOS-00068
+    - SV-254355r958518_rule
+    - V-254355
+    - NIST800-53_SC-3
+    - NIST800-53_A_SC-3_1_ii
+    - NIST800-53_4_SC-3
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI
+    value: EnumerateAdministrators
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000250 | PATCH | Windows Server 2022 Diagnostic Data must be configured to send required diagnostic data or optional diagnostic data."
+  when: wn22_cc_000250 | bool
+  tags:
+    - WN22-CC-000250
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254356r991589_rule
+    - V-254356
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+    value: AllowTelemetry
+    data: "{{ win22stig_allow_telemetry }}"
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000270 | PATCH | Windows Server 2022 Application event log size must be configured to 32768 KB or greater."
+  when: wn22_cc_000270 | bool
+  tags:
+    - WN22-CC-000270
+    - CAT2
+    - CCI-001849
+    - SRG-OS-000341-GPOS-00132
+    - SV-254358r958752_rule
+    - V-254358
+    - NIST800-53_4_AU-4
+  block:
+    - name: "MEDIUM | WN22-CC-000270 | PATCH | Windows Server 2022 Application event log size must be configured to 32768 KB or greater. | Warning Message."
+      when: win22stig_application_event_log_max_size < 32768
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have an invalid file size set for win22stig_application_event_log_max_size please read"
+          - "the notes for the variable and make the necessary change to the variable to be in compliance."
+
+    - name: "MEDIUM | WN22-CC-000270 | PATCH | Windows Server 2022 Application event log size must be configured to 32768 KB or greater. | Warn Count."
+      when: win22stig_application_event_log_max_size < 32768
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-CC-000270"
+
+    - name: "MEDIUM | WN22-CC-000270 | PATCH | Windows Server 2022 Application event log size must be configured to 32768 KB or greater. | Apply Log Size"
+      when: win22stig_application_event_log_max_size >= 32768
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Application
+        state: present
+        value: MaxSize
+        data: "{{ win22stig_application_event_log_max_size }}"
+        datatype: dword
+
+- name: "MEDIUM | WN22-CC-000280 | PATCH | The Windows Server 2022 security event log size must be configured to a value that holds at least one week's worth of audit records."
+  when: wn22_cc_000280 | bool
+  tags:
+    - WN22-CC-000280
+    - CAT2
+    - CCI-001849
+    - SRG-OS-000341-GPOS-00132
+    - SV-254359r1210268_rule
+    - V-254359
+    - NIST800-53_4_AU-4
+  block:
+    - name: "MEDIUM | WN22-CC-000280 | AUDIT | The Windows Server 2022 security event log size must be configured to a value that holds at least one week's worth of audit records. | Warning Message."
+      when: win22stig_security_event_log_max_size < 5120000
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have an invalid file size set for win22stig_security_event_log_max_size please read"
+          - "the notes for the variable and make the necessary change to the variable to be in compliance."
+
+    - name: "MEDIUM | WN22-CC-000280 | AUDIT | The Windows Server 2022 security event log size must be configured to a value that holds at least one week's worth of audit records. | Warn Count."
+      when: win22stig_security_event_log_max_size < 5120000
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-CC-000280"
+
+    - name: "MEDIUM | WN22-CC-000280 | PATCH | The Windows Server 2022 security event log size must be configured to a value that holds at least one week's worth of audit records. | Apply Log Size"
+      when: win22stig_security_event_log_max_size >= 5120000
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Security
+        state: present
+        value: MaxSize
+        data: "{{ win22stig_security_event_log_max_size }}"
+        datatype: dword
+
+- name: "MEDIUM | WN22-CC-000290 | PATCH | Windows Server 2022 System event log size must be configured to 32768 KB or greater."
+  when: wn22_cc_000290 | bool
+  tags:
+    - WN22-CC-000290
+    - CAT2
+    - CCI-001849
+    - SRG-OS-000341-GPOS-00132
+    - SV-254360r958752_rule
+    - V-254360
+    - NIST800-53_4_AU-4
+  block:
+    - name: "MEDIUM | WN22-CC-000290 | AUDIT | Windows Server 2022 System event log size must be configured to 32768 KB or greater. | Warning Message."
+      when: win22stig_system_event_log_max_size < 32768
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have an invalid file size set for win22stig_system_event_log_max_size please read"
+          - "the notes for the variable and make the necessary change to the variable to be in compliance."
+
+    - name: "MEDIUM | WN22-CC-000290 | AUDIT | Windows Server 2022 System event log size must be configured to 32768 KB or greater. | Warn Count."
+      when: win22stig_system_event_log_max_size < 32768
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-CC-000290"
+
+    - name: "MEDIUM | WN22-CC-000290 | PATCH | Windows Server 2022 System event log size must be configured to 32768 KB or greater. | Apply Log Size"
+      when: win22stig_system_event_log_max_size >= 32768
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\System
+        state: present
+        value: MaxSize
+        data: "{{ win22stig_system_event_log_max_size }}"
+        datatype: dword
+
+- name: "MEDIUM | WN22-CC-000300 | PATCH | Windows Server 2022 Windows Defender SmartScreen must be enabled."
+  when: wn22_cc_000300 | bool
+  tags:
+    - WN22-CC-000300
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254361r958478_rule
+    - V-254361
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    value: EnableSmartScreen
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000310 | PATCH | Windows Server 2022 Explorer Data Execution Prevention must be enabled."
+  when: wn22_cc_000310 | bool
+  tags:
+    - WN22-CC-000310
+    - CAT2
+    - CCI-002824
+    - SRG-OS-000433-GPOS-00192
+    - SV-254362r958928_rule
+    - V-254362
+    - NIST800-53_4_SI-16
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer
+    value: NoDataExecutionPrevention
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000330 | PATCH | Windows Server 2022 File Explorer shell protocol must run in protected mode."
+  when: wn22_cc_000330 | bool
+  tags:
+    - WN22-CC-000330
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254364r991589_rule
+    - V-254364
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
+    value: PreXPSP2ShellProtocolBehavior
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000340 | PATCH | Windows Server 2022 must not save passwords in the Remote Desktop Client."
+  when: wn22_cc_000340 | bool
+  tags:
+    - WN22-CC-000340
+    - CAT2
+    - CCI-002038
+    - SRG-OS-000373-GPOS-00156
+    - SV-254365r1051096_rule
+    - V-254365
+    - NIST800-53_4_IA-11
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+    value: DisablePasswordSaving
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000350 | PATCH | Windows Server 2022 Remote Desktop Services must prevent drive redirection."
+  when: wn22_cc_000350 | bool
+  tags:
+    - WN22-CC-000350
+    - CAT2
+    - CCI-001090
+    - SRG-OS-000138-GPOS-00069
+    - SV-254366r1137695_rule
+    - V-254366
+    - NIST800-53_SC-4
+    - NIST800-53_A_SC-4_1
+    - NIST800-53_4_SC-4
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+    value: fDisableCdm
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000360 | PATCH | Windows Server 2022 remote Desktop Services must always prompt a client for passwords upon connection."
+  when: wn22_cc_000360 | bool
+  tags:
+    - WN22-CC-000360
+    - CAT2
+    - CCI-002038
+    - SRG-OS-000373-GPOS-00156
+    - SV-254367r1051097_rule
+    - V-254367
+    - NIST800-53_4_IA-11
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+    value: fPromptForPassword
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000370 | PATCH | Windows Server 2022 Remote Desktop Services must require secure Remote Procedure Call (RPC) communications."
+  when: wn22_cc_000370 | bool
+  tags:
+    - WN22-CC-000370
+    - CAT2
+    - CCI-000068
+    - CCI-001453
+    - SRG-OS-000033-GPOS-00014
+    - SV-254368r958408_rule
+    - V-254368
+    - NIST800-53_AC-17
+    - NIST800-53_A_AC-17_2_1
+    - NIST800-53_4_AC-17_2
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+    value: fEncryptRPCTraffic
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000380 | PATCH | Windows Server 2022 remote Desktop Services must be configured with the client connection encryption set to High Level."
+  when: wn22_cc_000380 | bool
+  tags:
+    - WN22-CC-000380
+    - CAT2
+    - CCI-000068
+    - CCI-001453
+    - SRG-OS-000033-GPOS-00014
+    - SRG-OS-000250-GPOS-00093
+    - SV-254369r958408_rule
+    - V-254369
+    - NIST800-53_AC-17
+    - NIST800-53_A_AC-17_2_1
+    - NIST800-53_4_AC-17_2
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+    value: MinEncryptionLevel
+    data: 3
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000390 | PATCH | Windows Server 2022 must prevent attachments from being downloaded from RSS feeds."
+  when: wn22_cc_000390 | bool
+  tags:
+    - WN22-CC-000390
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254370r991589_rule
+    - V-254370
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds
+    value: DisableEnclosureDownload
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000400 | PATCH | Windows Server 2022 must disable Basic authentication for RSS feeds over HTTP."
+  when: wn22_cc_000400 | bool
+  tags:
+    - WN22-CC-000400
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254371r958478_rule
+    - V-254371
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds
+    value: AllowBasicAuthInClear
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000410 | PATCH | Windows Server 2022 must prevent Indexing of encrypted files."
+  when: wn22_cc_000410 | bool
+  tags:
+    - WN22-CC-000410
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254372r958478_rule
+    - V-254372
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+    value: AllowIndexingEncryptedStoresOrItems
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000420 | PATCH | Windows Server 2022 must prevent users from changing installation options."
+  when: wn22_cc_000420 | bool
+  tags:
+    - WN22-CC-000420
+    - CAT2
+    - CCI-003980
+    - CCI-001812
+    - SRG-OS-000362-GPOS-00149
+    - SV-254373r1051098_rule
+    - V-254373
+    - NIST800-53_4_CM-11_2
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer
+    value: EnableUserControl
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000440 | PATCH | Windows Server 2022 users must be notified if a web-based program attempts to install software."
+  when: wn22_cc_000440 | bool
+  tags:
+    - WN22-CC-000440
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254375r991589_rule
+    - V-254375
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer
+    value: SafeForScripting
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000450 | PATCH | Windows Server 2022 must disable automatically signing in the last interactive user after a system-initiated restart."
+  when: wn22_cc_000450 | bool
+  tags:
+    - WN22-CC-000450
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00229
+    - SV-254376r991591_rule
+    - V-254376
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    value: DisableAutomaticRestartSignOn
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000460 | PATCH | Windows Server 2022 PowerShell script block logging must be enabled."
+  when: wn22_cc_000460 | bool
+  tags:
+    - WN22-CC-000460
+    - CAT2
+    - CCI-000135
+    - SRG-OS-000042-GPOS-00020
+    - SV-254377r958422_rule
+    - V-254377
+    - NIST800-53_AU-3_1
+    - NIST800-53_A_AU-3_1_1_ii
+    - NIST800-53_4_AU-3_1
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging
+    value: EnableScriptBlockLogging
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000480 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) client must not allow unencrypted traffic."
+  when:
+    - wn22_cc_000480 | bool
+    - not win_skip_for_test | bool
+  tags:
+    - WN22-CC-000480
+    - CAT2
+    - CCI-002890
+    - CCI-003123
+    - SRG-OS-000393-GPOS-00173
+    - SV-254379r958848_rule
+    - V-254379
+    - winrm
+    - NIST800-53_4_MA-4_6
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
+    value: AllowUnencryptedTraffic
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000490 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) client must not use Digest authentication."
+  when: wn22_cc_000490 | bool
+  tags:
+    - WN22-CC-000490
+    - CAT2
+    - CCI-000877
+    - SRG-OS-000125-GPOS-00065
+    - SV-254380r958510_rule
+    - V-254380
+    - NIST800-53_4_MA-4_c
+    - NIST800-53_4_MA-4_1_iv
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
+    value: AllowDigest
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000510 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) service must not allow unencrypted traffic."
+  when:
+    - wn22_cc_000510 | bool
+    - not win_skip_for_test | bool
+  tags:
+    - WN22-CC-000510
+    - CAT2
+    - CCI-002890
+    - CCI-003123
+    - SRG-OS-000393-GPOS-00173
+    - SV-254382r958848_rule
+    - V-254382
+    - winrm
+    - NIST800-53_4_MA-4_6
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service
+    value: AllowUnencryptedTraffic
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000520 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) service must not store RunAs credentials."
+  when:
+    - wn22_cc_000520 | bool
+    - not win_skip_for_test | bool
+  tags:
+    - WN22-CC-000520
+    - CAT2
+    - CCI-002038
+    - SRG-OS-000373-GPOS-00156
+    - SV-254383r1051100_rule
+    - V-254383
+    - winrm
+    - NIST800-53_4_IA-11
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service
+    value: DisableRunAs
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-CC-000530 | PATCH | Windows Server 2022 must have PowerShell Transcription enabled."
+  when: wn22_cc_000530 | bool
+  tags:
+    - WN22-CC-000530
+    - CAT2
+    - CCI-000134
+    - SRG-OS-000041-GPOS-00019
+    - SV-254384r958420_rule
+    - V-254384
+    - NIST800-53_AU-3_1
+    - NIST800-53_A_AU-3_1
+    - NIST800-53_4_AU-3
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\Transcription\
+    value: EnableTranscripting
+    data: 1
+    datatype: dword

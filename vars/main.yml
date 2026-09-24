@@ -1,13 +1,45 @@
 ---
 
 # vars file for Windows-2022-STIG
+
+min_ansible_version: 2.16.1
+
 # Used to control warning summary:
 warn_control_list: ""
 warn_count: 0
 
-# This sets the variable that is created for the banner.
-lockdown_banner: "{{lookup('file', './templates/banner.txt')}}"
+# Default for facts. post.yml reads this to decide whether a reboot is needed; a
+# control that requires one raises it with set_fact. Defined here rather than in
+# defaults so it cannot be pinned from inventory, which would mask a real reboot.
+change_requires_reboot: false
 
-# Default setting, this should not be changed
-# and is overridden if a task that changed sets the value if required.
-reboot_host: false
+# This sets the variable that is created for the banner.
+lockdown_banner: "{{ lookup('file', './templates/banner.txt') }}"
+
+company_title: 'MindPoint Group - A Quantum Sky Company'
+
+file_managed_by_ansible: |-
+  # File managed by ansible as part of {{ benchmark }} benchmark
+  # As part of Ansible-lockdown
+  # Provided by {{ company_title }}
+
+# Both are raised in prelim.yml and both guard a control that would sever the run. Seeded here
+# so neither control's `when` is ever evaluated against an undefined name.
+#
+# prelim_control_account_is_local - ansible_user carries no domain separator, so the run is
+# connected as a local account whatever the transport. WN22-MS-000080 removes the network logon right
+# from every local account, which severs BOTH WinRM and SSH, because Windows OpenSSH password
+# authentication uses the same logon path. The console is the only way back in.
+prelim_control_account_is_local: false
+
+# prelim_local_account_network_logon - the above, and the transport is a network logon one.
+# WN22-MS-000020 filters the privileged token of local accounts on network logon only, so SSH
+# survives that control and is a genuine fallback for it.
+prelim_local_account_network_logon: false
+
+# Seeded false so a standalone host still applies the [System Access] controls;
+# prelim raises it from the gathered windows_domain facts when the host is joined.
+discovered_domain_joined: false
+# On a domain joined host the Default Domain Policy owns [System Access], so the 13
+# secedit backed controls cannot hold there. Seeded false; prelim sets it true when joined.
+discovered_account_policy_is_domain_scoped: false

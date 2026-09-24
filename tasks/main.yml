@@ -1,68 +1,99 @@
 ---
 
 # tasks file for Windows-2022-STIG
+
 - name: Display Banner
+  tags: always
   ansible.builtin.debug:
-      msg: "{{ lockdown_banner.split('\n') }}"
-  tags:
-      - always
+    msg: "{{ lockdown_banner.split('\n') }}"
 
 - name: Gather Distribution Info
+  when: ansible_facts['distribution'] is not defined
+  tags: always
   ansible.builtin.setup:
-      gather_subset: distribution,!all,!min
-  when:
-      - ansible_distribution is not defined
-  tags:
-      - always
+    gather_subset: distribution,!all,!min
 
+- name: Get Windows Installation Type
+  tags: always
+  ansible.windows.win_reg_stat:
+    path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion
+    name: InstallationType
+  register: prelim_get_windows_installation_type
+
+- name: Set Windows Installation Type
+  tags: always
+  ansible.builtin.set_fact:
+    prelim_windows_installation_type: "{{ prelim_get_windows_installation_type.value | default('', true) }}"
+
+# ansible_facts['distribution'] is only populated when the connecting user is an administrator,
+# so it is defaulted here and the installation type is checked separately. Server Core is a
+# distinct InstallationType literal and must be accepted alongside Server.
 - name: Check OS Version and Family
+  when: not skip_os_check | bool
+  tags: always
   ansible.builtin.assert:
-      that:
-          - ansible_os_family == 'Windows'
-          - ansible_distribution | regex_search('(Microsoft Windows Server 2022)')
-      success_msg: "{{ ansible_distribution }} {{ ansible_distribution_major_version }} is the detected operating system."
-      fail_msg: "This role can only be run against Windows Server 2022 Editions. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
-  tags:
-      - always
+    that:
+      - ansible_facts['os_family'] == 'Windows'
+      - prelim_windows_installation_type in ['Server', 'Server Core']
+      - "'2022' in ansible_facts['distribution'] | default('', true)"
+    success_msg: "{{ ansible_facts['distribution'] | default('Windows', true) }} is the detected operating system."
+    fail_msg: "This role can only be run against Windows Server 2022 Editions. {{ ansible_facts['distribution'] | default('unknown', true) }} is not supported."
 
 - name: Check Ansible Version
+  tags: always
   ansible.builtin.assert:
-      that: ansible_version.full is version_compare(win2022stig_min_ansible_version, '>=')
-      msg: You must use Ansible {{ win2022stig_min_ansible_version }} or greater
-  tags:
-      - always
+    that: ansible_version.full is version_compare(min_ansible_version, '>=')
+    success_msg: "Ansible version {{ ansible_version.full }} meets the minimum of {{ min_ansible_version }}."
+    fail_msg: "You must use Ansible {{ min_ansible_version }} or greater."
 
 - name: Include the Preliminary Tasks
-  ansible.builtin.import_tasks: prelim.yml
   tags:
-      - prelim_tasks
+    - always
+    - prelim_tasks
+  ansible.builtin.import_tasks:
+    file: prelim.yml
 
-- name: Execute the Category 1 (Highest Severity) Tasks
-  ansible.builtin.import_tasks: cat1.yml
-  when: win2022stig_cat1_patch
+- name: Include CAT I controls
+  when: win22stig_cat1_controls | bool
   tags:
-      - CAT1
+    - CAT1
+    - high
+  ansible.builtin.import_tasks:
+    file: Cat1/main.yml
 
-- name: Execute the Category 2 (Medium Severity) tasks
-  ansible.builtin.import_tasks: cat2.yml
-  when: win2022stig_cat2_patch
+- name: Include CAT II controls
+  when: win22stig_cat2_controls | bool
   tags:
-      - CAT2
+    - CAT2
+    - medium
+  ansible.builtin.import_tasks:
+    file: Cat2/main.yml
 
-- name: Execute the Category 3 (Lowest Severity) tasks
-  ansible.builtin.import_tasks: cat3.yml
-  when: win2022stig_cat3_patch
+- name: Include CAT III controls
+  when: win22stig_cat3_controls | bool
   tags:
-      - CAT3
+    - CAT3
+    - low
+  ansible.builtin.import_tasks:
+    file: Cat3/main.yml
 
-- name: Run Post Tasks
-  ansible.builtin.import_tasks: post.yml
+- name: Add ansible file showing Benchmark and levels applied
+  when: create_benchmark_facts | bool
   tags:
-      - always
+    - always
+    - benchmark
+  ansible.builtin.import_tasks:
+    file: benchmark_facts.yml
 
-- name: If Warnings Found Output Count and Control IDs Affected
-  ansible.builtin.debug:
-      msg:
-          - "You have {{ warn_count }} Warning(s) that require investigation(s). Their ID's are listed below:"
-          - "{{ warn_control_list }}"
+- name: Run post tasks
+  tags: always
+  ansible.builtin.import_tasks:
+    file: post.yml
+
+- name: If Warnings found Output count and control IDs affected
   when: warn_count != 0
+  tags: always
+  ansible.builtin.debug:
+    msg:
+      - "You have {{ warn_count }} Warning(s) that require investigation(s). Their ID's are listed below:"
+      - "{{ warn_control_list }}"

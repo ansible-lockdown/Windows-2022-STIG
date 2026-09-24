@@ -1,0 +1,1204 @@
+---
+
+- name: "MEDIUM | WN22-AU-000010 | AUDIT | Windows Server 2022 audit records must be backed up to a different system or media than the system being audited."
+  when: wn22_au_000010 | bool
+  tags:
+    - WN22-AU-000010
+    - CAT2
+    - CCI-001851
+    - SRG-OS-000342-GPOS-00133
+    - SV-254294r958754_rule
+    - V-254294
+    - NIST800-53_4_AU_4_1
+  block:
+    - name: "MEDIUM | WN22-AU-000010 | AUDIT | Windows Server 2022 audit records must be backed up to a different system or media than the system being audited."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 audit records must be backed up to a"
+          - "different system or media than the system being audited. Establish and implement a process"
+          - "for backing up log data to another system or media other than the system being audited."
+
+    - name: "MEDIUM | WN22-AU-000010 | AUDIT | Windows Server 2022 audit records must be backed up to a different system or media than the system being audited. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-AU-000010"
+
+- name: "MEDIUM | WN22-AU-000020 | AUDIT | Windows Server 2022 must, at a minimum, offload audit records of interconnected systems in real time and offload standalone or nondomain-joined systems weekly."
+  when: wn22_au_000020 | bool
+  tags:
+    - WN22-AU-000020
+    - CAT2
+    - CCI-001851
+    - SRG-OS-000479-GPOS-00224
+    - SV-254295r959008_rule
+    - V-254295
+    - NIST800-53_4_AU_4_1
+  block:
+    - name: "MEDIUM | WN22-AU-000020 | AUDIT | Windows Server 2022 must, at a minimum, offload audit records of interconnected systems in real time and offload standalone or nondomain-joined systems weekly."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 must, at a minimum, offload audit"
+          - "records of interconnected systems in real time and offload standalone or nondomain-joined systems weekly."
+
+    - name: "MEDIUM | WN22-AU-000020 | AUDIT | Windows Server 2022 must, at a minimum, offload audit records of interconnected systems in real time and offload standalone or nondomain-joined systems weekly. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-AU-000020"
+
+- name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows Server 2022 permissions for the Application event log must prevent access by non-privileged accounts."
+  when: wn22_au_000030 | bool
+  tags:
+    - WN22-AU-000030
+    - CAT2
+    - CCI-000162
+    - CCI-000163
+    - CCI-000164
+    - SRG-OS-000057-GPOS-00027
+    - SV-254296r958434_rule
+    - V-254296
+    - NIST800-53_AU_9
+    - NIST800-53_A_AU-9_1
+    - NIST800-53_4_AU-9
+  block:
+    - name: "MEDIUM | WN22-AU-000030 | PATCH | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Get Default Log Locations."
+      ansible.windows.win_shell: Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\ | Select-Object File | ft -HideTableHeaders
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000030_app_log_location
+
+    - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Get Current Permissions For Default Application Log."
+      ansible.windows.win_shell: get-acl "{{ discovered_au_000030_app_log_location.stdout | trim }}" | FL AccessToString
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000030_app_log_permissions
+
+    - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Permissions warning for accounts."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Ensure the permissions on the Application event log (Application.evtx) are configured"
+          - "to prevent standard user accounts or groups from having access. The default permissions listed below satisfy this requirement:"
+          - "Eventlog - Full Control, SYSTEM - Full Control, Administrators - Full Control"
+          - "Current location of Application.evtx is {{ discovered_au_000030_app_log_location.stdout | trim }}"
+          - "If there is no output below If the location of the logs has been changed, when adding Eventlog to the permissions,"
+          - "it must be entered as NT Service\\Eventlog"
+          - "{{ discovered_au_000030_app_log_permissions.stdout_lines | reject('match', '^$') | list }}"
+
+    - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Warn Count."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-AU-000030"
+
+- name: "MEDIUM | WN22-AU-000040 | AUDIT | Windows Server 2022 permissions for the Security event log must prevent access by non-privileged accounts."
+  when: wn22_au_000040 | bool
+  tags:
+    - WN22-AU-000040
+    - CAT2
+    - CCI-000162
+    - CCI-000163
+    - CCI-000164
+    - SRG-OS-000057-GPOS-00027
+    - SV-254297r958434_rule
+    - V-254297
+    - audit
+    - NIST800-53_AU_9
+    - NIST800-53_A_AU-9_1
+    - NIST800-53_4_AU-9
+  block:
+    - name: "MEDIUM | WN22-AU-000040 | AUDIT | Permissions for the Security event log must prevent access by non-privileged accounts. | Get Default Log Locations."
+      ansible.windows.win_shell: Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Security\ | Select-Object File | ft -HideTableHeaders
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000040_sec_log_location
+
+    - name: "MEDIUM | WN22-AU-000040 | AUDIT | Permissions for the Security event log must prevent access by non-privileged accounts. | Get Current Permissions For Default Security Log."
+      ansible.windows.win_shell: get-acl "{{ discovered_au_000040_sec_log_location.stdout | trim }}" | FL AccessToString
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000040_sec_log_permissions
+
+    - name: "MEDIUM | WN22-AU-000040 | AUDIT | Permissions for the Security event log must prevent access by non-privileged accounts. | Permissions warning for accounts."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Ensure the permissions on the Security event log (Security.evtx) are configured"
+          - "to prevent standard user accounts or groups from having access. The default permissions listed below satisfy this requirement:"
+          - "Eventlog - Full Control, SYSTEM - Full Control, Administrators - Full Control"
+          - "Current location of Security.evtx is {{ discovered_au_000040_sec_log_location.stdout | trim }}"
+          - "If there is no output below If the location of the logs has been changed, when adding Eventlog to the permissions,"
+          - "it must be entered as NT Service\\Eventlog"
+          - "{{ discovered_au_000040_sec_log_permissions.stdout_lines | reject('match', '^$') | list }}"
+
+    - name: "MEDIUM | WN22-AU-000040 | AUDIT | Windows Server 2022 permissions for the Security event log must prevent access by non-privileged accounts. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-AU-000040"
+
+- name: "MEDIUM | WN22-AU-000050 | AUDIT | Windows Server 2022 permissions for the System event log must prevent access by non-privileged accounts."
+  when: wn22_au_000050 | bool
+  tags:
+    - WN22-AU-000050
+    - CAT2
+    - CCI-000162
+    - CCI-000163
+    - CCI-000164
+    - SRG-OS-000057-GPOS-00027
+    - SV-254298r958434_rule
+    - V-254298
+    - audit
+    - NIST800-53_AU_9
+    - NIST800-53_A_AU-9_1
+    - NIST800-53_4_AU-9
+  block:
+    - name: "MEDIUM | WN22-AU-000050 | AUDIT | Permissions for the System event log must prevent access by non-privileged accounts. | Get Default Log Locations."
+      ansible.windows.win_shell: Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\System\ | Select-Object File | ft -HideTableHeaders
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000050_system_log_location
+
+    - name: "MEDIUM | WN22-AU-000050 | AUDIT | Permissions for the System event log must prevent access by non-privileged accounts. | Get Current Permissions For Default System Log."
+      ansible.windows.win_shell: get-acl "{{ discovered_au_000050_system_log_location.stdout | trim }}" | FL AccessToString
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000050_system_log_permissions
+
+    - name: "MEDIUM | WN22-AU-000050 | AUDIT | Permissions for the System event log must prevent access by non-privileged accounts. | Permissions warning for accounts."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Ensure the permissions on the System event log (System.evtx) are configured"
+          - "to prevent standard user accounts or groups from having access. The default permissions listed below satisfy this requirement:"
+          - "Eventlog - Full Control, SYSTEM - Full Control, Administrators - Full Control"
+          - "Current location of System.evtx is {{ discovered_au_000050_system_log_location.stdout | trim }}"
+          - "If there is no output below If the location of the logs has been changed, when adding Eventlog to the permissions,"
+          - "it must be entered as NT Service\\Eventlog"
+          - "{{ discovered_au_000050_system_log_permissions.stdout_lines | reject('match', '^$') | list }}"
+
+    - name: "MEDIUM | WN22-AU-000050 | AUDIT | Windows Server 2022 permissions for the System event log must prevent access by non-privileged accounts. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-AU-000050"
+
+- name: "MEDIUM | WN22-AU-000060 | AUDIT | Windows Server 2022 Event Viewer must be protected from unauthorized modification and deletion."
+  when: wn22_au_000060 | bool
+  tags:
+    - WN22-AU-000060
+    - CAT2
+    - CCI-001494
+    - CCI-001495
+    - SRG-OS-000257-GPOS-00098
+    - SV-254299r991558_rule
+    - V-254299
+    - audit
+    - NIST800-53_AU_9
+    - NIST800-53_A_AU-9_1
+    - NIST800-53_4_AU-9
+  block:
+    - name: "MEDIUM | WN22-AU-000060 | AUDIT | Event Viewer must be protected from unauthorized modification and deletion. | Get Current Permissions For Eventvwr.exe."
+      ansible.windows.win_shell: get-acl {{ item }}:\Windows\system32\Eventvwr.exe | FL AccessToString
+      changed_when: false
+      failed_when: false
+      with_items:
+        - "{{ prelim_drive_letters.stdout_lines | default([], true) }}"
+      check_mode: false
+      register: discovered_au_000060_event_viewer_permissions
+
+    - name: "MEDIUM | WN22-AU-000060 | AUDIT | Event Viewer must be protected from unauthorized modification and deletion. | Permissions warning for accounts."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Event Viewer must be protected from unauthorized modification and deletion."
+          - "If any groups or accounts other than TrustedInstaller have Full control or Modify permissions, this is a finding."
+          - "TrustedInstaller - Full Control, Administrators, SYSTEM, Users, ALL APPLICATION PACKAGES,"
+          - "ALL RESTRICTED APPLICATION PACKAGES - Read & Execute"
+          - "If there is no output below If the location of the logs has been changed"
+          - "The default location should be System32 folder."
+          - "{{ (discovered_au_000060_event_viewer_permissions.results | default([], true) | first | default({}, true)).stdout_lines }}"
+
+    - name: "MEDIUM | WN22-AU-000060 | AUDIT | Windows Server 2022 Event Viewer must be protected from unauthorized modification and deletion. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-AU-000060"
+
+- name: "MEDIUM | WN22-AU-000070 | PATCH | Windows Server 2022 must be configured to audit Account Logon | Credential Validation successes."
+  when: wn22_au_000070 | bool
+  tags:
+    - WN22-AU-000070
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000470-GPOS-00214
+    - SV-254300r991578_rule
+    - V-254300
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000070 | AUDIT | Windows Server 2022 must be configured to audit Account Logon | Credential Validation successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Credential Validation" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000070_audit
+
+    - name: "MEDIUM | WN22-AU-000070 | PATCH | Windows Server 2022 must be configured to audit Account Logon | Credential Validation successes."
+      when: "'Success' not in discovered_au_000070_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Credential Validation" /success:enable
+
+- name: "MEDIUM | WN22-AU-000080 | PATCH | Windows Server 2022 must be configured to audit Account Logon | Credential Validation failures."
+  when: wn22_au_000080 | bool
+  tags:
+    - WN22-AU-000080
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000470-GPOS-00214
+    - SV-254301r991578_rule
+    - V-254301
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000080 | AUDIT | Windows Server 2022 must be configured to audit Account Logon | Credential Validation failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Credential Validation" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000080_audit
+
+    - name: "MEDIUM | WN22-AU-000080 | PATCH | Windows Server 2022 must be configured to audit Account Logon | Credential Validation failures."
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Credential Validation" /failure:enable
+      when: "'Failure' not in discovered_au_000080_audit.stdout"
+
+- name: "MEDIUM | WN22-AU-000090 | PATCH | Windows Server 2022 must be configured to audit Account Management | Other Account Management Events successes."
+  when: wn22_au_000090 | bool
+  tags:
+    - WN22-AU-000090
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254302r958732_rule
+    - V-254302
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000090 | AUDIT | Windows Server 2022 must be configured to audit Account Management | Other Account Management Events successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Other Account Management Events" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000090_audit
+
+    - name: "MEDIUM | WN22-AU-000090 | PATCH | Windows Server 2022 must be configured to audit Account Management | Other Account Management Events successes."
+      when: "'Success' not in discovered_au_000090_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Other Account Management Events" /success:enable
+
+- name: "MEDIUM | WN22-AU-000100 | PATCH | Windows Server 2022 must be configured to audit Account Management - Security Group Management successes."
+  when: wn22_au_000100 | bool
+  tags:
+    - WN22-AU-000100
+    - CAT2
+    - CCI-000018
+    - CCI-000172
+    - CCI-001403
+    - CCI-001404
+    - CCI-001405
+    - CCI-002130
+    - SRG-OS-000004-GPOS-00004
+    - SV-254303r958368_rule
+    - V-254303
+    - NIST800-53_AC-2_4
+    - NIST800-53_A_AC-2_4_1_i_ii
+    - NIST800-53_4_AC-2_4
+  block:
+    - name: "MEDIUM | WN22-AU-000100 | AUDIT | Windows Server 2022 must be configured to audit Account Management - Security Group Management successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Security Group Management" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000100_audit
+
+    - name: "MEDIUM | WN22-AU-000100 | PATCH | Windows Server 2022 must be configured to audit Account Management - Security Group Management successes."
+      when: "'Success' not in discovered_au_000100_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Security Group Management" /success:enable
+
+- name: "MEDIUM | WN22-AU-000110 | PATCH | Windows Server 2022 must be configured to audit Account Management - User Account Management successes."
+  when: wn22_au_000110 | bool
+  tags:
+    - WN22-AU-000110
+    - CAT2
+    - CCI-000018
+    - CCI-000172
+    - CCI-001403
+    - CCI-001404
+    - CCI-001405
+    - CCI-002130
+    - SRG-OS-000004-GPOS-00004
+    - SV-254304r958368_rule
+    - V-254304
+    - audit
+    - NIST800-53_AC-2_4
+    - NIST800-53_A_AC-2_4_1_i_ii
+    - NIST800-53_4_AC-2_4
+  block:
+    - name: "MEDIUM | WN22-AU-000110 | AUDIT | Windows Server 2022 must be configured to audit Account Management - User Account Management successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"User Account Management" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000110_audit
+
+    - name: "MEDIUM | WN22-AU-000110 | PATCH | Windows Server 2022 must be configured to audit Account Management - User Account Management successes."
+      when: "'Success' not in discovered_au_000110_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"User Account Management" /success:enable
+
+- name: "MEDIUM | WN22-AU-000120 | PATCH | Windows Server 2022 must be configured to audit Account Management | User Account Management failures."
+  when: wn22_au_000120 | bool
+  tags:
+    - WN22-AU-000120
+    - CAT2
+    - CCI-000018
+    - CCI-000172
+    - CCI-001403
+    - CCI-001404
+    - CCI-001405
+    - CCI-002130
+    - SRG-OS-000004-GPOS-00004
+    - SV-254305r958368_rule
+    - V-254305
+    - audit
+    - NIST800-53_AC-2_4
+    - NIST800-53_A_AC-2_4_1_i_ii
+    - NIST800-53_4_AC-2_4
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000120 | AUDIT | Windows Server 2022 must be configured to audit Account Management | User Account Management failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"User Account Management" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000120_audit
+
+    - name: "MEDIUM | WN22-AU-000120 | PATCH | Windows Server 2022 must be configured to audit Account Management | User Account Management failures."
+      when: "'Failure' not in discovered_au_000120_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"User Account Management" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000130 | PATCH | Windows Server 2022 must be configured to audit Detailed Tracking | Plug and Play Events successes."
+  when: wn22_au_000130 | bool
+  tags:
+    - WN22-AU-000130
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000474-GPOS-00219
+    - SV-254306r991583_rule
+    - V-254306
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000130 | AUDIT | Windows Server 2022 must be configured to audit Detailed Tracking | Plug and Play Events successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Plug and Play Events" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000130_audit
+
+    - name: "MEDIUM | WN22-AU-000130 | PATCH | Windows Server 2022 must be configured to audit Detailed Tracking | Plug and Play Events successes."
+      when: "'Success' not in discovered_au_000130_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Plug and Play Events" /success:enable
+
+- name: "MEDIUM | WN22-AU-000140 | PATCH | Windows Server 2022 must be configured to audit Detailed Tracking | Process Creation successes."
+  when: wn22_au_000140 | bool
+  tags:
+    - WN22-AU-000140
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254307r958732_rule
+    - V-254307
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000140 | AUDIT | Windows Server 2022 must be configured to audit Detailed Tracking | Process Creation successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Process Creation" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000140_audit
+
+    - name: "MEDIUM | WN22-AU-000140 | PATCH | Windows Server 2022 must be configured to audit Detailed Tracking | Process Creation successes."
+      when: "'Success' not in discovered_au_000140_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Process Creation" /success:enable
+
+- name: "MEDIUM | WN22-AU-000160 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff - Account Lockout failures."
+  when: wn22_au_000160 | bool
+  tags:
+    - WN22-AU-000160
+    - CAT2
+    - CCI-000172
+    - CCI-001404
+    - SRG-OS-000240-GPOS-00090
+    - SV-254309r991552_rule
+    - V-254309
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_AC-2_4
+    - NIST800-53_A_AC-2_4_1_i_ii
+    - NIST800-53_4_AC-2_4
+  block:
+    - name: "MEDIUM | WN22-AU-000160 | AUDIT | Windows Server 2022 must be configured to audit Logon/Logoff | Account Lockout failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Account Lockout" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000160_audit
+
+    - name: "MEDIUM | WN22-AU-000160 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff | Account Lockout failures."
+      when: "'Failure' not in discovered_au_000160_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Account Lockout" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000170 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff | Group Membership successes."
+  when: wn22_au_000170 | bool
+  tags:
+    - WN22-AU-000170
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000470-GPOS-00214
+    - SV-254310r991578_rule
+    - V-254310
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12
+  block:
+    - name: "MEDIUM | WN22-AU-000170 | AUDIT | Windows Server 2022 must be configured to audit Logon/Logoff | Group Membership successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Group Membership" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000170_audit
+
+    - name: "MEDIUM | WN22-AU-000170 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff | Group Membership successes."
+      when: "'Success' not in discovered_au_000170_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Group Membership" /success:enable
+
+- name: "MEDIUM | WN22-AU-000180 | PATCH | Windows Server 2022 must be configured to audit logoff successes."
+  when: wn22_au_000180 | bool
+  tags:
+    - WN22-AU-000180
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000472-GPOS-00217
+    - SV-254311r991581_rule
+    - V-254311
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12
+  block:
+    - name: "MEDIUM | WN22-AU-000180 | AUDIT | Windows Server 2022 must be configured to audit logoff successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Logoff" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000180_audit
+
+    - name: "MEDIUM | WN22-AU-000180 | PATCH | Windows Server 2022 must be configured to audit logoff successes."
+      when: "'Success' not in discovered_au_000180_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Logoff" /success:enable
+
+- name: "MEDIUM | WN22-AU-000190 | PATCH | Windows Server 2022 must be configured to audit logon successes."
+  when: wn22_au_000190 | bool
+  tags:
+    - WN22-AU-000190
+    - CAT2
+    - CCI-000067
+    - CCI-000172
+    - SRG-OS-000032-GPOS-00013
+    - SV-254312r958406_rule
+    - V-254312
+    - audit
+    - NIST800-53_AC-17_1
+    - NIST800-53_A_AC-17_1_1
+    - NIST800-53_4_AC-17_1
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12
+  block:
+    - name: "MEDIUM | WN22-AU-000190 | AUDIT | Windows Server 2022 must be configured to audit logon successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Logon" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000190_audit
+
+    - name: "MEDIUM | WN22-AU-000190 | PATCH | Windows Server 2022 must be configured to audit logon successes."
+      when: "'Success' not in discovered_au_000190_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Logon" /success:enable
+
+- name: "MEDIUM | WN22-AU-000200 | PATCH | Windows Server 2022 must be configured to audit logon failures"
+  when: wn22_au_000200 | bool
+  tags:
+    - WN22-AU-000200
+    - CAT2
+    - CCI-000067
+    - CCI-000172
+    - SRG-OS-000032-GPOS-00013
+    - SV-254313r958406_rule
+    - V-254313
+    - audit
+    - NIST800-53_AC-17_1
+    - NIST800-53_A_AC-17_1_1
+    - NIST800-53_4_AC-17_1
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12
+  block:
+    - name: "MEDIUM | WN22-AU-000200 | AUDIT | Windows Server 2022 must be configured to audit logon failures"
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Logon" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000200_audit
+
+    - name: "MEDIUM | WN22-AU-000200 | PATCH | Windows Server 2022 must be configured to audit logon failures"
+      when: "'Failure' not in discovered_au_000200_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Logon" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000210 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff | Special Logon successes."
+  when: wn22_au_000210 | bool
+  tags:
+    - WN22-AU-000210
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000470-GPOS-00214
+    - SV-254314r991578_rule
+    - V-254314
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12
+  block:
+    - name: "MEDIUM | WN22-AU-000210 | AUDIT | Windows Server 2022 must be configured to audit Logon/Logoff | Special Logon successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Special Logon" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000210_audit
+
+    - name: "MEDIUM | WN22-AU-000210 | PATCH | Windows Server 2022 must be configured to audit Logon/Logoff | Special Logon successes."
+      when: "'Success' not in discovered_au_000210_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Special Logon" /success:enable
+
+- name: "MEDIUM | WN22-AU-000220 | PATCH | Windows Server 2022 must be configured to audit Object Access - Other Object Access Events successes."
+  when: wn22_au_000220 | bool
+  tags:
+    - WN22-AU-000220
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000470-GPOS-00214
+    - SV-254315r991578_rule
+    - V-254315
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12
+  block:
+    - name: "MEDIUM | WN22-AU-000220 | AUDIT | Windows Server 2022 must be configured to audit Object Access - Other Object Access Events successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Other Object Access Events" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000220_audit
+
+    - name: "MEDIUM | WN22-AU-000220 | PATCH | Windows Server 2022 must be configured to audit Object Access - Other Object Access Events successes."
+      when: "'Success' not in discovered_au_000220_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Other Object Access Events" /success:enable
+
+- name: "MEDIUM | WN22-AU-000230 | PATCH | Windows Server 2022 must be configured to audit Object Access - Other Object Access Events failures."
+  when: wn22_au_000230 | bool
+  tags:
+    - WN22-AU-000230
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000470-GPOS-00214
+    - SV-254316r991578_rule
+    - V-254316
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12
+  block:
+    - name: "MEDIUM | WN22-AU-000230 | AUDIT | Windows Server 2022 must be configured to audit Object Access - Other Object Access Events failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Other Object Access Events" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000230_audit
+
+    - name: "MEDIUM | WN22-AU-000230 | PATCH | Windows Server 2022 must be configured to audit Object Access - Other Object Access Events failures."
+      when: "'Failure' not in discovered_au_000230_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Other Object Access Events" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000240 | PATCH | Windows Server 2022 must be configured to audit Object Access | Removable Storage successes."
+  when: wn22_au_000240 | bool
+  tags:
+    - WN22-AU-000240
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000474-GPOS-00219
+    - SV-254317r991583_rule
+    - V-254317
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000240 | AUDIT | Windows Server 2022 must be configured to audit Object Access | Removable Storage successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Removable Storage" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000240_audit
+
+    - name: "MEDIUM | WN22-AU-000240 | PATCH | Windows Server 2022 must be configured to audit Object Access | Removable Storage successes."
+      when: "'Success' not in discovered_au_000240_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Removable Storage" /success:enable
+
+- name: "MEDIUM | WN22-AU-000250 | PATCH | Windows Server 2022 must be configured to audit Object Access | Removable Storage failures."
+  when: wn22_au_000250 | bool
+  tags:
+    - WN22-AU-000250
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000474-GPOS-00219
+    - SV-254318r991583_rule
+    - V-254318
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000250 | AUDIT | Windows Server 2022 must be configured to audit Object Access | Removable Storage failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Removable Storage" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000250_audit
+
+    - name: "MEDIUM | WN22-AU-000250 | PATCH | Windows Server 2022 must be configured to audit Object Access | Removable Storage failures."
+      when: "'Failure' not in discovered_au_000250_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Removable Storage" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000260 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Audit Policy Change successes."
+  when: wn22_au_000260 | bool
+  tags:
+    - WN22-AU-000260
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254319r958732_rule
+    - V-254319
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000260 | AUDIT | Windows Server 2022 must be configured to audit Policy Change | Audit Policy Change successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Audit Policy Change" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000260_audit
+
+    - name: "MEDIUM | WN22-AU-000260 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Audit Policy Change successes."
+      when: "'Success' not in discovered_au_000260_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Audit Policy Change" /success:enable
+
+- name: "MEDIUM | WN22-AU-000270 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Audit Policy Change failures."
+  when: wn22_au_000270 | bool
+  tags:
+    - WN22-AU-000270
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254320r958732_rule
+    - V-254320
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000270 | AUDIT | Windows Server 2022 must be configured to audit Policy Change | Audit Policy Change failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Audit Policy Change" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000270_audit
+
+    - name: "MEDIUM | WN22-AU-000270 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Audit Policy Change failures."
+      when: "'Failure' not in discovered_au_000270_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Audit Policy Change" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000280 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Authentication Policy Change successes."
+  when: wn22_au_000280 | bool
+  tags:
+    - WN22-AU-000280
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254321r958732_rule
+    - V-254321
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000280 | AUDIT | Windows Server 2022 must be configured to audit Policy Change | Authentication Policy Change successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Authentication Policy Change" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000280_audit
+
+    - name: "MEDIUM | WN22-AU-000280 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Authentication Policy Change successes."
+      when: "'Success' not in discovered_au_000280_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Authentication Policy Change" /success:enable
+
+- name: "MEDIUM | WN22-AU-000290 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Authorization Policy Change successes."
+  when: wn22_au_000290 | bool
+  tags:
+    - WN22-AU-000290
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254322r958732_rule
+    - V-254322
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000290 | AUDIT | Windows Server 2022 must be configured to audit Policy Change | Authorization Policy Change successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Authorization Policy Change" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000290_audit
+
+    - name: "MEDIUM | WN22-AU-000290 | PATCH | Windows Server 2022 must be configured to audit Policy Change | Authorization Policy Change successes."
+      when: "'Success' not in discovered_au_000290_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Authorization Policy Change" /success:enable
+
+- name: "MEDIUM | WN22-AU-000300 | PATCH | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use successes."
+  when: wn22_au_000300 | bool
+  tags:
+    - WN22-AU-000300
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254323r958732_rule
+    - V-254323
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000300 | AUDIT | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Sensitive Privilege Use" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000300_audit
+
+    - name: "MEDIUM | WN22-AU-000300 | PATCH | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use successes."
+      when: "'Success' not in discovered_au_000300_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Sensitive Privilege Use" /success:enable
+
+- name: "MEDIUM | WN22-AU-000310 | PATCH | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use failures."
+  when: wn22_au_000310 | bool
+  tags:
+    - WN22-AU-000310
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254324r958732_rule
+    - V-254324
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000310 | AUDIT | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Sensitive Privilege Use" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000310_audit
+
+    - name: "MEDIUM | WN22-AU-000310 | PATCH | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use failures."
+      when: "'Failure' not in discovered_au_000310_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Sensitive Privilege Use" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000320 | PATCH | Windows Server 2022 must be configured to audit System | IPsec Driver successes."
+  when: wn22_au_000320 | bool
+  tags:
+    - WN22-AU-000320
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254325r958732_rule
+    - V-254325
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000320 | AUDIT | Windows Server 2022 must be configured to audit System | IPsec Driver successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"IPsec Driver" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000320_audit
+
+    - name: "MEDIUM | WN22-AU-000320 | PATCH | Windows Server 2022 must be configured to audit System | IPsec Driver successes."
+      when: "'Success' not in discovered_au_000320_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"IPsec Driver" /success:enable
+
+- name: "MEDIUM | WN22-AU-000330 | PATCH | Windows Server 2022 must be configured to audit System | IPsec Driver failures."
+  when: wn22_au_000330 | bool
+  tags:
+    - WN22-AU-000330
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254326r958732_rule
+    - V-254326
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000330 | AUDIT | Windows Server 2022 must be configured to audit System | IPsec Driver failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"IPsec Driver" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000330_audit
+
+    - name: "MEDIUM | WN22-AU-000330 | PATCH | Windows Server 2022 must be configured to audit System | IPsec Driver failures."
+      when: "'Failure' not in discovered_au_000330_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"IPsec Driver" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000340 | PATCH | Windows Server 2022 must be configured to audit System | Other System Events successes."
+  when: wn22_au_000340 | bool
+  tags:
+    - WN22-AU-000340
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254327r958732_rule
+    - V-254327
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000340 | AUDIT | Windows Server 2022 must be configured to audit System | Other System Events successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Other System Events" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000340_audit
+
+    - name: "MEDIUM | WN22-AU-000340 | PATCH | Windows Server 2022 must be configured to audit System | Other System Events successes."
+      when: "'Success' not in discovered_au_000340_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Other System Events" /success:enable
+
+- name: "MEDIUM | WN22-AU-000350 | PATCH | Windows Server 2022 must be configured to audit System | Other System Events failures."
+  when: wn22_au_000350 | bool
+  tags:
+    - WN22-AU-000350
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254328r958732_rule
+    - V-254328
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000350 | AUDIT | Windows Server 2022 must be configured to audit System | Other System Events failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Other System Events" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000350_audit
+
+    - name: "MEDIUM | WN22-AU-000350 | PATCH | Windows Server 2022 must be configured to audit System | Other System Events failures."
+      when: "'Failure' not in discovered_au_000350_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Other System Events" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000360 | PATCH | Windows Server 2022 must be configured to audit System | Security State Change successes."
+  when: wn22_au_000360 | bool
+  tags:
+    - WN22-AU-000360
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254329r958732_rule
+    - V-254329
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000360 | AUDIT | Windows Server 2022 must be configured to audit System | Security State Change successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Security State Change" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000360_audit
+
+    - name: "MEDIUM | WN22-AU-000360 | PATCH | Windows Server 2022 must be configured to audit System | Security State Change successes."
+      when: "'Success' not in discovered_au_000360_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Security State Change" /success:enable
+
+- name: "MEDIUM | WN22-AU-000370 | PATCH | Windows Server 2022 must be configured to audit System | Security System Extension successes."
+  when: wn22_au_000370 | bool
+  tags:
+    - WN22-AU-000370
+    - SRG-OS-000327-GPOS-00127
+    - SV-254330r958732_rule
+    - V-254330
+    - CCI-000172
+    - CCI-002234
+    - CAT2
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000370 | AUDIT | Must be configured to audit System - Security System Extension successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Security System Extension" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000370_audit
+
+    - name: "MEDIUM | WN22-AU-000370 | PATCH | Must be configured to audit System | Security System Extension successes."
+      when: "'Success' not in discovered_au_000370_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Security System Extension" /success:enable
+
+- name: "MEDIUM | WN22-AU-000380 | PATCH | Windows Server 2022 must be configured to audit System | System Integrity successes."
+  when: wn22_au_000380 | bool
+  tags:
+    - WN22-AU-000380
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254331r958732_rule
+    - V-254331
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000380 | AUDIT | Windows Server 2022 must be configured to audit System | System Integrity successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"System Integrity" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000380_audit
+
+    - name: "MEDIUM | WN22-AU-000380 | PATCH | Windows Server 2022 must be configured to audit System | System Integrity successes."
+      when: "'Success' not in discovered_au_000380_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"System Integrity" /success:enable
+
+- name: "MEDIUM | WN22-AU-000390 | PATCH | Windows Server 2022 must be configured to audit System | System Integrity failures."
+  when: wn22_au_000390 | bool
+  tags:
+    - WN22-AU-000390
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254332r958732_rule
+    - V-254332
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-AU-000390 | AUDIT | Windows Server 2022 must be configured to audit System | System Integrity failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"System Integrity" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000390_audit
+
+    - name: "MEDIUM | WN22-AU-000390 | PATCH | Windows Server 2022 must be configured to audit System | System Integrity failures."
+      when: "'Failure' not in discovered_au_000390_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"System Integrity" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000583 | PATCH | Windows Server 2022 must be configured to audit Object Access | Handle Manipulation failures."
+  when: wn22_au_000583 | bool
+  tags:
+    - WN22-AU-000583
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000062-GPOS-00031
+    - SV-278944r1135361_rule
+    - V-278944
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000583 | AUDIT | Windows Server 2022 must be configured to audit Object Access | Handle Manipulation failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Handle Manipulation" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000583_audit
+
+    - name: "MEDIUM | WN22-AU-000583 | PATCH | Windows Server 2022 must be configured to audit Object Access | Handle Manipulation failures."
+      when: "'Failure' not in discovered_au_000583_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Handle Manipulation" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000585 | PATCH | Windows Server 2022 must be configured to audit Object Access | Registry failures."
+  when: wn22_au_000585 | bool
+  tags:
+    - WN22-AU-000585
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000062-GPOS-00031
+    - SV-278946r1135367_rule
+    - V-278946
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000585 | AUDIT | Windows Server 2022 must be configured to audit Object Access | Registry failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Registry" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000585_audit
+
+    - name: "MEDIUM | WN22-AU-000585 | PATCH | Windows Server 2022 must be configured to audit Object Access | Registry failures."
+      when: "'Failure' not in discovered_au_000585_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Registry" /failure:enable
+
+- name: "MEDIUM | WN22-AU-000586 | PATCH | Windows Server 2022 must be configured to audit Object Access | Registry successes."
+  when: wn22_au_000586 | bool
+  tags:
+    - WN22-AU-000586
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000062-GPOS-00031
+    - SV-278947r1135370_rule
+    - V-278947
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000586 | AUDIT | Windows Server 2022 must be configured to audit Object Access | Registry successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Registry" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000586_audit
+
+    - name: "MEDIUM | WN22-AU-000586 | PATCH | Windows Server 2022 must be configured to audit Object Access | Registry successes."
+      when: "'Success' not in discovered_au_000586_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Registry" /success:enable
+
+- name: "MEDIUM | WN22-AU-000587 | PATCH | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use successes."
+  when: wn22_au_000587 | bool
+  tags:
+    - WN22-AU-000587
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000062-GPOS-00031
+    - SV-278948r1141928_rule
+    - V-278948
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000587 | AUDIT | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Sensitive Privilege Use" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000587_audit
+
+    - name: "MEDIUM | WN22-AU-000587 | PATCH | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use successes."
+      when: "'Success' not in discovered_au_000587_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Sensitive Privilege Use" /success:enable
+
+- name: "MEDIUM | WN22-AU-000588 | PATCH | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use failures."
+  when: wn22_au_000588 | bool
+  tags:
+    - WN22-AU-000588
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000062-GPOS-00031
+    - SV-278949r1141931_rule
+    - V-278949
+    - audit
+    - NIST800-53_AU_12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-AU-000588 | AUDIT | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Sensitive Privilege Use" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_au_000588_audit
+
+    - name: "MEDIUM | WN22-AU-000588 | PATCH | Windows Server 2022 must be configured to audit Privilege Use | Sensitive Privilege Use failures."
+      when: "'Failure' not in discovered_au_000588_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Sensitive Privilege Use" /failure:enable

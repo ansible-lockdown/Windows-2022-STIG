@@ -1,0 +1,291 @@
+---
+
+- name: "MEDIUM | WN22-MS-000020 | PATCH | Windows Server 2022 local administrator accounts must have their privileged token filtered to prevent elevated privileges from being used over the network on domain systems."
+  when:
+    - wn22_ms_000020 | bool
+    - ansible_facts['windows_domain_role'] == "Member server"
+    - not win_skip_for_test
+    # Skipped automatically when the run itself is a local account over a network logon
+    # transport, because applying this severs that connection. See the note in prelim.yml.
+    - not prelim_local_account_network_logon | bool
+  tags:
+    - WN22-MS-000020
+    - CAT2
+    - CCI-001084
+    - SRG-OS-000134-GPOS-00068
+    - SV-254429r958518_rule
+    - V-254429
+    - NIST800-53_SC-3
+    - NIST800-53_A_SC-3_1_ii
+    - NIST800-53_4_SC-3
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    value: LocalAccountTokenFilterPolicy
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-MS-000030 | PATCH | Windows Server 2022 local users on domain-joined member servers must not be enumerated."
+  when:
+    - wn22_ms_000030 | bool
+    - ansible_facts['windows_domain_role'] == "Member server"
+  tags:
+    - WN22-MS-000030
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254430r958478_rule
+    - V-254430
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    value: EnumerateLocalUsers
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-MS-000040 | PATCH | Windows Server 2022 must restrict unauthenticated Remote Procedure Call (RPC) clients from connecting to the RPC server on domain-joined member servers and standalone or nondomain-joined systems."
+  when:
+    - wn22_ms_000040 | bool
+    - "'controller' not in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-MS-000040
+    - CAT2
+    - CCI-001967
+    - SRG-OS-000379-GPOS-00164
+    - SV-254431r971545_rule
+    - V-254431
+    - NIST800-53_4_IA-3_1
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc
+    value: RestrictRemoteClients
+    data: 1
+    datatype: dword
+
+- name: "MEDIUM | WN22-MS-000050 | PATCH | Windows Server 2022 must limit the caching of logon credentials to four or less on domain-joined member servers."
+  when:
+    - wn22_ms_000050 | bool
+    - ansible_facts['windows_domain_role'] == "Member server"
+  tags:
+    - WN22-MS-000050
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254432r991589_rule
+    - V-254432
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+    value: CachedLogonsCount
+    data: "{{ win22stig_cached_logons_count }}"
+    datatype: string
+
+- name: "MEDIUM | WN22-MS-000060 | PATCH | Windows Server 2022 must restrict remote calls to the Security Account Manager (SAM) to Administrators on domain-joined member servers and standalone or nondomain-joined systems."
+  when:
+    - wn22_ms_000060 | bool
+    - "'controller' not in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-MS-000060
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254433r1106522_rule
+    - V-254433
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    value: RestrictRemoteSAM
+    data: O:BAG:BAD:(A;;RC;;;BA)
+    datatype: string
+
+- name: "MEDIUM | WN22-MS-000070 | PATCH | Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and standalone systems."
+  when:
+    - wn22_ms_000070 | bool
+    - "'controller' not in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-MS-000070
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254434r1137691_rule
+    - V-254434
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  ansible.windows.win_user_right:
+    name: SeNetworkLogonRight
+    users: "{{ win22stig_senetworklogonright }}"
+    action: set
+
+- name: "MEDIUM | WN22-MS-000080 | PATCH | Windows Server 2022 Deny access to this computer from the network user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and local accounts and from unauthenticated access on all systems."
+  when:
+    - wn22_ms_000080 | bool
+    - "'controller' not in ansible_facts['windows_domain_role']"
+    - not win_skip_for_test
+  tags:
+    - WN22-MS-000080
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254435r1137691_rule
+    - V-254435
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  block:
+    - name: "MEDIUM | WN22-MS-000080 | PATCH | Windows Server 2022 Deny access to this computer from the network user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and local accounts and from unauthenticated access on all systems."
+      when:
+        - ansible_facts['windows_domain_role'] == "Member server"
+        # This right denies network logon to every local account AND to the two privileged
+        # domain groups, so a Domain Admin does not survive it either. Unlike the token filter
+        # control it also takes SSH with it, because Windows OpenSSH password authentication
+        # uses the same logon path, leaving the console as the only way back in. Skipped
+        # automatically when the run itself is a local account. See the note in prelim.yml.
+        - not prelim_control_account_is_local | bool
+      ansible.windows.win_user_right:
+        name: SeDenyNetworkLogonRight
+        users:
+          - Guests
+          - Enterprise Admins
+          - Domain Admins
+          - Local account
+          - Local account and member of Administrators group
+        action: set
+
+    - name: "MEDIUM | WN22-MS-000080 | PATCH | Windows Server 2022 Deny access to this computer from the network user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and local accounts and from unauthenticated access on all systems."
+      when: not ansible_facts['windows_domain_member']
+      ansible.windows.win_user_right:
+        name: SeDenyNetworkLogonRight
+        users: Guests
+        action: set
+
+- name: "MEDIUM | WN22-MS-000090 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+  when:
+    - wn22_ms_000090 | bool
+    - "'controller' not in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-MS-000090
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254436r1137691_rule
+    - V-254436
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  block:
+    - name: "MEDIUM | WN22-MS-000090 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+      when: ansible_facts['windows_domain_role'] == "Member server"
+      ansible.windows.win_user_right:
+        name: SeDenyBatchLogonRight
+        users:
+          - Enterprise Admins
+          - Domain Admins
+          - Guests
+        action: set
+
+    - name: "MEDIUM | WN22-MS-000090 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+      when: not ansible_facts['windows_domain_member']
+      ansible.windows.win_user_right:
+        name: SeDenyBatchLogonRight
+        users: Guests
+        action: set
+
+- name: "MEDIUM | WN22-MS-000100 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+  when:
+    - wn22_ms_000100 | bool
+    - ansible_facts['windows_domain_role'] == "Member server"
+  tags:
+    - WN22-MS-000100
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254437r1137691_rule
+    - V-254437
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  ansible.windows.win_user_right:
+    name: SeDenyServiceLogonRight
+    users:
+      - Enterprise Admins
+      - Domain Admins
+    action: set
+
+- name: "MEDIUM | WN22-MS-000110 | PATCH | Windows Server 2022 Deny log on locally user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+  when: wn22_ms_000110 | bool
+  tags:
+    - WN22-MS-000110
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254438r1137691_rule
+    - V-254438
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  block:
+    - name: "MEDIUM | WN22-MS-000110 | PATCH | DOMAIN MEMBER | Windows Server 2022 Deny log on locally user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+      when: ansible_facts['windows_domain_role'] == "Member server"
+      ansible.windows.win_user_right:
+        name: SeDenyInteractiveLogonRight
+        users:
+          - Guests
+          - Enterprise Admins
+          - Domain Admins
+        action: set
+
+    - name: "MEDIUM | WN22-MS-000110 | PATCH | STAND-ALONE | Windows Server 2022 Deny log on locally user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+      when: not ansible_facts['windows_domain_member']
+      ansible.windows.win_user_right:
+        name: SeDenyInteractiveLogonRight
+        users: Guests
+        action: set
+
+- name: "MEDIUM | WN22-MS-000120 | PATCH | Windows Server 2022 Deny log on through Remote Desktop Services user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems."
+  when: wn22_ms_000120 | bool
+  tags:
+    - WN22-MS-000120
+    - CAT2
+    - CCI-002314
+    - SRG-OS-000297-GPOS-00115
+    - SV-254439r958672_rule
+    - V-254439
+    - NIST800-53_4_AC-17_1
+  block:
+    - name: "MEDIUM | WN22-MS-000120 | PATCH | DOMAIN MEMBER | Windows Server 2022 Deny log on through Remote Desktop Services user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems."
+      when: ansible_facts['windows_domain_role'] == "Member server"
+      ansible.windows.win_user_right:
+        name: SeDenyRemoteInteractiveLogonRight
+        users:
+          - Guests
+          - Local account
+          - Enterprise Admins
+          - Domain Admins
+        action: set
+
+    - name: "MEDIUM | WN22-MS-000120 | PATCH | STAND-ALONE | Windows Server 2022 Deny log on through Remote Desktop Services user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems."
+      when: not ansible_facts['windows_domain_member']
+      ansible.windows.win_user_right:
+        name: SeDenyRemoteInteractiveLogonRight
+        users: Guests
+        action: set
+
+- name: "MEDIUM | WN22-MS-000130 | PATCH | Windows Server 2022 Enable computer and user accounts to be trusted for delegation user right must not be assigned to any groups or accounts on domain-joined member servers and standalone or nondomain-joined systems."
+  when:
+    - wn22_ms_000130 | bool
+    - "'controller' not in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-MS-000130
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254440r958726_rule
+    - V-254440
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeEnableDelegationPrivilege
+    users: []
+    action: set

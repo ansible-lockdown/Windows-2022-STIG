@@ -1,0 +1,28 @@
+---
+
+- name: "LOW | WN22-DC-000160 | AUDIT | Windows Server 2022 directory service must be configured to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity."
+  # XCCDF: applies to domain controllers only; NA for other systems.
+  when:
+    - wn22_dc_000160 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000160
+    - CAT3
+    - CCI-002361
+    - CCI-001133
+    - SRG-OS-000163-GPOS-00072
+    - SV-254400r970703_rule
+    - V-254400
+    - NIST800-53_SC-10
+    - NIST800-53_A_SC-10_1_ii
+    - NIST800-53_4_SC-10
+    - NIST800-53_4_AC-12
+  block:
+    - name: "LOW | WN22-DC-000160 | AUDIT | Windows Server 2022 directory service must be configured to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity."
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 directory service must be configured to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity."
+
+    - name: "LOW | WN22-DC-000160 | AUDIT | Windows Server 2022 directory service must be configured to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000160"

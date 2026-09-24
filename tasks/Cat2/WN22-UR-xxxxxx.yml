@@ -1,0 +1,297 @@
+---
+
+- name: "MEDIUM | WN22-UR-000010 | PATCH | Windows Server 2022 Access Credential Manager as a trusted caller user right must not be assigned to any groups or accounts."
+  when: wn22_ur_000010 | bool
+  tags:
+    - WN22-UR-000010
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254491r958726_rule
+    - V-254491
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeTrustedCredManAccessPrivilege
+    users: []
+    action: set
+- name: "MEDIUM | WN22-UR-000030 | PATCH | Windows Server 2022 Allow log on locally user right must only be assigned to the Administrators group."
+  when: wn22_ur_000030 | bool
+  tags:
+    - WN22-UR-000030
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254493r1137691_rule
+    - V-254493
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  ansible.windows.win_user_right:
+    name: SeInteractiveLogonRight
+    users: "{{ win22stig_seinteractivelogonright }}"
+    action: set
+
+- name: "MEDIUM | WN22-UR-000040 | PATCH | Windows Server 2022 Back up files and directories user right must only be assigned to the Administrators group."
+  when: wn22_ur_000040 | bool
+  tags:
+    - WN22-UR-000040
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254494r958726_rule
+    - V-254494
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeBackupPrivilege
+    users: "{{ win22stig_sebackupprivilege }}"
+    action: set
+
+- name: "MEDIUM | WN22-UR-000050 | PATCH | Windows Server 2022 Create a pagefile user right must only be assigned to the Administrators group."
+  when: wn22_ur_000050 | bool
+  tags:
+    - WN22-UR-000050
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254495r958726_rule
+    - V-254495
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeCreatePagefilePrivilege
+    users: Administrators
+    action: set
+
+- name: "MEDIUM | WN22-UR-000070 | PATCH | Windows Server 2022 Create global objects user right must only be assigned to Administrators, Service, Local Service, and Network Service."
+  when: wn22_ur_000070 | bool
+  tags:
+    - WN22-UR-000070
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254497r958726_rule
+    - V-254497
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeCreateGlobalPrivilege
+    users: "{{ win22stig_secreateglobalprivilege }}"
+    action: set
+
+- name: "MEDIUM | WN22-UR-000080 | PATCH | Windows Server 2022 Create permanent shared objects user right must not be assigned to any groups or accounts."
+  when: wn22_ur_000080 | bool
+  tags:
+    - WN22-UR-000080
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254498r958726_rule
+    - V-254498
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeCreatePermanentPrivilege
+    users: []
+    action: set
+- name: "MEDIUM | WN22-UR-000090 | PATCH | Windows Server 2022 Create symbolic links user right must only be assigned to the Administrators group."
+  when: wn22_ur_000090 | bool
+  tags:
+    - WN22-UR-000090
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254499r958726_rule
+    - V-254499
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeCreateSymbolicLinkPrivilege
+    users: Administrators
+    action: set
+
+- name: "MEDIUM | WN22-UR-000110 | PATCH | Windows Server 2022 Force shutdown from a remote system user right must only be assigned to the Administrators group."
+  when: wn22_ur_000110 | bool
+  tags:
+    - WN22-UR-000110
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254501r958726_rule
+    - V-254501
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeRemoteShutdownPrivilege
+    users: Administrators
+    action: set
+
+- name: "MEDIUM | WN22-UR-000120 | PATCH | Windows Server 2022 Generate security audits user right must only be assigned to Local Service and Network Service."
+  when: wn22_ur_000120 | bool
+  tags:
+    - WN22-UR-000120
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254502r958726_rule
+    - V-254502
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeAuditPrivilege
+    users: "{{ win22stig_seauditprivilege }}"
+    action: set
+
+- name: "MEDIUM | WN22-UR-000130 | PATCH | Windows Server 2022 Impersonate a client after authentication user right must only be assigned to Administrators, Service, Local Service, and Network Service."
+  when: wn22_ur_000130 | bool
+  tags:
+    - WN22-UR-000130
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254503r958726_rule
+    - V-254503
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeImpersonatePrivilege
+    users: "{{ win22stig_seimpersonateprivilege }}"
+    action: set
+
+- name: "MEDIUM | WN22-UR-000140 | PATCH | Windows Server 2022 Increase scheduling priority: user right must only be assigned to the Administrators group."
+  when: wn22_ur_000140 | bool
+  tags:
+    - WN22-UR-000140
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254504r958726_rule
+    - V-254504
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeIncreaseBasePriorityPrivilege
+    users: "{{ win22stig_seincreasebasepriorityprivilege }}"
+    action: set
+
+- name: "MEDIUM | WN22-UR-000150 | PATCH | Windows Server 2022 Load and unload device drivers user right must only be assigned to the Administrators group."
+  when: wn22_ur_000150 | bool
+  tags:
+    - WN22-UR-000150
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254505r958726_rule
+    - V-254505
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeLoadDriverPrivilege
+    users: Administrators
+    action: set
+
+- name: "MEDIUM | WN22-UR-000160 | PATCH | Windows Server 2022 Lock pages in memory user right must not be assigned to any groups or accounts."
+  when: wn22_ur_000160 | bool
+  tags:
+    - WN22-UR-000160
+    - CAT2
+    - CCI-002235
+    - CCI-002824
+    - SRG-OS-000324-GPOS-00125
+    - SV-254506r958726_rule
+    - V-254506
+    - NIST800-53_4_AC-6_10
+    - NIST800-53_4_SI-16
+  ansible.windows.win_user_right:
+    name: SeLockMemoryPrivilege
+    users: "{{ win22stig_selockmemoryprivilege }}"
+    action: set
+- name: "MEDIUM | WN22-UR-000170 | PATCH | Windows Server 2022 Manage auditing and security log user right must only be assigned to the Administrators group."
+  when: wn22_ur_000170 | bool
+  tags:
+    - WN22-UR-000170
+    - CAT2
+    - CCI-000162
+    - CCI-000163
+    - CCI-000164
+    - CCI-000171
+    - CCI-001914
+    - SRG-OS-000057-GPOS-00027
+    - SV-254507r958434_rule
+    - V-254507
+    - NIST800-53_AU-9
+    - NIST800-53_A_AU-9_1
+    - NIST800-53_4_AU-9
+    - NIST800-53_AU-12_b
+    - NIST800-53_A_AU-12_1_iii
+    - NIST800-53_4_AU-12_b
+    - NIST800-53_4_AU-12_3
+  ansible.windows.win_user_right:
+    name: SeSecurityPrivilege
+    users: "{{ win22stig_sesecurityprivilege }}"
+    action: set
+
+- name: "MEDIUM | WN22-UR-000180 | PATCH | Windows Server 2022 Modify firmware environment values user right must only be assigned to the Administrators group."
+  when: wn22_ur_000180 | bool
+  tags:
+    - WN22-UR-000180
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254508r958726_rule
+    - V-254508
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeSystemEnvironmentPrivilege
+    users: Administrators
+    action: set
+
+- name: "MEDIUM | WN22-UR-000190 | PATCH | Windows Server 2022 Perform volume maintenance tasks user right must only be assigned to the Administrators group."
+  when: wn22_ur_000190 | bool
+  tags:
+    - WN22-UR-000190
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254509r958726_rule
+    - V-254509
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeManageVolumePrivilege
+    users: Administrators
+    action: set
+
+- name: "MEDIUM | WN22-UR-000200 | PATCH | Windows Server 2022 Profile single process user right must only be assigned to the Administrators group."
+  when: wn22_ur_000200 | bool
+  tags:
+    - WN22-UR-000200
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254510r958726_rule
+    - V-254510
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeProfileSingleProcessPrivilege
+    users: Administrators
+    action: set
+
+- name: "MEDIUM | WN22-UR-000210 | PATCH | Windows Server 2022 Restore files and directories user right must only be assigned to the Administrators group."
+  when: wn22_ur_000210 | bool
+  tags:
+    - WN22-UR-000210
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254511r958726_rule
+    - V-254511
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeRestorePrivilege
+    users: "{{ win22stig_serestoreprivilege }}"
+    action: set
+
+- name: "MEDIUM | WN22-UR-000220 | PATCH | Windows Server 2022 Take ownership of files or other objects user right must only be assigned to the Administrators group."
+  when: wn22_ur_000220 | bool
+  tags:
+    - WN22-UR-000220
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254512r958726_rule
+    - V-254512
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeTakeOwnershipPrivilege
+    users: "{{ win22stig_setakeownershipprivilege }}"
+    action: set

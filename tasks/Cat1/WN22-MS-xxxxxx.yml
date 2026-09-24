@@ -1,0 +1,62 @@
+---
+
+- name: "HIGH | WN22-MS-000010 | AUDIT | Windows Server 2022 must only allow Administrators responsible for the member server or standalone or nondomain-joined system to have Administrator rights on the system"
+  when:
+    - wn22_ms_000010 | bool
+    - "'controller' not in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-MS-000010
+    - CAT1
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254428r958726_rule
+    - V-254428
+    - audit
+    - NIST800-53_4_AC-6_10
+  block:
+    - name: "HIGH | WN22-MS-000010 | AUDIT | Windows Server 2022 must only allow Administrators responsible for the member server or standalone or nondomain-joined system to have Administrator rights on the system"
+      ansible.windows.win_shell: Get-LocalGroupMember -Name 'Administrators'
+      changed_when: false
+      check_mode: false
+      register: discovered_ms_000010_audit
+
+    - name: "HIGH | WN22-MS-000010 | AUDIT | Windows Server 2022 must only allow Administrators responsible for the member server or standalone or nondomain-joined system to have Administrator rights on the system"
+      ansible.builtin.debug:
+        msg:
+          - The following users or groups have Administrator rights on this system
+          - "{{ discovered_ms_000010_audit.stdout.split('\n') }}"
+      changed_when: false
+
+    - name: "HIGH | WN22-MS-000010 | AUDIT | Windows Server 2022 must only allow Administrators responsible for the member server or standalone or nondomain-joined system to have Administrator rights on the system | Warn Count."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-MS-000010"
+
+- name: "HIGH | WN22-MS-000140 | PATCH | Windows Server 2022 must be running Credential Guard on domain-joined member servers."
+  when:
+    - wn22_ms_000140 | bool
+    - ansible_facts['windows_domain_role'] == "Member server"
+  tags:
+    - WN22-MS-000140
+    - CAT1
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254441r991589_rule
+    - V-254441
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard
+    value: "{{ item }}"
+    data: 1
+    datatype: dword
+  # RequirePlatformSecurityFeatures is deliberately absent. It belongs to WN22-CC-000110, which
+  # sets it from win22stig_dma_protection (default 3). Writing 1 here as well made Cat1 set 3->1
+  # and Cat2 set 1->3 on every run, so both tasks always reported changed and the tunable was
+  # silently overridden. LsaCfgFlags is the only value this control's check text requires.
+  with_items:
+    - EnableVirtualizationBasedSecurity
+    - HypervisorEnforcedCodeIntegrity
+    - HVCIMATRequired
+    - LsaCfgFlags

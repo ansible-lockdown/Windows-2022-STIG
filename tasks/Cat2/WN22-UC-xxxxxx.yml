@@ -1,0 +1,85 @@
+---
+
+# WN22-UC-000010 is a per-user policy. The benchmark reads HKEY_CURRENT_USER and the fix text
+# points at User Configuration >> Administrative Templates >> Windows Components >> Attachment
+# Manager, so a machine-wide HKLM write - which this control used to do - cannot affect the state
+# being evaluated. Do not "restore" the HKLM path.
+#
+# The setting is compliant by default: an absent value is explicitly not a finding, 2 passes, and
+# only 1 is a finding. Removing the value therefore satisfies the fix text's "Not Configured"
+# option and is safer than writing a value into every user's hive.
+#
+# Coverage is every currently loaded user hive plus the Default profile, so all logged-on users
+# and all future profiles are handled. Profiles that exist on disk but are not loaded cannot be
+# read without mounting another user's hive, so they are reported as a warning rather than
+# silently skipped.
+- name: "MEDIUM | WN22-UC-000010 | PATCH | Windows Server 2022 must preserve zone information when saving attachments."
+  when: wn22_uc_000010 | bool
+  tags:
+    - WN22-UC-000010
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254490r991589_rule
+    - V-254490
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-UC-000010 | AUDIT | Windows Server 2022 must preserve zone information when saving attachments. | Find Loaded Hives Set To 1"
+      ansible.windows.win_shell: |
+        $ErrorActionPreference = 'SilentlyContinue'
+        Get-ChildItem -LiteralPath Registry::HKEY_USERS |
+          Where-Object { $_.PSChildName -notmatch '_Classes$' } |
+          ForEach-Object {
+            $key = "Registry::HKEY_USERS\$($_.PSChildName)\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments"
+            $val = (Get-ItemProperty -LiteralPath $key -Name SaveZoneInformation).SaveZoneInformation
+            if ($val -eq 1) { $_.PSChildName }
+          }
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_uc_000010_audit
+
+    - name: "MEDIUM | WN22-UC-000010 | PATCH | Windows Server 2022 must preserve zone information when saving attachments. | Clear In Loaded Hives"
+      when: discovered_uc_000010_audit.stdout_lines | default([], true) | length > 0
+      ansible.windows.win_regedit:
+        path: 'HKU:\{{ item }}\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments'
+        value: SaveZoneInformation
+        state: absent
+      with_items: "{{ discovered_uc_000010_audit.stdout_lines | default([], true) }}"
+
+    - name: "MEDIUM | WN22-UC-000010 | PATCH | Windows Server 2022 must preserve zone information when saving attachments. | Clear In The Default Profile"
+      ansible.windows.win_regedit:
+        hive: C:\Users\Default\NTUSER.DAT
+        path: HKLM:\ANSIBLE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments
+        value: SaveZoneInformation
+        state: absent
+
+    - name: "MEDIUM | WN22-UC-000010 | AUDIT | Windows Server 2022 must preserve zone information when saving attachments. | Find Profiles Not Loaded"
+      ansible.windows.win_shell: |
+        $ErrorActionPreference = 'SilentlyContinue'
+        $loaded = (Get-ChildItem -LiteralPath Registry::HKEY_USERS).PSChildName
+        Get-ChildItem -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList' |
+          Where-Object { $_.PSChildName -match '^S-1-5-21-' -and $loaded -notcontains $_.PSChildName } |
+          ForEach-Object { $_.PSChildName }
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_uc_000010_unloaded
+
+    - name: "MEDIUM | WN22-UC-000010 | AUDIT | Windows Server 2022 must preserve zone information when saving attachments. | Warning Message"
+      when: discovered_uc_000010_unloaded.stdout_lines | default([], true) | length > 0
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! The following user profiles exist on this system but their registry hives are"
+          - "not loaded, so SaveZoneInformation could not be checked or corrected for them:"
+          - "{{ discovered_uc_000010_unloaded.stdout_lines | default([], true) }}"
+          - "Log on as each user, or check HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments"
+          - "manually. A value of 1 is a finding; absent or 2 is compliant."
+
+    - name: "MEDIUM | WN22-UC-000010 | AUDIT | Windows Server 2022 must preserve zone information when saving attachments. | Warning Count"
+      when: discovered_uc_000010_unloaded.stdout_lines | default([], true) | length > 0
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-UC-000010"

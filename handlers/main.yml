@@ -1,8 +1,11 @@
 ---
-# handlers file for Windows-2022-STIG
 
-- name: reboot_windows
+# handlers file for Windows-2022-STIG
+#
+# The handler raises the change_requires_reboot flag rather than rebooting directly.
+# tasks/post.yml then performs the reboot, or warns instead when skip_reboot is set.
+# Rebooting from the handler would bypass skip_reboot entirely.
+
+- name: Change_requires_reboot
   ansible.builtin.set_fact:
-      reboot_host: true
-  tags:
-      - always
+    change_requires_reboot: true

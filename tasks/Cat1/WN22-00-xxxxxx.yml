@@ -1,0 +1,86 @@
+---
+
+- name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email."
+  when: wn22_00_000030 | bool
+  tags:
+    - WN22-00-000030
+    - CAT1
+    - CCI-000366
+    - CCI-001312
+    - SRG-OS-000480-GPOS-00227
+    - SV-254240r1210253_rule
+    - V-254240
+    - NIST800-53_CM-6_b
+    - NIST800-53_SI-11_b
+  block:
+    - name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email."
+
+    - name: "HIGH | WN22-00-000030 | AUDIT | Windows Server 2022 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000030"
+
+- name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes."
+  when: wn22_00_000130 | bool
+  tags:
+    - WN22-00-000130
+    - CAT1
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254250r1137691_rule
+    - V-254250
+    - audit
+    - NIST800-53_AC-3
+    - NIST800-53_AC-3_1
+    - NIST800-53_4_AC-3
+  block:
+    - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes."
+      ansible.windows.win_shell: "[System.IO.DriveInfo]::GetDrives() | Format-Table"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000130_audit
+
+    - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes. | Message out"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 local volumes must use the format"
+          - "that supports NTFS attributes. Please check to verify your system is in compliance."
+          - "ReFS (resilient file system) is also acceptable and would not be a finding."
+          - "CSV (Cluster Shared Volumes) is not a finding."
+          - "This does not apply to system partitions such as the Recovery and EFI System Partition."
+          - "{{ discovered_00_000130_audit.stdout.split('\n') }}"
+
+    - name: "HIGH | WN22-00-000130 | AUDIT | Windows Server 2022 local volumes must use a format that supports NTFS attributes. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000130"
+
+- name: "HIGH | WN22-00-000250 | AUDIT | Windows Server 2022 systems requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest."
+  when: wn22_00_000250 | bool
+  tags:
+    - WN22-00-000250
+    - CAT1
+    - CCI-001199
+    - CCI-002475
+    - CCI-002476
+    - SRG-OS-000185-GPOS-00079
+    - SV-254262r1210265_rule
+    - V-254262
+    - NIST800-53_SC-28
+    - NIST800-53_SC-28_1
+    - NIST800-53_4_SC-28
+    - NIST800-53_4_SC-28_1
+  block:
+    - name: "HIGH | WN22-00-000250 | AUDIT | Windows Server 2022 systems requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 systems requiring data at rest protections"
+          - "must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest."
+
+    - name: "HIGH | WN22-00-000250 | AUDIT | Windows Server 2022 systems requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000250"

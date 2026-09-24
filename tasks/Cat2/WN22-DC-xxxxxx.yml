@@ -1,0 +1,931 @@
+---
+
+- name: "MEDIUM | WN22-DC-000020 | AUDIT | Windows Server 2022 Kerberos user logon restrictions must be enforced."
+  when:
+    - wn22_dc_000020 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000020
+    - CAT2
+    - CCI-001941
+    - CCI-001942
+    - SRG-OS-000112-GPOS-00057
+    - SV-254386r1051101_rule
+    - V-254386
+    - NIST800-53_4_IA-2_8
+    - NIST800-53_4_IA-2_9
+  block:
+    - name: "MEDIUM | WN22-DC-000020 | AUDIT | Windows Server 2022 Kerberos user logon restrictions must be enforced."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Kerberos user logon restrictions must be enforced."
+          - "Configure the policy value in the Default Domain Policy for Computer Configuration"
+          - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
+          - ">> Enforce user logon restrictions to Enabled"
+
+    - name: "MEDIUM | WN22-DC-000020 | AUDIT | Windows Server 2022 Kerberos user logon restrictions must be enforced. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000020"
+
+- name: "MEDIUM | WN22-DC-000030 | AUDIT | Windows Server 2022 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less."
+  when:
+    - wn22_dc_000030 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000030
+    - CAT2
+    - CCI-001941
+    - CCI-001942
+    - SRG-OS-000112-GPOS-00057
+    - SV-254387r1051102_rule
+    - V-254387
+    - NIST800-53_4_IA-2_8
+    - NIST800-53_4_IA-2_9
+  block:
+    - name: "MEDIUM | WN22-DC-000030 | AUDIT | Windows Server 2022 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! The Kerberos service ticket maximum lifetime must be limited to 600 minutes or less."
+          - "Configure the policy value in the Default Domain Policy for Computer Configuration"
+          - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
+          - ">> Maximum lifetime for a service ticket to a maximum of 600 minutes, but not 0, which equates to"
+          - "Ticket doesn't expire"
+
+    - name: "MEDIUM | WN22-DC-000030 | AUDIT | Windows Server 2022 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000030"
+
+- name: "MEDIUM | WN22-DC-000040 | AUDIT | Windows Server 2022 Kerberos user ticket lifetime must be limited to 10 hours or less."
+  when:
+    - wn22_dc_000040 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000040
+    - CAT2
+    - CCI-001941
+    - CCI-001942
+    - SRG-OS-000112-GPOS-00057
+    - SV-254388r1051103_rule
+    - V-254388
+    - NIST800-53_4_IA-2_8
+    - NIST800-53_4_IA-2_9
+  block:
+    - name: "MEDIUM | WN22-DC-000040 | AUDIT | Windows Server 2022 Kerberos user ticket lifetime must be limited to 10 hours or less."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! The Kerberos user ticket lifetime must be limited to 10 hours or less."
+          - "Configure the policy value in the Default Domain Policy for Computer Configuration"
+          - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
+          - ">> Maximum lifetime for user ticket to a maximum of 10 hours but not 0, which equates to Ticket doesn't expire"
+
+    - name: "MEDIUM | WN22-DC-000040 | AUDIT | Windows Server 2022 Kerberos user ticket lifetime must be limited to 10 hours or less. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000040"
+
+- name: "MEDIUM | WN22-DC-000050 | AUDIT | Windows Server 2022 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less."
+  when:
+    - wn22_dc_000050 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000050
+    - CAT2
+    - CCI-001941
+    - CCI-001942
+    - SRG-OS-000112-GPOS-00057
+    - SV-254389r1051104_rule
+    - V-254389
+    - NIST800-53_4_IA-2_8
+    - NIST800-53_4_IA-2_9
+  block:
+    - name: "MEDIUM | WN22-DC-000050 | AUDIT | Windows Server 2022 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! The Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less."
+          - "Configure the policy value in the Default Domain Policy for Computer Configuration"
+          - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
+          - ">> Maximum lifetime for user ticket renewal to a maximum of 7 days or less"
+
+    - name: "MEDIUM | WN22-DC-000050 | AUDIT | Windows Server 2022 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less.| import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000050"
+
+- name: "MEDIUM | WN22-DC-000060 | AUDIT | Windows Server 2022 computer clock synchronization tolerance must be limited to 5 minutes or less."
+  when:
+    - wn22_dc_000060 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000060
+    - CAT2
+    - CCI-001941
+    - CCI-001942
+    - SRG-OS-000112-GPOS-00057
+    - SV-254390r1051105_rule
+    - V-254390
+    - NIST800-53_4_IA-2_8
+    - NIST800-53_4_IA-2_9
+  block:
+    - name: "MEDIUM | WN22-DC-000060 | AUDIT | Windows Server 2022 computer clock synchronization tolerance must be limited to 5 minutes or less."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! The Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less."
+          - "Configure the policy value in the Default Domain Policy for Computer Configuration"
+          - ">> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy"
+          - ">> Maximum tolerance for computer clock synchronization to a maximum of 5 minutes or less."
+
+    - name: "MEDIUM | WN22-DC-000060 | AUDIT | Windows Server 2022 computer clock synchronization tolerance must be limited to 5 minutes or less. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000060"
+
+- name: "MEDIUM | WN22-DC-000120 | AUDIT | Windows Server 2022 data files owned by users must be on a different logical partition from the directory server data files."
+  when:
+    - wn22_dc_000120 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000120
+    - CAT2
+    - CCI-001090
+    - SRG-OS-000138-GPOS-00069
+    - SV-254396r1137695_rule
+    - V-254396
+    - audit
+    - NIST800-53_SC-4
+    - NIST800-53_A_SC-4_1
+    - NIST800-53_4_SC-4
+  block:
+    - name: "MEDIUM | WN22-DC-000120 | AUDIT | Data files owned by users must be on a different logical partition from the directory server data files. | Audit Current Dir Locations For DSA"
+      ansible.windows.win_shell: Get-ItemProperty Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NTDS\Parameters -Name "Database log files path","DSA Database file"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_dc_000120_audit_dirlocation
+
+    - name: "MEDIUM | WN22-DC-000120 | AUDIT | Data files owned by users must be on a different logical partition from the directory server data files. | Get Shared Drives"
+      ansible.windows.win_shell: net share
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_dc_000120_audit_shares
+
+    - name: "MEDIUM | WN22-DC-000120 | AUDIT | Data files owned by users must be on a different logical partition from the directory server data files. | Warning Message."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Data files owned by users must be on a different logical partition"
+          - "from the directory server data files. Ignore system shares (e.g., NETLOGON, SYSVOL, and administrative"
+          - "shares ending in $). User shares that are hidden (ending with $) should not be ignored."
+          - "If user shares are located on the same logical partition as the directory server data files, this is a finding."
+          - "Note the directory locations in the values for the DSA Database file"
+          - "{{ discovered_dc_000120_audit_dirlocation.stdout_lines | trim }}"
+          - "Note the logical drive(s) or file system partition for any organization-created data shares."
+          - "{{ discovered_dc_000120_audit_shares.stdout_lines | trim }}"
+
+    - name: "MEDIUM | WN22-DC-000120 | AUDIT | Windows Server 2022 data files owned by users must be on a different logical partition from the directory server data files. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000120"
+
+- name: "MEDIUM | WN22-DC-000130 | AUDIT | Windows Server 2022 domain controllers must run on a machine dedicated to that function."
+  when:
+    - wn22_dc_000130 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000130
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254397r958478_rule
+    - V-254397
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  block:
+    - name: "MEDIUM | WN22-DC-000130 | AUDIT | Windows Server 2022 domain controllers must run on a machine dedicated to that function."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Domain controllers must run on a machine dedicated to that function."
+          - "Review installed applications. Remove additional roles or applications such as web, database,"
+          - "and email from the domain controller."
+
+    - name: "MEDIUM | WN22-DC-000130 | AUDIT | Windows Server 2022 domain controllers must run on a machine dedicated to that function. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000130"
+
+- name: "MEDIUM | WN22-DC-000140 | AUDIT | Windows Server 2022 must use separate, NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service implementations at a classified confidentiality level when replication data traverses a network cleared to a lower level than the data."
+  when:
+    - wn22_dc_000140 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000140
+    - CAT2
+    - CCI-002450
+    - SRG-OS-000396-GPOS-00176
+    - SV-254398r987791_rule
+    - V-254398
+    - NIST800-53_4_SC-13
+  block:
+    - name: "MEDIUM | WN22-DC-000140 | AUDIT | Windows Server 2022 must use separate, NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service implementations at a classified confidentiality level when replication data traverses a network cleared to a lower level than the data."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. If the classification level of the Windows domain controller is higher than"
+          - "the level of the network traversed and NSA-approved encryption is not used, this is a finding."
+          - "Configure NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service"
+          - "implementations at a classified confidentiality level that transfer replication data through a network cleared"
+          - "to a lower level than the data."
+
+    - name: "MEDIUM | WN22-DC-000140 | AUDIT | Windows Server 2022 must use separate, NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service implementations at a classified confidentiality level when replication data traverses a network cleared to a lower level than the data. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000140"
+
+- name: "MEDIUM | WN22-DC-000170 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must be configured with proper audit settings."
+  when:
+    - wn22_dc_000170 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000170
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254401r958732_rule
+    - V-254401
+    - NIST800-53_AU-12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-DC-000170 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must be configured with proper audit settings."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Active Directory Group Policy objects must be configured with proper audit settings."
+          - "Please review the STIG documentation for proper direction on auditing this control."
+
+    - name: "MEDIUM | WN22-DC-000170 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must be configured with proper audit settings. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000170"
+
+- name: "MEDIUM | WN22-DC-000180 | AUDIT | Windows Server 2022 Active Directory Domain object must be configured with proper audit settings."
+  when:
+    - wn22_dc_000180 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000180
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254402r958732_rule
+    - V-254402
+    - NIST800-53_AU-12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-DC-000180 | AUDIT | Windows Server 2022 Active Directory Domain object must be configured with proper audit settings."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. The Active Directory Domain object must be configured with proper audit settings."
+          - "Please review the STIG documentation for proper direction on auditing this control."
+
+    - name: "MEDIUM | WN22-DC-000180 | AUDIT | Windows Server 2022 Active Directory Domain object must be configured with proper audit settings. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000180"
+
+- name: "MEDIUM | WN22-DC-000190 | AUDIT | Windows Server 2022 Active Directory Infrastructure object must be configured with proper audit settings."
+  when:
+    - wn22_dc_000190 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000190
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254403r1210271_rule
+    - V-254403
+    - NIST800-53_AU-12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-DC-000190 | AUDIT | Windows Server 2022 Active Directory Infrastructure object must be configured with proper audit settings."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. The Active Directory Infrastructure object must be configured with proper audit settings."
+          - "Please review the STIG documentation for proper direction on auditing this control."
+
+    - name: "MEDIUM | WN22-DC-000190 | AUDIT | Windows Server 2022 Active Directory Infrastructure object must be configured with proper audit settings. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000190"
+
+- name: "MEDIUM | WN22-DC-000200 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must be configured with proper audit settings."
+  when:
+    - wn22_dc_000200 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000200
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254404r958732_rule
+    - V-254404
+    - NIST800-53_AU-12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-DC-000200 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must be configured with proper audit settings."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. The Active Directory Domain Controllers Organizational"
+          - "Unit (OU) object must be configured with proper audit settings."
+          - "Please review the STIG documentation for proper direction on auditing this control."
+
+    - name: "MEDIUM | WN22-DC-000200 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must be configured with proper audit settings. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000200"
+
+- name: "MEDIUM | WN22-DC-000210 | AUDIT | Windows Server 2022 Active Directory AdminSDHolder object must be configured with proper audit settings."
+  when:
+    - wn22_dc_000210 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000210
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254405r1210274_rule
+    - V-254405
+    - NIST800-53_AU-12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-DC-000210 | AUDIT | Windows Server 2022 Active Directory AdminSDHolder object must be configured with proper audit settings."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. The Active Directory AdminSDHolder object must be configured with proper audit settings."
+          - "Please review the STIG documentation for proper direction on auditing this control."
+
+    - name: "MEDIUM | WN22-DC-000210 | AUDIT | Windows Server 2022 Active Directory AdminSDHolder object must be configured with proper audit settings. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000210"
+
+- name: "MEDIUM | WN22-DC-000220 | AUDIT | Windows Server 2022 Active Directory RID Manager$ object must be configured with proper audit settings."
+  when:
+    - wn22_dc_000220 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000220
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254406r958732_rule
+    - V-254406
+    - NIST800-53_AU-12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-DC-000220 | AUDIT | Windows Server 2022 Active Directory RID Manager$ object must be configured with proper audit settings."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. The Active Directory RID Manager$ object must be configured with proper audit settings."
+          - "Please review the STIG documentation for proper direction on auditing this control."
+
+    - name: "MEDIUM | WN22-DC-000220 | AUDIT | Windows Server 2022 Active Directory RID Manager$ object must be configured with proper audit settings. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000220"
+
+- name: "MEDIUM | WN22-DC-000230 | PATCH | Windows Server 2022 must be configured to audit Account Management | Computer Account Management successes."
+  when:
+    - wn22_dc_000230 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000230
+    - CAT2
+    - CCI-000018
+    - CCI-000172
+    - CCI-001403
+    - CCI-001404
+    - CCI-001405
+    - CCI-002130
+    - SRG-OS-000004-GPOS-00004
+    - SRG-OS-000239-GPOS-00089
+    - SRG-OS-000240-GPOS-00090
+    - SRG-OS-000241-GPOS-00091
+    - SRG-OS-000303-GPOS-00120
+    - SRG-OS-000476-GPOS-00221
+    - SV-254407r958368_rule
+    - V-254407
+    - audit
+    - NIST800-53_AC-2_4
+    - NIST800-53_A_AC-2_4_1_i_iii
+    - NIST800-53_4_AC-2_4
+    - NIST800-53_AU-12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+  block:
+    - name: "MEDIUM | WN22-DC-000230 | AUDIT | Windows Server 2022 must be configured to audit Account Management | Computer Account Management successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Computer Account Management" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_dc_000230_audit
+
+    - name: "MEDIUM | WN22-DC-000230 | PATCH | Windows Server 2022 must be configured to audit Account Management | Computer Account Management successes."
+      when: "'Success' not in discovered_dc_000230_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Computer Account Management" /success:enable
+
+- name: "MEDIUM | WN22-DC-000240 | PATCH | Windows Server 2022 must be configured to audit DS Access | Directory Service Access successes."
+  when:
+    - wn22_dc_000240 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000240
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SRG-OS-000458-GPOS-00203
+    - SRG-OS-000463-GPOS-00207
+    - SRG-OS-000468-GPOS-00212
+    - SV-254408r958732_rule
+    - V-254408
+    - NIST800-53_AU-12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-DC-000240 | AUDIT | Windows Server 2022 must be configured to audit DS Access | Directory Service Access successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Directory Service Access" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_dc_000240_audit
+
+    - name: "MEDIUM | WN22-DC-000240 | PATCH | Windows Server 2022 must be configured to audit DS Access | Directory Service Access successes."
+      when: "'Success' not in discovered_dc_000240_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Directory Service Access" /success:enable
+
+- name: "MEDIUM | WN22-DC-000250 | PATCH | Windows Server 2022 must be configured to audit DS Access | Directory Service Access failures."
+  when:
+    - wn22_dc_000250 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000250
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SV-254409r958732_rule
+    - SRG-OS-000458-GPOS-00203
+    - SRG-OS-000463-GPOS-00207
+    - SRG-OS-000468-GPOS-00212
+    - V-254409
+    - NIST800-53_AU-12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-DC-000250 | AUDIT | Windows Server 2022 must be configured to audit DS Access | Directory Service Access failures."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Directory Service Access" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_dc_000250_audit
+
+    - name: "MEDIUM | WN22-DC-000250 | PATCH | Windows Server 2022 must be configured to audit DS Access | Directory Service Access failures."
+      when: "'Failure' not in discovered_dc_000250_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Directory Service Access" /failure:enable
+
+- name: "MEDIUM | WN22-DC-000260 | PATCH | Windows Server 2022 must be configured to audit DS Access | Directory Service Changes successes."
+  when:
+    - wn22_dc_000260 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000260
+    - CAT2
+    - CCI-000172
+    - CCI-002234
+    - SRG-OS-000327-GPOS-00127
+    - SRG-OS-000458-GPOS-00203
+    - SRG-OS-000463-GPOS-00207
+    - SRG-OS-000468-GPOS-00212
+    - SV-254410r958732_rule
+    - V-254410
+    - NIST800-53_AU-12_c
+    - NIST800-53_A_AU-12_1_iv
+    - NIST800-53_4_AU-12_c
+    - NIST800-53_4_AC-6_9
+  block:
+    - name: "MEDIUM | WN22-DC-000260 | AUDIT | Windows Server 2022 must be configured to audit DS Access | Directory Service Changes successes."
+      ansible.windows.win_shell: AuditPol /get /subcategory:"Directory Service Changes" -r | ConvertFrom-Csv | Select-Object -expand "Inclusion Setting"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_dc_000260_audit
+
+    - name: "MEDIUM | WN22-DC-000260 | PATCH | Windows Server 2022 must be configured to audit DS Access | Directory Service Changes successes."
+      when: "'Success' not in discovered_dc_000260_audit.stdout"
+      ansible.windows.win_shell: AuditPol /set /subcategory:"Directory Service Changes" /success:enable
+
+- name: "MEDIUM | WN22-DC-000280 | AUDIT | Windows Server 2022 domain controllers must have a PKI server certificate."
+  when:
+    - wn22_dc_000280 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000280
+    - CAT2
+    - CCI-000185
+    - SRG-OS-000066-GPOS-00034
+    - SV-254412r958448_rule
+    - V-254412
+    - NIST800-53_IA-5_2
+    - NIST800-53_A_IA-5_2_1
+    - NIST800-53_4_IA-5_2_a
+  block:
+    - name: "MEDIUM | WN22-DC-000280 | AUDIT | Windows Server 2022 domain controllers must have a PKI server certificate."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Domain controllers must have a PKI server certificate."
+          - "Please review the STIG documentation for proper direction on auditing this control."
+
+    - name: "MEDIUM | WN22-DC-000280 | AUDIT | Windows Server 2022 domain controllers must have a PKI server certificate. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000280"
+
+- name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication."
+  when:
+    - wn22_dc_000310 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000310
+    - CAT2
+    - CCI-004046
+    - CCI-004047
+    - CCI-000767
+    - CCI-000768
+    - CCI-001948
+    - SRG-OS-000105-GPOS-00052
+    - SRG-OS-000106-GPOS-00053
+    - SRG-OS-000107-GPOS-00054
+    - SRG-OS-000108-GPOS-00055
+    - SRG-OS-000375-GPOS-00160
+    - SV-254415r1210275_rule
+    - V-254415
+    - NIST800-53_IA-2_1
+    - NIST800-53A_IA-2_1_1
+    - NIST800-53_4_IA-2_1
+    - NIST800-53_IA-2_2
+    - NIST800-53A_IA-2_2_1
+    - NIST800-53_4_IA-2_2
+    - NIST800-53_IA-2_3
+    - NIST800-53A_IA-2_3_1
+    - NIST800-53_4_IA-2_3
+    - NIST800-53_IA-2_4
+    - NIST800-53A_IA-2_4_1
+    - NIST800-53_4_IA-2_4
+    - NIST800-53_4_IA-2_11
+  block:
+    - name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication. | Obtain Accounts"
+      ansible.windows.win_shell: Get-ADUser -Filter {(Enabled -eq $True) -and (SmartcardLogonRequired -eq $False)} | FT Name
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_dc_000310_audit
+
+    - name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication. | Warning Message."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Active Directory user accounts, including administrators,"
+          - "must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification"
+          - "(PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication."
+          - "If any user accounts, including administrators, are listed below, this is a finding."
+          - "Configure all user accounts, including administrator accounts, in Active Directory to enable"
+          - "the option Smart card is required for interactive logon"
+          - "{{ discovered_dc_000310_audit.stdout_lines | trim }}"
+
+    - name: "MEDIUM | WN22-DC-000310 | AUDIT | Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication. | Warn Count"
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000310"
+
+- name: "MEDIUM | WN22-DC-000320 | PATCH | Windows Server 2022 domain controllers must require LDAP access signing."
+  when:
+    - wn22_dc_000320 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000320
+    - CAT2
+    - CCI-002418
+    - CCI-002421
+    - SRG-OS-000423-GPOS-00187
+    - SRG-OS-000424-GPOS-00188
+    - SV-254416r958908_rule
+    - V-254416
+    - NIST800-53_4_SC-8
+    - NIST800-53_4_SC-8_1
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters
+    value: LDAPServerIntegrity
+    data: 2
+    datatype: dword
+
+- name: "MEDIUM | WN22-DC-000330 | PATCH | Windows Server 2022 domain controllers must be configured to allow reset of machine account passwords."
+  when:
+    - wn22_dc_000330 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000330
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254417r991589_rule
+    - V-254417
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+    value: RefusePasswordChange
+    data: 0
+    datatype: dword
+
+- name: "MEDIUM | WN22-DC-000340 | PATCH | Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers."
+  when:
+    - wn22_dc_000340 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000340
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254418r1137691_rule
+    - V-254418
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  ansible.windows.win_user_right:
+    name: SeNetworkLogonRight
+    users: "{{ win22stig_senetworklogonright_dc }}"
+    action: set
+
+- name: "MEDIUM | WN22-DC-000350 | PATCH | Windows Server 2022 Add workstations to domain user right must only be assigned to the Administrators group on domain controllers."
+  when:
+    - wn22_dc_000350 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000350
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254419r958726_rule
+    - V-254419
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeMachineAccountPrivilege
+    users: Administrators
+    action: set
+
+- name: "MEDIUM | WN22-DC-000360 | PATCH | Windows Server 2022 Allow log on through Remote Desktop Services user right must only be assigned to the Administrators group on domain controllers."
+  when:
+    - wn22_dc_000360 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000360
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254420r1137691_rule
+    - V-254420
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  ansible.windows.win_user_right:
+    name: SeRemoteInteractiveLogonRight
+    users: Administrators
+    action: set
+
+- name: "MEDIUM | WN22-DC-000370 | PATCH | Windows Server 2022 Deny access to this computer from the network user right on domain controllers must be configured to prevent unauthenticated access."
+  when:
+    - wn22_dc_000370 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000370
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254421r1137691_rule
+    - V-254421
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  ansible.windows.win_user_right:
+    name: SeDenyNetworkLogonRight
+    users: Guests
+    action: set
+
+- name: "MEDIUM | WN22-DC-000380 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain controllers must be configured to prevent unauthenticated access."
+  when:
+    - wn22_dc_000380 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000380
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254422r1137691_rule
+    - V-254422
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  ansible.windows.win_user_right:
+    name: SeDenyBatchLogonRight
+    users: Guests
+    action: set
+
+- name: "MEDIUM | WN22-DC-000390 | PATCH | Windows Server 2022 Deny log on as a service user right must be configured to include no accounts or groups (blank) on domain controllers."
+  when:
+    - wn22_dc_000390 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000390
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254423r1137691_rule
+    - V-254423
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  ansible.windows.win_user_right:
+    name: SeDenyServiceLogonRight
+    users: []
+    action: set
+- name: "MEDIUM | WN22-DC-000400 | PATCH | Windows Server 2022 Deny log on locally user right on domain controllers must be configured to prevent unauthenticated access."
+  when:
+    - wn22_dc_000400 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000400
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-254424r1137691_rule
+    - V-254424
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  ansible.windows.win_user_right:
+    name: SeDenyInteractiveLogonRight
+    users: Guests
+    action: set
+
+- name: "MEDIUM | WN22-DC-000405 | PATCH | Windows Server 2022 must be configured for certificate-based authentication for domain controllers."
+  when:
+    - wn22_dc_000405 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000405
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-271426r1137691_rule
+    - V-271426
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\Kdc
+    value: StrongCertificateBindingEnforcement
+    data: "{{ win22stig_strong_certificate_binding_enforcement_value }}"
+    datatype: dword
+
+- name: "MEDIUM | WN22-DC-000406 | AUDIT | Windows Server 2022 must be configured for named-based strong mappings for certificates."
+  when:
+    - wn22_dc_000406 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000406
+    - CAT2
+    - CCI-000213
+    - SRG-OS-000080-GPOS-00048
+    - SV-271427r1137691_rule
+    - V-271427
+    - NIST800-53_AC-3
+    - NIST800-53_A_AC-3_1
+    - NIST800-53_4_AC-3
+  vars:
+    warn_control_id: "WN22-DC-000406"
+  block:
+    - name: "MEDIUM | WN22-DC-000406 | AUDIT | Windows Server 2022 must be configured for named-based strong mappings for certificates."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Certificate names must be correctly mapped to the intended user account "
+          - "in Active Directory. A lack of strong name-based mappings allows certain weak certificate mappings,"
+          - "such as Issuer/Subject AltSecID and User Principal Names (UPN) mappings, to be treated as strong mappings."
+          - "Please review the STIG documentation for proper direction on mappings for certificates is not Enabled"
+
+    - name: "MEDIUM | WN22-DC-000406 | AUDIT | Windows Server 2022 must be configured for named-based strong mappings for certificates. | Warn Count."
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "MEDIUM | WN22-DC-000410 | PATCH | Windows Server 2022 Deny log on through Remote Desktop Services user right on domain controllers must be configured to prevent unauthenticated access."
+  when:
+    - wn22_dc_000410 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000410
+    - CAT2
+    - CCI-002314
+    - SRG-OS-000297-GPOS-00115
+    - SV-254425r958672_rule
+    - V-254425
+    - NIST800-53_4_AC-17_1
+  ansible.windows.win_user_right:
+    name: SeDenyRemoteInteractiveLogonRight
+    users: Guests
+    action: set
+
+- name: "MEDIUM | WN22-DC-000420 | PATCH | Windows Server 2022 Enable computer and user accounts to be trusted for delegation user right must only be assigned to the Administrators group on domain controllers."
+  when:
+    - wn22_dc_000420 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000420
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254426r958726_rule
+    - V-254426
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeEnableDelegationPrivilege
+    users: Administrators
+    action: set
+
+- name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days."
+  when:
+    - wn22_dc_000430 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+    - win22stig_complexity_high | bool
+  tags:
+    - WN22-DC-000430
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254427r991589_rule
+    - V-254427
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days."
+      when: win22stig_krbtgt_account_pass_age <= 180
+      ansible.windows.win_shell: "Get-ADUser krbtgt -Property PasswordLastSet | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ win22stig_krbtgt_account_pass_age }}))} | Select-Object -ExpandProperty PasswordLastSet"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_dc_000430_audit
+
+    - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days. | Warning Message Variable."
+      when: win22stig_krbtgt_account_pass_age > 180
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have an invalid number of days set for win22stig_krbtgt_account_pass_age please read"
+          - "the notes for the variable and make the necessary change to the variable to be in compliance."
+
+    - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days. | Warning Message Account."
+      when:
+        - win22stig_krbtgt_account_pass_age <= 180
+        - discovered_dc_000430_audit.stdout | length > 0
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! The password for the krbtgt account on a domain must be reset at least every 180 days."
+          - "Your password is currently out of STIG compliance and has not been reset in the last 180 days."
+          - "{{ discovered_dc_000430_audit.stdout_lines | trim }}"
+
+    - name: "MEDIUM | WN22-DC-000430 | AUDIT | The password for the krbtgt account on a domain must be reset at least every 180 days. | import reusable task."
+      when:
+        - win22stig_krbtgt_account_pass_age <= 180
+        - discovered_dc_000430_audit.stdout | length > 0 or
+          win22stig_krbtgt_account_pass_age > 180
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000430"
