@@ -1,0 +1,45 @@
+---
+
+- name: "HIGH | WN22-UR-000020 | PATCH | Windows Server 2022 Act as part of the operating system user right must not be assigned to any groups or accounts."
+  when: wn22_ur_000020 | bool
+  tags:
+    - WN22-UR-000020
+    - CAT1
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254492r958726_rule
+    - V-254492
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeTcbPrivilege
+    users: []
+    action: set
+
+- name: "HIGH | WN22-UR-000060 | PATCH | Windows Server 2022 Create a token object user right must not be assigned to any groups or accounts."
+  when: wn22_ur_000060 | bool
+  tags:
+    - WN22-UR-000060
+    - CAT1
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254496r958726_rule
+    - V-254496
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeCreateTokenPrivilege
+    users: []
+    action: set
+- name: "HIGH | WN22-UR-000100 | PATCH | Windows Server 2022 Debug programs: user right must only be assigned to the Administrators group."
+  when: wn22_ur_000100 | bool
+  tags:
+    - WN22-UR-000100
+    - CAT1
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254500r958726_rule
+    - V-254500
+    - NIST800-53_4_AC-6_10
+  ansible.windows.win_user_right:
+    name: SeDebugPrivilege
+    users: Administrators
+    action: set

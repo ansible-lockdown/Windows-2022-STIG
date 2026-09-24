@@ -1,0 +1,219 @@
+---
+
+- name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
+  when:
+    - wn22_dc_000010 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000010
+    - CAT1
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254385r958726_rule
+    - V-254385
+    - audit
+    - NIST800-53_4_AC-6_10
+  block:
+    - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
+      ansible.windows.win_shell: get-localgroupmember administrators | Select name | Format-Table -HideTableHeaders
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_dc_000010_admin_usrs
+
+    - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system."
+      ansible.builtin.debug:
+        msg:
+          - "Alert! Below are the users in the Administrators group. Please review and confirm all users should be in this group"
+          - "{{ discovered_dc_000010_admin_usrs.stdout_lines }}"
+
+    - name: "HIGH | WN22-DC-000010 | AUDIT | Windows Server 2022 must only allow administrators responsible for the domain controller to have Administrator rights on the system. | Warn Count."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000010"
+
+- name: "HIGH | WN22-DC-000070 | AUDIT | Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access."
+  when:
+    - wn22_dc_000070 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000070
+    - CAT1
+    - CCI-001314
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254391r958726_rule
+    - V-254391
+    - NIST800-53_SI-11_c
+    - NIST800-53_SI-11_1_iv
+    - NIST800-53_4_SI-11_b
+    - NIST800-53_4_AC-6_10
+  block:
+    - name: "HIGH | WN22-DC-000070 | AUDIT | Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access."
+
+    - name: "WN22-DC-000070 | AUDIT | Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000070"
+
+- name: "HIGH | WN22-DC-000080 | AUDIT | Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions."
+  when:
+    - wn22_dc_000080 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000080
+    - CAT1
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254392r958726_rule
+    - V-254392
+    - NIST800-53_4_AC-6_10
+  block:
+    - name: "HIGH | WN22-DC-000080 | AUDIT | Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions."
+
+    - name: "HIGH | WN22-DC-000080 | AUDIT | Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000080"
+
+- name: "HIGH | WN22-DC-000090 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must have proper access control permissions."
+  when:
+    - wn22_dc_000090 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000090
+    - CAT1
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254393r1081073_rule
+    - V-254393
+    - NIST800-53_4_AC-6_10
+  block:
+    - name: "HIGH | WN22-DC-000090 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must have proper access control permissions. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 Active Directory Group Policy objects must have proper access control permissions."
+
+    - name: "HIGH | WN22-DC-000090 | AUDIT | Windows Server 2022 Active Directory Group Policy objects must have proper access control permissions. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000090"
+
+- name: "HIGH | WN22-DC-000100 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must have the proper access control permissions."
+  when:
+    - wn22_dc_000100 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000100
+    - CAT1
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254394r958726_rule
+    - V-254394
+    - NIST800-53_4_AC-6_10
+  block:
+    - name: "HIGH | WN22-DC-000100 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must have the proper access control permissions. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must have the proper access control permissions."
+
+    - name: "HIGH | WN22-DC-000100 | AUDIT | Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must have the proper access control permissions. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000100"
+
+- name: "HIGH | WN22-DC-000110 | AUDIT | Windows Server 2022 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions."
+  when:
+    - wn22_dc_000110 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000110
+    - CAT1
+    - CCI-002235
+    - SV-254395r958726_rule
+    - V-254395
+    - SRG-OS-000324-GPOS-00125
+    - NIST800-53_4_AC-6_10
+  block:
+    - name: "HIGH | WN22-DC-000110 | AUDIT | Windows Server 2022 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions."
+
+    - name: "HIGH | WN22-DC-000110 | AUDIT | Windows Server 2022 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000110"
+
+- name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
+  when:
+    - wn22_dc_000150 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000150
+    - CAT1
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254399r991589_rule
+    - V-254399
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_AC-6_10
+  block:
+    - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access."
+
+    - name: "HIGH | WN22-DC-000150 | AUDIT | Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000150"
+
+- name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA)."
+  when:
+    - wn22_dc_000290 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000290
+    - CAT1
+    - CCI-000185
+    - SRG-OS-000066-GPOS-00034
+    - SV-254413r1153446_rule
+    - V-254413
+    - NIST800-53_IA-5_2
+    - NIST800-53_A_IA-5_2_1
+    - NIST800-53_4_IA-5_2_a
+  block:
+    - name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA). | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA)."
+
+    - name: "HIGH | WN22-DC-000290 | AUDIT | Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA). | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000290"
+
+- name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
+  when:
+    - wn22_dc_000300 | bool
+    - "'controller' in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-DC-000300
+    - CAT1
+    - CCI-000185
+    - SRG-OS-000066-GPOS-00034
+    - SV-254414r958448_rule
+    - V-254414
+    - NIST800-53_IA-5_2
+    - NIST800-53_A_IA-5_2_1
+    - NIST800-53_4_IA-5_2_a
+  block:
+    - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA). | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA)."
+
+    - name: "HIGH | WN22-DC-000300 | AUDIT | Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA). | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-DC-000300"

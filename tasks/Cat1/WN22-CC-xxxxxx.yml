@@ -1,0 +1,107 @@
+---
+
+- name: "HIGH | WN22-CC-000210 | PATCH | Windows Server 2022 AutoPlay must be turned off for non-volume devices."
+  when: wn22_cc_000210 | bool
+  tags:
+    - WN22-CC-000210
+    - CAT1
+    - CCI-001764
+    - SRG-OS-000368-GPOS-00154
+    - SV-254352r958804_rule
+    - V-254352
+    - NIST800-53_4_CM-7
+  ansible.windows.win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\Windows\Explorer
+    value: NoAutoplayfornonVolume
+    data: 1
+    datatype: dword
+
+- name: "HIGH | WN22-CC-000220 | PATCH | Windows Server 2022 default AutoRun behavior must be configured to prevent AutoRun commands."
+  when: wn22_cc_000220 | bool
+  tags:
+    - WN22-CC-000220
+    - CAT1
+    - CCI-001764
+    - SRG-OS-000368-GPOS-00154
+    - SV-254353r958804_rule
+    - V-254353
+    - NIST800-53_4_CM-7_2
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
+    value: NoAutorun
+    data: 1
+    datatype: dword
+
+- name: "HIGH | WN22-CC-000230 | PATCH | Windows Server 2022 AutoPlay must be disabled for all drives."
+  when: wn22_cc_000230 | bool
+  tags:
+    - WN22-CC-000230
+    - CAT1
+    - CCI-001764
+    - SRG-OS-000368-GPOS-00154
+    - SV-254354r958804_rule
+    - V-254354
+    - NIST800-53_4_CM-7_2
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
+    name: NoDriveTypeAutoRun
+    data: 255
+    datatype: dword
+
+- name: "HIGH | WN22-CC-000430 | PATCH | Windows Server 2022 must disable the Windows Installer Always install with elevated privileges option."
+  when: wn22_cc_000430 | bool
+  tags:
+    - WN22-CC-000430
+    - CAT1
+    - CCI-003980
+    - CCI-001812
+    - SRG-OS-000362-GPOS-00149
+    - SV-254374r1051099_rule
+    - V-254374
+    - NIST800-53_4_CM-11_2
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer
+    state: present
+    value: AlwaysInstallElevated
+    data: 0
+    datatype: dword
+
+- name: "HIGH | WN22-CC-000470 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) client must not use Basic authentication."
+  when:
+    - wn22_cc_000470 | bool
+    - not win_skip_for_test | bool
+  tags:
+    - WN22-CC-000470
+    - CAT1
+    - CCI-000877
+    - SRG-OS-000125-GPOS-00065
+    - SV-254378r958510_rule
+    - V-254378
+    - winrm
+    - NIST800-53_MA-4_c
+    - NIST800-53_4_MA-4_c
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
+    value: AllowBasic
+    data: 0
+    datatype: dword
+
+- name: "HIGH | WN22-CC-000500 | PATCH | Windows Server 2022 Windows Remote Management (WinRM) service must not use Basic authentication."
+  when:
+    - wn22_cc_000500 | bool
+    - not win_skip_for_test | bool
+  tags:
+    - WN22-CC-000500
+    - CAT1
+    - CCI-000877
+    - SRG-OS-000125-GPOS-00065
+    - SV-254381r958510_rule
+    - V-254381
+    - winrm
+    - NIST800-53_MA-4_c
+    - NIST800-53_4_MA-4_c
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service
+    value: AllowBasic
+    data: 0
+    datatype: dword

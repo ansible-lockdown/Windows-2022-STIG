@@ -1,0 +1,1404 @@
+---
+
+- name: "MEDIUM | WN22-00-000010 | AUDIT | Windows Server 2022 users with Administrative privileges must have separate accounts for administrative duties and normal operational tasks."
+  when: wn22_00_000010 | bool
+  tags:
+    - WN22-00-000010
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254238r991589_rule
+    - V-254238
+    - audit
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-00-000010 | AUDIT | Windows Server 2022 users with Administrative privileges must have separate accounts for administrative duties and normal operational tasks. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task.  Windows Server 2022 users with Administrative privileges must have separate accounts for administrative duties and normal operational tasks."
+
+    - name: "MEDIUM | WN22-00-000010 | AUDIT | Windows Server 2022 users with Administrative privileges must have separate accounts for administrative duties and normal operational tasks. | Warn Count."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000010"
+
+- name: "MEDIUM | WN22-00-000020 | AUDIT | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every 60 days."
+  when: wn22_00_000020 | bool
+  tags:
+    - WN22-00-000020
+    - CAT2
+    - CCI-004066
+    - CCI-000199
+    - SRG-OS-000076-GPOS-00044
+    - SV-254239r1153440_rule
+    - V-254239
+    - audit
+    - NIST800-53_IA-5_1_d
+    - NIST800-53A_IA-5_1_d
+    - NIST800-53A_4_IA-5_1_d
+  block:
+    - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every 60 days."
+      when: "'controller' in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: "Get-ADUser -Filter * -Property PasswordLastSet | Where SID -like S-1-5-21-*-500 | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ win22stig_pass_age_administrator }}))} | Select Name,PasswordLastSet"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000020_audit_dc
+
+    - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every 60 days."
+      when:
+        - discovered_00_000020_audit_dc is not skipped
+        - discovered_00_000020_audit_dc.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - "The following account appears to be the default admin account and the password does not meet the control specific age of {{ win22stig_pass_age_administrator }}"
+          - "{{ discovered_00_000020_audit_dc.stdout.split('\n') }}"
+
+    - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every 60 days."
+      when: "'controller' not in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: "Get-Localuser -Name * | Select * | Where SID -like S-1-5-21-*-500 | Where-Object {$_.PasswordLastSet -lt ((Get-Date).AddDays(-{{ win22stig_pass_age_administrator }}))} | Select Name,PasswordLastSet"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000020_audit_dm_sa
+
+    - name: "MEDIUM | WN22-00-000020 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every 60 days."
+      when:
+        - discovered_00_000020_audit_dm_sa is not skipped
+        - discovered_00_000020_audit_dm_sa.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - "The following account appears to be the default admin account and the password does not meet the control specific age of {{ win22stig_pass_age_administrator }}"
+          - "{{ discovered_00_000020_audit_dm_sa.stdout.split('\n') }}"
+
+    - name: "MEDIUM | WN22-00-000020 | AUDIT | Windows Server 2022 passwords for the built-in Administrator account must be changed at least every 60 days. | Warn Count."
+      when: discovered_00_000020_audit_dc is not skipped and discovered_00_000020_audit_dc.stdout != "" or discovered_00_000020_audit_dm_sa is not skipped and discovered_00_000020_audit_dm_sa.stdout != ""
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000020"
+- name: "MEDIUM | WN22-00-000040 | AUDIT | Windows Server 2022 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks."
+  when:
+    - wn22_00_000040 | bool
+    - "'controller' not in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-00-000040
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254241r991589_rule
+    - V-254241
+    - audit
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-00-000040 | AUDIT - STAND-ALONE AND MEMBER SERVERS | Windows Server 2022 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks."
+      ansible.windows.win_shell: Get-LocalGroupMember -Name 'Backup Operators'
+      changed_when: false
+      check_mode: false
+      register: discovered_00_000040_audit
+
+    - name: "MEDIUM | WN22-00-000040 | AUDIT - STAND-ALONE AND MEMBER SERVERS | Windows Server 2022 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks."
+      when:
+        - not discovered_00_000040_audit is skipped
+        - discovered_00_000040_audit.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. The accounts listed are members of the Backup Operators group."
+          - "Please verify these accounts have separate accounts for backup duties and normal operational tasks."
+          - "{{ discovered_00_000040_audit.stdout.split('\n') }}"
+      changed_when: false
+
+    - name: "MEDIUM | WN22-00-000040 | AUDIT - STAND-ALONE AND MEMBER SERVERS | Windows Server 2022 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks. | Warn Count."
+      when:
+        - not discovered_00_000040_audit is skipped
+        - discovered_00_000040_audit.stdout != ""
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000040"
+
+- name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 15 characters in length."
+  when: wn22_00_000050 | bool
+  tags:
+    - WN22-00-000050
+    - CAT2
+    - CCI-004066
+    - CCI-000205
+    - SRG-OS-000078-GPOS-00046
+    - SV-254242r1051087_rule
+    - V-254242
+    - NIST800-53_IA-5_1_a
+    - NIST800-53A_IA-5_1_1_i
+    - NIST800-53A_4_IA-5_1_a
+  block:
+    - name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 15 characters in length. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 manually managed application account passwords must be at least 15 characters in length."
+
+    - name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 15 characters in length. | Warn Count."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000050"
+
+- name: "MEDIUM | WN22-00-000060 | AUDIT | Windows Server 2022 manually managed application account passwords must be changed at least annually or when a system administrator with knowledge of the password leaves the organization."
+  when: wn22_00_000060 | bool
+  tags:
+    - WN22-00-000060
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254243r991589_rule
+    - V-254243
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-00-000060 | AUDIT | Windows Server 2022 manually managed application account passwords must be changed at least annually or when a system administrator with knowledge of the password leaves the organization. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 manually managed application account passwords must be changed at least annually or when a system administrator with knowledge of the password leaves the organization."
+
+    - name: "MEDIUM | WN22-00-000060 | AUDIT | Windows Server 2022 manually managed application account passwords must be changed at least annually or when a system administrator with knowledge of the password leaves the organization. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000060"
+
+- name: "MEDIUM | WN22-00-000070 | AUDIT | Windows Server 2022 shared user accounts must not be permitted."
+  when: wn22_00_000070 | bool
+  tags:
+    - WN22-00-000070
+    - CAT2
+    - CCI-000764
+    - SRG-OS-000104-GPOS-00051
+    - SV-254244r958482_rule
+    - V-254244
+    - NIST800-53_IA-2
+    - NIST800-53_A_IA-5_2_1
+    - NIST800-53_4_IA-2
+  block:
+    - name: "MEDIUM | WN22-00-000070 | AUDIT | Windows Server 2022 shared user accounts must not be permitted. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 shared user accounts must not be permitted."
+
+    - name: "MEDIUM | WN22-00-000070 | AUDIT | Windows Server 2022 shared user accounts must not be permitted. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000070"
+
+- name: "MEDIUM | WN22-00-000080 | AUDIT | Windows Server 2022 must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs."
+  when: wn22_00_000080 | bool
+  tags:
+    - WN22-00-000080
+    - CAT2
+    - CCI-001774
+    - SRG-OS-000370-GPOS-00155
+    - SV-254245r958808_rule
+    - V-254245
+    - NIST800-53_4_CM-7_5_b
+  block:
+    - name: "MEDIUM | WN22-00-000080 | AUDIT | Windows Server 2022 must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs."
+
+    - name: "MEDIUM | WN22-00-000080 | AUDIT | Windows Server 2022 must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000080"
+
+- name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 systems must have a Trusted Platform Module (TPM) enabled and ready for use."
+  when: wn22_00_000090 | bool
+  tags:
+    - WN22-00-000090
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254246r1210256_rule
+    - V-254246
+    - NIST800-53_4_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+  block:
+    # wmic is deprecated and is a Feature-on-Demand that can be absent, in which case the register
+    # carries no stdout/stderr keys and every downstream conditional raises
+    # "dict object has no attribute stderr_lines". This uses CIM instead.
+    - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Get TPM Settings"
+      ansible.windows.win_shell: |
+        $tpm = Get-CimInstance -Namespace root\cimv2\security\microsofttpm -ClassName Win32_Tpm -ErrorAction SilentlyContinue
+        if ($null -eq $tpm) { "No Instance" }
+        else { "IsActivated=$($tpm.IsActivated_InitialValue) IsEnabled=$($tpm.IsEnabled_InitialValue) IsOwned=$($tpm.IsOwned_InitialValue) SpecVersion=$($tpm.SpecVersion)" }
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000090_tpm_status
+
+    - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Running Instances Check."
+      when: "'No Instance' in discovered_00_000090_tpm_status.stdout | default('', true)"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Please confirm TPM status is Ready for use, there are no instances currently running."
+
+    # Warns when the TPM is NOT compliant. The previous conditions tested for the healthy values
+    # being present, so the warning fired on a good TPM and stayed silent on a broken one. They
+    # also read stderr_lines, where wmic writes nothing but its "No Instance(s)" diagnostic, and
+    # the SpecVersion clause read "'SpecVersion=2' or '...' in ..." - a non-empty string is always
+    # truthy, so that disjunct was unconditionally true.
+    - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Full TPM Check."
+      when:
+        - "'No Instance' not in discovered_00_000090_tpm_status.stdout | default('', true)"
+        - "'IsActivated=True' not in discovered_00_000090_tpm_status.stdout | default('', true) or
+           'IsEnabled=True' not in discovered_00_000090_tpm_status.stdout | default('', true) or
+           'IsOwned=True' not in discovered_00_000090_tpm_status.stdout | default('', true)"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Please confirm TPM status is Ready for use. Current settings do not meet STIG requirements."
+          - "{{ discovered_00_000090_tpm_status.stdout | default('', true) | trim }}"
+
+    - name: "MEDIUM | WN22-00-000090 | AUDIT | Windows Server 2022 systems must have a Trusted Platform Module (TPM) enabled and ready for use. | Warning Count"
+      when: "'No Instance' in discovered_00_000090_tpm_status.stdout | default('', true) or
+             'IsActivated=True' not in discovered_00_000090_tpm_status.stdout | default('', true) or
+             'IsEnabled=True' not in discovered_00_000090_tpm_status.stdout | default('', true) or
+             'IsOwned=True' not in discovered_00_000090_tpm_status.stdout | default('', true)"
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000090"
+
+- name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level."
+  when: wn22_00_000100 | bool
+  tags:
+    - WN22-00-000100
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254247r991589_rule
+    - V-254247
+    - NIST800-53_4_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+  block:
+    - name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 must be maintained at a supported servicing level."
+
+    - name: "MEDIUM | WN22-00-000100 | AUDIT | Windows Server 2022 must be maintained at a supported servicing level. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000100"
+
+- name: "MEDIUM | WN22-00-000110 | AUDIT | Windows Server 2022 must use an antivirus program."
+  when: wn22_00_000110 | bool
+  tags:
+    - WN22-00-000110
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254248r991589_rule
+    - V-254248
+    - NIST800-53_4_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+  block:
+    - name: "MEDIUM | WN22-00-000110 | AUDIT | Windows Server 2022 must use an antivirus program. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 must use an antivirus program."
+
+    - name: "MEDIUM | WN22-00-000110 | AUDIT | Windows Server 2022 must use an antivirus program. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000110"
+
+- name: "MEDIUM | WN22-00-000120 | AUDIT | Windows Server 2022 must have a host-based intrusion detection or prevention system."
+  when: wn22_00_000120 | bool
+  tags:
+    - WN22-00-000120
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254249r1186387_rule
+    - V-254249
+    - NIST800-53_4_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+  block:
+    - name: "MEDIUM | WN22-00-000120 | AUDIT | Windows Server 2022 must have a host-based intrusion detection or prevention system. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 must have a host-based intrusion detection or prevention system."
+
+    - name: "MEDIUM | WN22-00-000120 | AUDIT | Windows Server 2022 must have a host-based intrusion detection or prevention system. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000120"
+
+- name: "MEDIUM | WN22-00-000140 | AUDIT | Windows Server 2022 permissions for the system drive root directory usually C:\ must conform to minimum requirements."
+  when: wn22_00_000140 | bool
+  tags:
+    - WN22-00-000140
+    - CAT2
+    - CCI-002165
+    - SRG-OS-000312-GPOS-00122
+    - SV-254251r958702_rule
+    - V-254251
+    - NIST800-53_4_AC-3_4
+  block:
+    - name: "MEDIUM | WN22-00-000140 | AUDIT | Windows Server 2022 permissions for the system drive root directory usually C:\ must conform to minimum requirements. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 permissions for the system drive root directory usually C:\ must conform to minimum requirements."
+
+    - name: "MEDIUM | WN22-00-000140 | AUDIT | Windows Server 2022 permissions for the system drive root directory usually C:\ must conform to minimum requirements. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000140"
+
+- name: "MEDIUM | WN22-00-000150 | AUDIT | Windows Server 2022 permissions for program file directories must conform to minimum requirements."
+  when: wn22_00_000150 | bool
+  tags:
+    - WN22-00-000150
+    - CAT2
+    - CCI-002165
+    - SRG-OS-000312-GPOS-00122
+    - SV-254252r958702_rule
+    - V-254252
+    - audit
+    - NIST800-53_4_AC-3_4
+  block:
+    - name: "MEDIUM | WN22-00-000150 | AUDIT | Permissions for program file directories must conform to minimum requirements. | Obtain icacls for Program Files."
+      ansible.windows.win_shell: icacls "c:\Program Files"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000150_program_files_audit
+
+    - name: "MEDIUM | WN22-00-000150 | AUDIT | Permissions for program file directories must conform to minimum requirements. | Manual Audit icacls for Program Files."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task to audit. Windows Server 2022 icacls program needs to meet"
+          - "the STIG requirements. Please check the report below and compare the STIG requirements."
+          - "{{ discovered_00_000150_program_files_audit.stdout_lines }}"
+
+    - name: "MEDIUM | WN22-00-000150 | AUDIT | Permissions for program file directories must conform to minimum requirements. | Obtain icacls for Program Files x86"
+      ansible.windows.win_shell: icacls "c:\Program Files (x86)"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000150_program_files_86_audit
+
+    - name: "MEDIUM | WN22-00-000150 | AUDIT | Permissions for program file directories must conform to minimum requirements. | Manual Audit icacls for Program Files x86."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task to audit. Windows Server 2022 icacls program files x86 needs to meet"
+          - "the STIG requirements. Please check the report below and compare the STIG requirements."
+          - "{{ discovered_00_000150_program_files_86_audit.stdout_lines }}"
+      vars:
+        warn_control_id: "WN22-00-000150"
+
+- name: "MEDIUM | WN22-00-000160 | AUDIT | Windows Server 2022 permissions for the Windows installation directory must conform to minimum requirements."
+  when: wn22_00_000160 | bool
+  tags:
+    - WN22-00-000160
+    - CAT2
+    - CCI-002165
+    - SRG-OS-000312-GPOS-00122
+    - SV-254253r958702_rule
+    - V-254253
+    - audit
+    - NIST800-53_4_AC-3_4
+  block:
+    - name: "MEDIUM | WN22-00-000160 | AUDIT | Permissions for the Windows installation directory must conform to minimum requirements. | Obtain icacls for Windows Directory."
+      ansible.windows.win_shell: icacls "c:\windows"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000160_windows_dir_audit
+
+    - name: "MEDIUM | WN22-00-000160 | AUDIT | Permissions for the Windows installation directory must conform to minimum requirements. | Warning Message."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task to audit. Windows Server 2022 permissions for the Windows installation directory needs to meet"
+          - "the STIG requirements. Please check the report below and compare the STIG requirements."
+          - "{{ discovered_00_000160_windows_dir_audit.stdout_lines }}"
+
+    - name: "MEDIUM | WN22-00-000160 | AUDIT | Permissions for the Windows installation directory must conform to minimum requirements. | Warn Count."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000160"
+
+- name: "MEDIUM | WN22-00-000170 | AUDIT | Windows Server 2022 default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained."
+  when: wn22_00_000170 | bool
+  tags:
+    - WN22-00-000170
+    - CAT2
+    - CCI-002235
+    - SRG-OS-000324-GPOS-00125
+    - SV-254254r1210473_rule
+    - V-254254
+    - NIST800-53_4_AC-3_4
+  block:
+    - name: "MEDIUM | WN22-00-000170 | AUDIT | Windows Server 2022 default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained."
+
+    - name: "MEDIUM | WN22-00-000170 | AUDIT | Windows Server 2022 default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000170"
+
+- name: "MEDIUM | WN22-00-000190 | AUDIT | Windows Server 2022 outdated or unused accounts must be removed from the system or disabled."
+  when: wn22_00_000190 | bool
+  tags:
+    - WN22-00-000190
+    - CAT2
+    - CCI-003627
+    - CCI-000795
+    - SRG-OS-000118-GPOS-00060
+    - SV-254256r1051088_rule
+    - V-254256
+    - NIST800-53_IA-4_e
+    - NIST800-53A_IA-4_1_iii
+    - NIST800-53_4_IA-4_e
+  block:
+    - name: "MEDIUM | WN22-00-000190 | AUDIT - DOMAIN CONTROLLERS | Outdated or unused accounts must be removed from the system or disabled | Audit System."
+      ansible.windows.win_shell: Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000190_account_audit_dc
+      when: "'controller' in ansible_facts['windows_domain_role']"
+
+    - name: "MEDIUM | WN22-00-000190 | AUDIT - DOMAIN CONTROLLERS | Outdated or unused accounts must be removed from the system or disabled. | Warning Message."
+      when:
+        - discovered_00_000190_account_audit_dc is not skipped
+        - discovered_00_000190_account_audit_dc.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Outdated or unused accounts must be removed from"
+          - "the Windows Server 2022 system or disabled."
+          - "Accounts to exclude are the following:"
+          - "Built-in administrator account (Renamed, SID ending in 500)"
+          - "Built-in guest account (Renamed, Disabled, SID ending in 501)"
+          - "Built-in default account (Renamed, Disabled, SID ending in 503)"
+          - "Application accounts"
+          - "Below is the list of User accounts found on the system. Please check the report"
+          - "below and compare the STIG requirements."
+          - "----------------------------------------------------------"
+          - "{{ discovered_00_000190_account_audit_dc.stdout.split('\n') }}"
+          - "----------------------------------------------------------"
+
+    - name: "MEDIUM | WN22-00-000190 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Outdated or unused accounts must be removed from the system or disabled. | Audit User Accounts"
+      when: "'controller' not in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: |
+        ([ADSI]('WinNT://{0}' -f $env:COMPUTERNAME)).Children | Where {
+        $_.SchemaClassName -eq 'user' } | ForEach {
+        $user = ([ADSI]$_.Path)
+        $lastLogin = $user.Properties.LastLogin.Value
+        $enabled = ($user.Properties.UserFlags.Value -band 0x2) -ne 0x2
+        if ($lastLogin -eq $null) {
+        $lastLogin = 'Never'
+        }
+        Write-Host $user.Name $lastLogin $enabled
+        }
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000190_account_audit_dm_sa
+
+    - name: "MEDIUM | WN22-00-000190 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Outdated or unused accounts must be removed from the system or disabled. | Warning Message."
+      when:
+        - discovered_00_000190_account_audit_dm_sa is not skipped
+        - discovered_00_000190_account_audit_dm_sa.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Outdated or unused accounts must be removed from"
+          - "the Windows Server 2022 system or disabled."
+          - "Accounts to exclude are the following:"
+          - "Built-in administrator account (Renamed, SID ending in 500)"
+          - "Built-in guest account (Renamed, Disabled, SID ending in 501)"
+          - "Built-in default account (Renamed, Disabled, SID ending in 503)"
+          - "Application accounts"
+          - "Below is the list of User accounts found on the system. Please check the report"
+          - "below and compare the STIG requirements."
+          - "----------------------------------------------------------"
+          - "{{ discovered_00_000190_account_audit_dm_sa.stdout.split('\n') }}"
+          - "----------------------------------------------------------"
+
+    - name: "MEDIUM | WN22-00-000190 | AUDIT | Outdated or unused accounts must be removed from the system or disabled. | Warn Count"
+      when: discovered_00_000190_account_audit_dc is not skipped and discovered_00_000190_account_audit_dc.stdout != "" or discovered_00_000190_account_audit_dm_sa is not skipped and discovered_00_000190_account_audit_dm_sa.stdout != ""
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000190"
+
+- name: "MEDIUM | WN22-00-000200 | AUDIT | Windows Server 2022 accounts must require passwords."
+  when: wn22_00_000200 | bool
+  tags:
+    - WN22-00-000200
+    - CAT2
+    - CCI-000764
+    - SRG-OS-000104-GPOS-00051
+    - SV-254257r958482_rule
+    - V-254257
+    - audit
+    - NIST800-53_IA-2
+    - NIST800-53_IA-2_1
+    - NIST800-53_4_IA-2
+  block:
+    - name: "MEDIUM | WN22-00-000200 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 accounts must require passwords."
+      when: "'controller' in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: Get-Aduser -Filter "(Passwordnotrequired -eq 'True') -and (Enabled -eq 'True')" | Select Name,Passwordnotrequired,Enabled
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000200_audit_dc
+
+    - name: "MEDIUM | WN22-00-000200 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 accounts must require passwords."
+      when:
+        - not discovered_00_000200_audit_dc is skipped
+        - discovered_00_000200_audit_dc.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - The accounts listed do not require a password and are currently enabled
+          - "{{ discovered_00_000200_audit_dc.stdout.split('\n') }}"
+
+    - name: "MEDIUM | WN22-00-000200 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 accounts must require passwords."
+      when: "'controller' not in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: Get-LocalUser | Where-Object {($_.PasswordRequired -ne 'True' -and $_.Enabled -eq 'True')} | Select Name,PasswordRequired,Enabled
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000200_audit_dm_sa
+
+    - name: "MEDIUM | WN22-00-000200 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 accounts must require passwords."
+      when:
+        - not discovered_00_000200_audit_dm_sa is skipped
+        - discovered_00_000200_audit_dm_sa.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - The accounts listed do not require a password and are currently enabled
+          - "{{ discovered_00_000200_audit_dm_sa.stdout.split('\n') }}"
+
+    - name: Warn Count."
+      when:
+        - not discovered_00_000200_audit_dc is skipped
+        - discovered_00_000200_audit_dc.stdout != "" or
+          not discovered_00_000200_audit_dm_sa is skipped
+        - discovered_00_000200_audit_dm_sa.stdout != ""
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000200"
+
+- name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire."
+  when: wn22_00_000210 | bool
+  tags:
+    - WN22-00-000210
+    - CAT2
+    - CCI-004066
+    - CCI-000199
+    - SRG-OS-000076-GPOS-00044
+    - SV-254258r1051089_rule
+    - V-254258
+    - audit
+    - NIST800-53_IA-5_1_d
+    - NIST800-53A_IA-5_1_1_v
+    - NIST800-53_4_IA-5_1_d
+  block:
+    - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire."
+      when: "'controller' in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: Search-ADAccount -PasswordNeverExpires -UsersOnly | FT Name, PasswordNeverExpires, Enabled
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000210_audit_dc
+
+    - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire.| Message out"
+      when:
+        - discovered_00_000210_audit_dc is not skipped
+        - discovered_00_000210_audit_dc.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 passwords must be configured to expire."
+          - "The Following Accounts may not conform To STIG Standards."
+          - "{{ discovered_00_000210_audit_dc.stdout.split('\n') }}"
+
+    - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire. | Audit Local Accounts."
+      when: "'controller' not in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: |
+        Get-CimInstance -Class Win32_Useraccount -Filter "PasswordExpires=False and LocalAccount=True" |
+        Where-Object -FilterScript {$_.PasswordExpires -EQ $False -AND $_.Disabled -EQ $False} |
+        Format-Table -Property Name,PasswordExpires,Disabled,LocalAccount
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000210_audit_dm_sa
+
+    - name: "MEDIUM | WN22-00-000210 | AUDIT | Windows Server 2022 passwords must be configured to expire. | Warning Count."
+      when: discovered_00_000210_audit_dc is not skipped and discovered_00_000210_audit_dc.stdout != "" or discovered_00_000210_audit_dm_sa is not skipped and discovered_00_000210_audit_dm_sa.stdout != ""
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000210"
+
+- name: "MEDIUM | WN22-00-000220 | AUDIT | Windows Server 2022 system files must be monitored for unauthorized changes."
+  when: wn22_00_000220 | bool
+  tags:
+    - WN22-00-000220
+    - CAT2
+    - CCI-001744
+    - SRG-OS-000363-GPOS-00150
+    - SV-254259r958794_rule
+    - V-254259
+    - NIST800-53_CM-3_5
+  block:
+    - name: "MEDIUM | WN22-00-000220 | AUDIT | Windows Server 2022 system files must be monitored for unauthorized changes. | Message out"
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 system files must be monitored for unauthorized changes."
+
+    - name: "MEDIUM | WN22-00-000220 | AUDIT | Windows Server 2022 system files must be monitored for unauthorized changes. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000220"
+
+- name: "MEDIUM | WN22-00-000230 | AUDIT | Windows Server 2022 non-system-created file shares on a system must limit access to groups that require it."
+  when: wn22_00_000230 | bool
+  tags:
+    - WN22-00-000230
+    - CAT2
+    - CCI-001090
+    - SRG-OS-000138-GPOS-00069
+    - SV-254260r1137695_rule
+    - V-254260
+    - audit
+    - NIST800-53_SC-4
+    - NIST800-53_A_SC-4_1
+    - NIST800-53_4_SC-4
+  block:
+    - name: "MEDIUM | WN22-00-000230 | AUDIT | Non-system-created file shares on a system must limit access to groups that require it. | Audit Shares"
+      ansible.windows.win_shell: Get-SmbShare | Where-Object { ($_.Name -notlike "ADMIN$") -and ($_.Name -notlike 'C$') -and ($_.Name -notlike 'IPC$') } | Select-Object -Property Name | format-table -hidetableheaders
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000230_audit
+
+    - name: "MEDIUM | WN22-00-000230 | AUDIT | Non-system-created file shares on a system must limit access to groups that require it. | Warning Message."
+      when: discovered_00_000230_audit.stdout_lines | select() | length > 0
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have shares that non-system created. Please manually review those shares listed below to make sure appropriate permissions are applied"
+          - "{{ discovered_00_000230_audit.stdout_lines | select() | list }}"
+
+    - name: "MEDIUM | WN22-00-000230 | AUDIT | Non-system-created file shares on a system must limit access to groups that require it."
+      when: discovered_00_000230_audit.stdout_lines | select() | length > 0
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000230"
+
+- name: "MEDIUM | WN22-00-000240 | PATCH | Windows Server 2022 must have software certificate installation files removed."
+  when:
+    - wn22_00_000240 | bool
+    - win22stig_lengthy_search | bool
+  tags:
+    - WN22-00-000240
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254261r1210262_rule
+    - V-254261
+    - audit
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed. | Search for files"
+      ansible.windows.win_find:
+        paths: '{{ item }}:\'
+        patterns: ["*.p12", "*.pfx"]
+        recurse: true
+        hidden: true
+      register: discovered_00_000240_files
+      with_items: "{{ prelim_drive_letters.stdout_lines | default([], true) }}"
+
+    - name: "MEDIUM | WN22-00-000240 | PATCH | Windows Server 2022 must have software certificate installation files removed. | Remove Files"
+      when:
+        - win22stig_disruption_high | bool
+        - (discovered_00_000240_files.results | default([], true) | first | default({}, true)).files | length > 0
+      ansible.windows.win_file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items:
+        - "{{ (discovered_00_000240_files.results | default([], true) | first | default({}, true)).files }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed. | Alert on files if not Disruptive High"
+      when:
+        - not win22stig_disruption_high | bool
+        - (discovered_00_000240_files.results | default([], true) | first | default({}, true)).files | length > 0
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have .p12 and/or .pfx files on your system"
+          - "Please review and remove the following files manually.  If you"
+          - "would like them removed with automation set win22stig_disruption_high: true"
+          - "Any files not removed must be documented with the ISSO."
+          - "{{ (discovered_00_000240_files.results | default([], true) | first | default({}, true)).files | map(attribute='path') | list }}"
+
+    - name: "MEDIUM | WN22-00-000240 | AUDIT | Windows Server 2022 must have software certificate installation files removed. | Warn Count."
+      when:
+        - not win22stig_disruption_high | bool
+        - (discovered_00_000240_files.results | default([], true) | first | default({}, true)).files | length > 0
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000240"
+
+- name: "MEDIUM | WN22-00-000260 | AUDIT | Windows Server 2022 must implement protection methods such as TLS, encrypted VPNs, or IPsec if the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process."
+  when: wn22_00_000260 | bool
+  tags:
+    - WN22-00-000260
+    - CAT2
+    - CCI-002420
+    - CCI-002422
+    - SRG-OS-000425-GPOS-00189
+    - SV-254263r958912_rule
+    - V-254263
+    - NIST800-53_4_SC-8_2
+  block:
+    - name: "MEDIUM | WN22-00-000260 | AUDIT | Windows Server 2022 must implement protection methods such as TLS, encrypted VPNs, or IPsec if the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 must implement protection methods such as TLS, encrypted VPNs,"
+          - "or IPsec if the data owner has a strict requirement for ensuring"
+          - "data integrity and confidentiality is maintained at every step of the data transfer and handling process."
+
+    - name: "MEDIUM | WN22-00-000260 | AUDIT | Windows Server 2022 must implement protection methods such as TLS, encrypted VPNs, or IPsec if the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000260"
+
+- name: "MEDIUM | WN22-00-000270 | AUDIT | Windows Server 2022 must have the roles and features required by the system documented."
+  when: wn22_00_000270 | bool
+  tags:
+    - WN22-00-000270
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254264r1186389_rule
+    - V-254264
+    - audit
+    - NIST800-53_4_CM-7
+    - NIST800-53_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  block:
+    - name: "MEDIUM | WN22-00-000270 | AUDIT | The roles and features required by the system must be documented. | Audit The System"
+      ansible.windows.win_shell: Get-WindowsFeature | Where-Object -FilterScript {$_.Installed -EQ $True}
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000270_audit
+
+    - name: "MEDIUM | WN22-00-000270 | AUDIT | The roles and features required by the system must be documented. | Warning Message."
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 must have the roles"
+          - "and features required by the system documented. Below is the current list of"
+          - "roles and features installed on the system."
+          - "Document the roles and features required for the system to operate. Uninstall any that are not required."
+          - "{{ discovered_00_000270_audit.stdout_lines }}"
+
+    - name: "MEDIUM | WN22-00-000270 | AUDIT | The roles and features required by the system must be documented. | Warn Count."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000270"
+
+- name: "MEDIUM | WN22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled."
+  when: wn22_00_000280 | bool
+  tags:
+    - WN22-00-000280
+    - CAT2
+    - CCI-000366
+    - CCI-002080
+    - SRG-OS-000480-GPOS-00227
+    - SV-254265r991589_rule
+    - V-254265
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+    - NIST800-53_4_CA-3_5
+  block:
+    - name: "MEDIUM | WN22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled."
+      ansible.windows.win_shell: |
+        $FWProfiles = (Get-NetFirewallProfile);
+        Write-Host "Windows Firewall Profile Statuses" -Foregroundcolor Yellow;
+        $FWProfiles | %{
+            If($_.Enabled -eq 1){
+                Write-Host "The Windows Firewall $($_.Name) profile is enabled"
+                }Else{
+                Write-Host "The Windows Firewall $($_.Name) profile is disabled"
+                }
+            };
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000280_firewall_audit
+
+    - name: "MEDIUM | wn22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message No Windows Firewall Enabled"
+      when:
+        - "'Domain profile is disabled' in discovered_00_000280_firewall_audit.stdout_lines | string"
+        - "'Private profile is disabled' in discovered_00_000280_firewall_audit.stdout_lines | string"
+        - "'Public profile is disabled' in discovered_00_000280_firewall_audit.stdout_lines | string"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 must have a host-based firewall installed and enabled."
+          - "Windows does not currently have its built-in firewall enabled."
+          - "Please check for 3rd party firewall and verify the configuration requirements conform to firewall STIG standards."
+          - "{{ discovered_00_000280_firewall_audit.stdout_lines }}"
+
+    - name: "MEDIUM | wn22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message Windows Firewall On"
+      when:
+        - "'Domain profile is enabled' in discovered_00_000280_firewall_audit.stdout_lines | string"
+        - "'Private profile is enabled' in discovered_00_000280_firewall_audit.stdout_lines | string"
+        - "'Public profile is enabled' in discovered_00_000280_firewall_audit.stdout_lines | string"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 must have a host-based firewall installed and enabled."
+          - "Windows host-based firewall currently is enabled on Domain, Private, And Public Profiles."
+          - "Please check the firewall and verify the configuration requirements conform to firewall STIG standards."
+          - "{{ discovered_00_000280_firewall_audit.stdout_lines }}"
+
+    - name: "MEDIUM | wn22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message Windows Firewall Not Completely On"
+      when: "'Domain profile is enabled' not in discovered_00_000280_firewall_audit.stdout_lines | string or 'Private profile is enabled' not in discovered_00_000280_firewall_audit.stdout_lines | string or 'Public profile is enabled' not in discovered_00_000280_firewall_audit.stdout_lines | string"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 must have a host-based firewall installed and enabled."
+          - "Windows host-based firewall currently is partially enabled on Domain, Private, And Public Profiles."
+          - "Please check the firewall and verify the configuration requirements conform to firewall STIG standards."
+          - "{{ discovered_00_000280_firewall_audit.stdout_lines }}"
+
+    - name: "MEDIUM | WN22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000280"
+
+- name: "MEDIUM | WN22-00-000300 | AUDIT | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours."
+  when: wn22_00_000300 | bool
+  tags:
+    - WN22-00-000300
+    - CAT2
+    - CCI-000016
+    - SRG-OS-000002-GPOS-00002
+    - SV-254267r958364_rule
+    - V-254267
+    - audit
+    - NIST800-53_4_AC-2_2
+    - NIST800-53_A_AC-2_2_1_ii
+  block:
+    - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | Get User List."
+      when: "'controller' in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: Search-ADAccount -AccountExpiring | FT Name, AccountExpirationDate
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000300_audit_dc
+
+    - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | Warning Message"
+      when:
+        - discovered_00_000300_audit_dc is not skipped
+        - discovered_00_000300_audit_dc.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Please review all accounts to verify there are no temporary accounts"
+          - "listed where the expiration date is longer than 72 hours."
+          - "{{ discovered_00_000300_audit_dc.stdout.split('\n') }}"
+
+    - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | Get User List."
+      when: "'controller' not in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: Get-LocalUser
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000300_audit_sa
+
+    - name: "MEDIUM | WN22-00-000300 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | Warning Message"
+      when:
+        - discovered_00_000300_audit_sa is not skipped
+        - discovered_00_000300_audit_sa.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Please review all accounts to verify there are no temporary accounts"
+          - "listed where the expiration date is longer than 72 hours."
+          - "{{ discovered_00_000300_audit_sa.stdout.split('\n') }}"
+
+    - name: "MEDIUM | WN22-00-000300 | AUDIT | Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours. | Warning Count"
+      when: discovered_00_000300_audit_dc is not skipped and discovered_00_000300_audit_dc.stdout != "" or discovered_00_000300_audit_sa is not skipped and discovered_00_000300_audit_sa.stdout != ""
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000300"
+
+- name: "MEDIUM | WN22-00-000310 | AUDIT | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours."
+  when: wn22_00_000310 | bool
+  tags:
+    - WN22-00-000310
+    - CAT2
+    - CCI-001682
+    - SRG-OS-000123-GPOS-00064
+    - SV-254268r958508_rule
+    - V-254268
+    - audit
+    - NIST800-53_AC-2_2
+    - NIST800-53_AC-2_2_1_ii
+    - NIST800-53_4_AC-2_2
+  block:
+    - name: "MEDIUM | WN22-00-000310 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | Get User List."
+      when: "'controller' in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: Search-ADAccount -AccountExpiring | FT Name, AccountExpirationDate
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000310_audit_dc
+
+    - name: "MEDIUM | WN22-00-000310 | AUDIT - DOMAIN CONTROLLER | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | Warning Message"
+      when:
+        - discovered_00_000310_audit_dc is not skipped
+        - discovered_00_000310_audit_dc.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 must automatically remove or disable emergency"
+          - "accounts after the crisis is resolved or within 72 hours."
+          - "{{ discovered_00_000310_audit_dc.stdout.split('\n') }}"
+
+    - name: "MEDIUM | WN22-00-000310 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | Get User List."
+      when: "'controller' not in ansible_facts['windows_domain_role']"
+      ansible.windows.win_shell: Get-LocalUser
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000310_audit_sa
+
+    - name: "MEDIUM | WN22-00-000310 | AUDIT - DOMAIN MEMBERS OR STANDALONE | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | Warning Message"
+      when:
+        - discovered_00_000310_audit_sa is not skipped
+        - discovered_00_000310_audit_sa.stdout != ""
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Windows Server 2022 must automatically remove or disable emergency"
+          - "accounts after the crisis is resolved or within 72 hours."
+          - "{{ discovered_00_000310_audit_sa.stdout.split('\n') }}"
+
+    - name: "MEDIUM | WN22-00-000310 | AUDIT | Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours. | Warning Count"
+      when: discovered_00_000310_audit_dc is not skipped and discovered_00_000310_audit_dc.stdout != "" or discovered_00_000310_audit_sa is not skipped and discovered_00_000310_audit_sa.stdout != ""
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000310"
+
+- name: "MEDIUM | WN22-00-000320 | PATCH | Windows Server 2022 must not have the Fax Server role installed."
+  when:
+    - wn22_00_000320 | bool
+    - "'Fax' in prelim_feature_names"
+  tags:
+    - WN22-00-000320
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254269r958478_rule
+    - V-254269
+    - NIST800-53_CM-7
+    - NIST800-53_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_feature:
+    name: Fax
+    state: absent
+  notify: Change_requires_reboot
+
+- name: "MEDIUM | WN22-00-000330 | PATCH | Windows Server 2022 must not have the Microsoft FTP service installed unless required by the organization."
+  when:
+    - wn22_00_000330 | bool
+    - "'Web-Ftp-Server' in prelim_feature_names"
+  tags:
+    - WN22-00-000330
+    - CAT2
+    - CCI-000382
+    - SRG-OS-000096-GPOS-00050
+    - SV-254270r958480_rule
+    - V-254270
+    - NIST800-53_CM-7
+    - NIST800-53_CM-7_1_iii
+    - NIST800-53_4_CM-7_b
+  ansible.windows.win_feature:
+    name: Web-Ftp-Server
+    state: absent
+  notify: Change_requires_reboot
+
+- name: "MEDIUM | WN22-00-000340 | PATCH | Windows Server 2022 must not have the Peer Name Resolution Protocol installed."
+  when:
+    - wn22_00_000340 | bool
+    - "'PNRP' in prelim_feature_names"
+  tags:
+    - WN22-00-000340
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254271r958478_rule
+    - V-254271
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_feature:
+    name: PNRP
+    state: absent
+  notify: Change_requires_reboot
+
+- name: "MEDIUM | WN22-00-000350 | PATCH | Windows Server 2022 must not have Simple TCP/IP Services installed."
+  when:
+    - wn22_00_000350 | bool
+    - "'Simple-TCPIP' in prelim_feature_names"
+  tags:
+    - WN22-00-000350
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254272r958478_rule
+    - V-254272
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_feature:
+    name: Simple-TCPIP
+    state: absent
+
+- name: "MEDIUM | WN22-00-000360 | PATCH | Windows Server 2022 must not have the Telnet Client installed."
+  when:
+    - wn22_00_000360 | bool
+    - "'Telnet-Client' in prelim_feature_names"
+  tags:
+    - WN22-00-000360
+    - CAT2
+    - CCI-000382
+    - SRG-OS-000096-GPOS-00050
+    - SV-254273r958480_rule
+    - V-254273
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_iii
+    - NIST800-53_4_CM-7_5_b
+  ansible.windows.win_feature:
+    name: Telnet-Client
+    state: absent
+
+- name: "MEDIUM | WN22-00-000370 | PATCH | Windows Server 2022 must not have the TFTP Client installed."
+  when:
+    - wn22_00_000370 | bool
+    - "'TFTP-Client' in prelim_feature_names"
+  tags:
+    - WN22-00-000370
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254274r958478_rule
+    - V-254274
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_feature:
+    name: TFTP-Client
+    state: absent
+
+- name: "MEDIUM | WN22-00-000380 | PATCH | Windows Server 2022 must not have the Server Message Block (SMB) v1 protocol installed."
+  when:
+    - wn22_00_000380 | bool
+    - "'FS-SMB1' in prelim_feature_names"
+  tags:
+    - WN22-00-000380
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254275r958478_rule
+    - V-254275
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_feature:
+    name: FS-SMB1
+    state: absent
+  notify: Change_requires_reboot
+
+- name: "MEDIUM | WN22-00-000390 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server."
+  when: wn22_00_000390 | bool
+  tags:
+    - WN22-00-000390
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254276r958478_rule
+    - V-254276
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  block:
+    - name: "MEDIUM | WN22-00-000390 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server. | Registry Edit"
+      ansible.windows.win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+        state: present
+        value: SMB1
+        data: 0
+        datatype: dword
+      notify: Change_requires_reboot
+
+    - name: "MEDIUM | WN22-00-000390 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server. | Warning Message No SecGuide.admx"
+      when: (prelim_secguide_admx_audit.results | default([], true) | first | default({}, true)).matched != 1
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! SecGuide.admx is not installed in C:\\Windows\\PolicyDefinitions folder."
+          - "This policy setting requires the installation of the SecGuide.admx custom templates"
+          - "included with the STIG package."
+
+    - name: "MEDIUM | WN22-00-000390 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server. | Warning Message No SecGuide.adml"
+      when: (prelim_secguide_adml_audit.results | default([], true) | first | default({}, true)).matched != 1
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! SecGuide.adml is not installed in C:\\Windows\\PolicyDefinitions\\en-US folder"
+          - "This policy setting requires the installation of the SecGuide.adml custom templates"
+          - "included with the STIG package."
+
+    - name: "MEDIUM | WN22-00-000390 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server. | Warn Count."
+      when: (prelim_secguide_admx_audit.results | default([], true) | first | default({}, true)).matched != 1 or (prelim_secguide_adml_audit.results | default([], true) | first | default({}, true)).matched != 1
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000390"
+
+- name: "MEDIUM | WN22-00-000400 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server."
+  when: wn22_00_000400 | bool
+  tags:
+    - WN22-00-000400
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254277r958478_rule
+    - V-254277
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  block:
+    - name: "MEDIUM | WN22-00-000400 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Registry Edit."
+      ansible.windows.win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Services\mrxsmb10
+        state: present
+        value: Start
+        data: 4
+        datatype: dword
+      notify: Change_requires_reboot
+
+    - name: "MEDIUM | WN22-00-000400 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Warning Message No SecGuide.admx"
+      when: (prelim_secguide_admx_audit.results | default([], true) | first | default({}, true)).matched != 1
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! SecGuide.admx is not installed in C:\\Windows\\PolicyDefinitions folder."
+          - "This policy setting requires the installation of the SecGuide.admx custom templates"
+          - "included with the STIG package."
+
+    - name: "MEDIUM | WN22-00-000400 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Warning Message No SecGuide.adml"
+      when: (prelim_secguide_adml_audit.results | default([], true) | first | default({}, true)).matched != 1
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! SecGuide.adml is not installed in C:\\Windows\\PolicyDefinitions\\en-US folder"
+          - "This policy setting requires the installation of the SecGuide.adml custom templates"
+          - "included with the STIG package."
+
+    - name: "MEDIUM | WN22-00-000400 | AUDIT | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Warn Count."
+      when: (prelim_secguide_admx_audit.results | default([], true) | first | default({}, true)).matched != 1 or (prelim_secguide_adml_audit.results | default([], true) | first | default({}, true)).matched != 1
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000400"
+
+- name: "MEDIUM | WN22-00-000410 | PATCH | Windows Server 2022 must not have Windows PowerShell 2.0 installed."
+  when:
+    - wn22_00_000410 | bool
+    - "'PowerShell-V2' in prelim_feature_names"
+  tags:
+    - WN22-00-000410
+    - CAT2
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-254278r958478_rule
+    - V-254278
+    - NIST800-53_CM-7
+    - NIST800-53_A_CM-7_1_ii
+    - NIST800-53_4_CM-7_a
+  ansible.windows.win_feature:
+    name: PowerShell-V2
+    state: absent
+
+- name: "MEDIUM | WN22-00-000420 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent anonymous logons."
+  when: wn22_00_000420 | bool
+  tags:
+    - WN22-00-000420
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254279r991589_rule
+    - V-254279
+    - audit
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-00-000420 | AUDIT | FTP servers must be configured to prevent anonymous logons. | Get FTP Installed Status."
+      ansible.windows.win_shell: Get-WindowsFeature | Where Name -eq Web-Ftp-Service
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000420_audit
+
+    - name: "MEDIUM | WN22-00-000420 | AUDIT | FTP servers must be configured to prevent anonymous logons. | Set Fact."
+      ansible.builtin.set_fact:
+        discovered_00_000420_ftp_audit: "{{ discovered_00_000420_audit.stdout | default('', true) is search('Installed') }}"
+
+    - name: "MEDIUM | WN22-00-000420 | AUDIT | FTP servers must be configured to prevent anonymous logons. | Warning Message"
+      when: discovered_00_000420_ftp_audit
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. Internet Information Services (IIS) Manager FTP is currently"
+          - "installed on the system. Anonymous Authentication must be set to disabled per STIG Requirements."
+
+    - name: "MEDIUM | WN22-00-000420 | AUDIT | FTP servers must be configured to prevent anonymous logons. | Warn Count"
+      when: discovered_00_000420_ftp_audit
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000420"
+
+- name: "MEDIUM | WN22-00-000430 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent access to the system drive."
+  when: wn22_00_000430 | bool
+  tags:
+    - WN22-00-000430
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254280r991589_rule
+    - V-254280
+    - audit
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Get FTP Installed."
+      ansible.windows.win_shell: Get-WindowsFeature | Where Name -eq Web-Ftp-Service
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000430_audit
+
+    - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Set Fact."
+      ansible.builtin.set_fact:
+        discovered_00_000430_ftp_audit: "{{ discovered_00_000430_audit.stdout | default('', true) is search('Installed') }}"
+
+    - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Get Sites Info."
+      when: discovered_00_000430_ftp_audit
+      ansible.windows.win_shell: |
+        Import-Module IISAdministration
+        Get-IISSite
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000430_isssite_audit
+
+    - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Warning Message."
+      when: discovered_00_000430_ftp_audit
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! This is a manual task. For any sites with a Binding that lists FTP, right-click the site and select Explore."
+          - "If the site includes any system areas such as the root of the drive, Program Files, or Windows directories, this is a finding"
+          - "Configure the FTP sites to allow access only to specific FTP shared resources. Do not allow access to other areas of the system."
+          - "{{ discovered_00_000430_isssite_audit.stdout.split('\n') }}"
+
+    - name: "MEDIUM | WN22-00-000430 | AUDIT | FTP servers must be configured to prevent access to the system drive. | Warn Count"
+      when: discovered_00_000430_ftp_audit
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000430"
+
+- name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights"
+  when: wn22_00_000450 | bool
+  tags:
+    - WN22-00-000450
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254282r991589_rule
+    - V-254282
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Get User List"
+      ansible.windows.win_shell: Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -match "*S"} | Select Name,SID,DOMAIN
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000450_orphaned_user_accounts
+
+    - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Check For Orphaned Group Accounts. | Get Group List"
+      ansible.windows.win_shell: Get-WmiObject -Class Win32_UserAccount | Where-Object {$_.SID -match "*S"} | Select Name,SID,DOMAIN
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_00_000450_orphaned_group_accounts
+
+    - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message User Accounts"
+      when: discovered_00_000450_orphaned_user_accounts.stdout_lines | select() | length > 0
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Please review the User Rights listed for each of any unresolved SIDs to determine whether they are valid."
+          - "User Accounts"
+          - "----------------------------------------------------------------------"
+          - "{{ discovered_00_000450_orphaned_user_accounts.stdout_lines }}"
+
+    - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warning Message Group Accounts."
+      when: discovered_00_000450_orphaned_group_accounts.stdout_lines | select() | length > 0
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Please review the Group Rights listed for each of any unresolved SIDs to determine whether they are valid."
+          - "Group Accounts"
+          - "----------------------------------------------------------------------"
+          - "{{ discovered_00_000450_orphaned_group_accounts.stdout_lines }}"
+
+    - name: "MEDIUM | WN22-00-000450 | AUDIT | Windows Server 2022 must have orphaned security identifiers (SIDs) must be removed from user rights. | Warn Count."
+      when: discovered_00_000450_orphaned_user_accounts.stdout_lines | select() | length > 0 or discovered_00_000450_orphaned_group_accounts.stdout_lines | select() | length > 0
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000450"
+
+- name: "MEDIUM | WN22-00-000460 | AUDIT | Windows Server 2022 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS."
+  when: wn22_00_000460 | bool
+  tags:
+    - WN22-00-000460
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254283r991589_rule
+    - V-254283
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-00-000460 | AUDIT | Windows Server 2022 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS."
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS."
+
+    - name: "MEDIUM | WN22-00-000460 | AUDIT | Windows Server 2022 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000460"
+
+- name: "MEDIUM | WN22-00-000470 | AUDIT | Windows Server 2022 must have Secure Boot enabled."
+  when: wn22_00_000470 | bool
+  tags:
+    - WN22-00-000470
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254284r991589_rule
+    - V-254284
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  block:
+    - name: "MEDIUM | WN22-00-000470 | AUDIT | Windows Server 2022 must have Secure Boot enabled."
+      ansible.builtin.debug:
+        msg: "Warning!! This is a manual task. Windows Server 2022 must have Secure Boot enabled. "
+
+    - name: "MEDIUM | WN22-00-000470 | AUDIT | Windows Server 2022 must have Secure Boot enabled. | import reusable task."
+      ansible.builtin.import_tasks: warning_facts.yml
+      vars:
+        warn_control_id: "WN22-00-000470"
+
+# THE FOLLOWING 3 CONTROLS WILL FAIL UNLESS THEY ARE IN THE FOLLOWING ORDER FOR LOCAL BASED SYSTEMS.
+# We have found the order of these three tasks varies between cloud based instances
+# and VM based instances. The task below breaks out to run in a different order
+# for cloud based systems
