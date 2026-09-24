@@ -1,0 +1,131 @@
+---
+
+- name: "HIGH | WN22-SO-000020 | PATCH | Windows Server 2022 must prevent local accounts with blank passwords from being used from the network."
+  when: wn22_so_000020 | bool
+  tags:
+    - WN22-SO-000020
+    - CAT1
+    - CCI-000366
+    - SV-254446r991589_rule
+    - V-254446
+    - SRG-OS-000480-GPOS-00227
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    value: LimitBlankPasswordUse
+    data: 1
+    datatype: dword
+
+- name: "HIGH | WN22-SO-000210 | PATCH | Windows Server 2022 must not allow anonymous SID/Name translation."
+  when:
+    - wn22_so_000210 | bool
+    - not discovered_account_policy_is_domain_scoped | bool
+  tags:
+    - WN22-SO-000210
+    - CAT1
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254465r991589_rule
+    - V-254465
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  community.windows.win_security_policy:
+    section: System Access
+    key: LSAAnonymousNameLookup
+    value: 0
+
+- name: "HIGH | WN22-SO-000220 | PATCH | Windows Server 2022 must not allow anonymous enumeration of Security Account Manager (SAM) accounts."
+  when:
+    - wn22_so_000220 | bool
+    - "'controller' not in ansible_facts['windows_domain_role']"
+  tags:
+    - WN22-SO-000220
+    - CAT1
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254466r991589_rule
+    - V-254466
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    value: RestrictAnonymousSAM
+    data: 1
+    datatype: dword
+
+- name: "HIGH | WN22-SO-000230 | PATCH | Windows Server 2022 must not allow anonymous enumeration of shares."
+  when: wn22_so_000230 | bool
+  tags:
+    - WN22-SO-000230
+    - CAT1
+    - CCI-001090
+    - SRG-OS-000138-GPOS-00069
+    - SV-254467r1137695_rule
+    - V-254467
+    - NIST800-53_SC-4
+    - NIST800-53_A_SC-4_1
+    - NIST800-53_4_SC-4
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    value: RestrictAnonymous
+    data: 1
+    datatype: dword
+
+- name: "HIGH | WN22-SO-000250 | PATCH | Windows Server 2022 must restrict anonymous access to Named Pipes and Shares."
+  when: wn22_so_000250 | bool
+  tags:
+    - WN22-SO-000250
+    - CAT1
+    - CCI-001090
+    - SRG-OS-000138-GPOS-00069
+    - SV-254469r1137695_rule
+    - V-254469
+    - NIST800-53_SC-4
+    - NIST800-53_A_SC-4_1
+    - NIST800-53_4_SC-4
+  ansible.windows.win_regedit:
+    path: HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters
+    value: restrictnullsessaccess
+    data: 1
+    datatype: dword
+
+- name: "HIGH | WN22-SO-000300 | PATCH | Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords."
+  when: wn22_so_000300 | bool
+  tags:
+    - WN22-SO-000300
+    - CAT1
+    - CCI-000196
+    - CCI-004062
+    - SRG-OS-000073-GPOS-00041
+    - SV-254474r1051107_rule
+    - V-254474
+    - NIST800-53_IA-5_1_c
+    - NIST800-53A_IA-5_1_1_v
+    - NIST800-53_4_IA-5_1_c
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    value: NoLMHash
+    data: 1
+    datatype: dword
+
+- name: "HIGH | WN22-SO-000310 | PATCH | Windows Server 2022 LAN Manager authentication level must be configured to send NTLMv2 response only and to refuse LM and NTLM."
+  when: wn22_so_000310 | bool
+  tags:
+    - WN22-SO-000310
+    - CAT1
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-254475r991589_rule
+    - V-254475
+    - NIST800-53_CM-6_b
+    - NIST800-53_A_CM-6_1_iv
+    - NIST800-53_4_CM-6_b
+  ansible.windows.win_regedit:
+    path: HKLM:\System\CurrentControlSet\Control\Lsa
+    value: LmCompatibilityLevel
+    data: 5
+    datatype: dword

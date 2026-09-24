@@ -1,0 +1,21 @@
+---
+
+- name: "HIGH | WN22-AC-000090 | PATCH | Windows Server 2022 reversible password encryption must be disabled."
+  when:
+    - wn22_ac_000090 | bool
+    - not discovered_account_policy_is_domain_scoped | bool
+  tags:
+    - WN22-AC-000090
+    - CAT1
+    - CCI-000196
+    - CCI-004062
+    - SRG-OS-000073-GPOS-00041
+    - SV-254293r1051095_rule
+    - V-254293
+    - NIST800-53_IA-5_1_c
+    - NIST800-53A_IA-5_1_1_v
+    - NIST800-53_4_IA-5_1_c
+  community.windows.win_security_policy:
+    section: System Access
+    key: ClearTextPassword
+    value: "0"
