@@ -67,7 +67,7 @@ domain will not keep. Set them in the Default Domain Policy instead.
 
 Everything outside `[System Access]` applies normally on a domain member.
 
-This behaviour was verified on a domain joined workstation during Windows Fleet testing, where a
+This behavior was verified on a domain joined workstation during Windows Fleet testing, where a
 complete hardening run left all `[System Access]` values byte-identical to the pre-run baseline. It
 has not been separately measured on Windows Server 2022.
 
@@ -152,19 +152,25 @@ to skip writing it.
 
 ### Breaking changes in this release
 
-**1. Variable prefix.** Role behaviour variables and security tunables now share the `win22stig_`
+**1. Variable prefix.** Role behavior variables and security tunables now share the `win22stig_`
 prefix. If you override any of the security tunables in inventory, group_vars or extra vars,
 rename them - the old names are no longer read and your setting will be silently ignored.
 
 - `wn22stig_<name>` becomes `win22stig_<name>` (for example `wn22stig_lockoutbadcount`
   becomes `win22stig_lockoutbadcount`)
+- `win2022stig_<name>` becomes `win22stig_<name>` for `audit_complex`, `audit_disruptive`,
+  `complexity_high` and `disruption_high`
+- three names also correct a typo: `sebackuprivilege` becomes `sebackupprivilege`,
+  `selockmemorprivilege` becomes `selockmemoryprivilege`, and `machineaccountpsswd_max_age`
+  becomes `machineaccountpassword_max_age`
 
 Rule toggles are unchanged. They keep the `wn22_<control id>` form, for example
 `wn22_au_000010`.
 
-**2. CAT control switches renamed.** `win22stig_cat1_patch`, `win22stig_cat2_patch` and
-`win22stig_cat3_patch` become `win22stig_cat1_controls`, `win22stig_cat2_controls` and
-`win22stig_cat3_controls`, matching the names the tasks actually read.
+**2. CAT control switches renamed.** `win2022stig_cat1_patch`, `win2022stig_cat2_patch` and
+`win2022stig_cat3_patch` become `win22stig_cat1_controls`, `win22stig_cat2_controls` and
+`win22stig_cat3_controls`, matching the names the tasks actually read. The prefix and the suffix
+both change, so the general prefix rule above does not cover these.
 
 **3. The GPO authoring path has been removed.** This role is now remediation only. The
 `tasks/gpo_creation/` and `tasks/domain_creation/` trees, their pipeline workflows, and the
@@ -202,11 +208,14 @@ requirements (GPG signature and Signed-off-by on every commit).
 
 uses:
 
-- ansible-core 2.16.1
-- ansible collections - pulls in the latest version based on requirements file
-- runs the role against a Windows target provisioned on Azure
-- This is an automated test that occurs on pull requests into latest and benchmark branches
-- self-hosted runners using OpenTofu
+- ansible-core 2.16.1 or newer, from the pinned virtualenv on the runner
+- runs the role against a Windows target provisioned on Azure with OpenTofu, which is torn down when
+  the run ends
+- self-hosted runners
+- pull requests into `devel` or a `benchmark*` branch run the devel pipeline; pull requests into
+  `main` or `latest` run the main pipeline
+- the job runs only for pull requests raised from a branch in this repository, because it carries the
+  cloud credentials
 
 ## Local Testing
 

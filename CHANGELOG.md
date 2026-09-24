@@ -2,6 +2,27 @@
 
 ## Based on STIG v2.9.0 - ALD Windows Alignment Updates
 
+### Breaking changes
+
+Measured against the previous public release: 49 variable names no longer resolve, 41 renamed and 8
+removed. An override left under an old name is not read and is silently ignored. Rule toggles are
+unchanged and keep the `wn22_<control id>` form.
+
+- BREAKING: **41 variables are renamed.** 31 `wn22stig_<name>` become `win22stig_<name>`, and
+  `win2022stig_<name>` becomes `win22stig_<name>` for `audit_complex`, `audit_disruptive`,
+  `complexity_high` and `disruption_high`. The three category switches change suffix as well as
+  prefix: `win2022stig_cat<N>_patch` becomes `win22stig_cat<N>_controls`. Three are typo
+  corrections: `sebackuprivilege` becomes `sebackupprivilege`, `selockmemorprivilege` becomes
+  `selockmemoryprivilege`, and `machineaccountpsswd_max_age` becomes
+  `machineaccountpassword_max_age`.
+- BREAKING: **8 variables are removed.** Four were dead duplicates that the tasks never read:
+  `wn22stig_app_maxsize`, `wn22stig_sec_maxsize` and `wn22stig_sys_maxsize`, superseded by the
+  `*_event_log_max_size` names, and `wn22stig_krbtgt_pass_age`, superseded by
+  `wn22stig_krbtgt_account_pass_age`. The rest are `win22stig_cloud_based_system` with the cloud
+  detection it gated, `win2022stig_system_is_container` which was inert,
+  `win2022stig_min_ansible_version` which is now `min_ansible_version` in `vars/main.yml`, and the
+  rule toggle `wn22_00_000290`, whose control this benchmark revision retired.
+
 ### Feature removals gated on the feature existing
 
 - FIXED: **eight feature removal controls aborted the play on a host that does not ship the feature.**
@@ -114,12 +135,10 @@ host.** Each was host proven on the fleet test host.
   `Get-AppLockerPolicy -Effective -XML` running on the target, which implies nothing about
   controller packages.
 
-- FIXED: `.yamllint` now ignores `.ansible/`, matching the Windows Fleet. The QA gate runs
-  the checker twice, and the first run's internal `ansible-lint` installs
-  `collections/requirements.yml` into `.ansible/collections/`. `yamllint` then walked that tree on
-  the second run and linted several hundred vendored `ansible.windows` and `community.windows` files
-  against this role's style rules, so the second run failed while the first passed. The gate is now
-  order-independent. Only dependency code is excluded: role YAML is still linted.
+- FIXED: `.yamllint` now ignores `.ansible/`, matching the Windows Fleet. An `ansible-lint` run
+  installs `collections/requirements.yml` into `.ansible/collections/`, and `yamllint` then walked
+  that tree and linted several hundred vendored `ansible.windows` and `community.windows` files
+  against this role's style rules. Only dependency code is excluded: role YAML is still linted.
 
 ### Account policy scope on domain joined hosts
 
@@ -158,16 +177,6 @@ host.** Each was host proven on the fleet test host.
 
 ### Repository hygiene
 
-- `devel_pipeline_validation.yml`, `main_pipeline_validation.yml`, `benchmark_tracking_controller.yml`
-  and `export_badges_private.yml` are carried in this branch, so merging it leaves them intact on
-  `latest`. `pull_request_target` resolves a workflow from the target branch, so a pull request into
-  `latest` or a `benchmark*` branch runs the target's copy and a working branch does not strictly
-  need one. That holds for the pull request itself but not for the merge: a branch without these
-  files removes them from `latest` on merge, and every later pull request then has nothing to run.
-  `benchmark_tracking_controller.yml` matters most here, because it is the daily orchestrator that
-  calls `benchmark_track.yml`, which creates the `benchmark-90day` label and computes the 90-day
-  promotion due date. Dropping it would silently stop subscriber-to-community promotion tracking for
-  this role. `repo_qa.yml` is unchanged and the static QA gate still runs on every pull request.
 - FIXED: **Tofu Destroy did not run when `ENABLE_DEBUG` was unset.** The teardown step was gated on
   `env.ENABLE_DEBUG == 'false'`, which is false for an unset or empty variable, so the Azure test
   instance was left running. Now gated on `!= 'true'`, which tears down by default and keeps the
@@ -183,54 +192,15 @@ host.** Each was host proven on the fleet test host.
 - ADDED: `issue_message` to the pinned `actions/first-interaction@v3.1.0` step. The v3.1.0 runtime
   calls `getInput` for it with `required: true` even though its own `action.yml` does not mark it
   required, so the welcome job failed without it.
-- `README.md`: removed the two pipeline-status badges and rewrote the `Pipeline Testing` section.
-  The previous text described an audit-on-devel pipeline this role does not run. The section now
-  records the ansible-core floor, how collections are resolved, the Azure target, the branches the
-  automated test gates on, and the self-hosted OpenTofu runners. The badges pointed at the public
-  mirror rather than this repo, so they are dropped for parity with the other roles without
-  affecting this repo's checks. `Local Testing` is unchanged and still accurate.
-
-- CHANGED: `repo_qa.yml` now runs on the self-hosted runner rather than a hosted one. The
-  linter install is isolated in a virtualenv, which a hosted runner would not need: this
-  runner persists between jobs, so installing into its interpreter would leak the pinned
-  `yamllint` and `ansible-lint` versions into every other workflow sharing it, and a bare
-  `pip install` into a system interpreter is refused on current Debian and Ubuntu
-  (externally-managed-environment). The venv is prepended to `PATH` so the checker's
-  `shutil.which` lookup still finds both linters.
-- CHANGED: `repo_qa.yml` runs on pull requests only. The `push` trigger on `main`/`latest` and
-  the weekly `schedule` cron are removed: a push to a release branch arrives through a pull
-  request anyway, and the cron reported drift on a build nobody was watching.
-  `workflow_dispatch` is retained for checking drift deliberately.
-
-- FIXED: `repo_qa.yml` pinned the QA checker at `2.8.3`, which resolves a role's defaults as the
-  single file `defaults/main.yml` and aborts before running any check when it is absent. This
-  role now keeps its defaults in a `defaults/main/` directory, so the pinned checker could not
-  run against it at all and the gate would have failed on its first pull request. Pinned to
-  `2.8.4`, which accepts the directory and also understands the `Cat<N>` task directories and
-  the Windows toggle shape.
-- CHANGED: the checker run now names the variable prefix with `-b`. Left to auto-detect it reads
-  the role's benchmark type incorrectly, reports Rule Coverage as a green PASS having compared
-  nothing, and keys Unused Variables on whichever prefix it guessed. `.qa_baseline.json` is
-  regenerated with the same flag so the two stay in step.
-
-- CHANGED: `repo_qa.yml` no longer depends on `actions/setup-python` succeeding. It prefers the
-  runner's own `python3` when that is 3.10 or newer, falls back to `actions/setup-python` only
-  when it is not, and then asserts the floor before installing anything, so a runner without a
-  suitable interpreter fails with a message naming the version it found rather than with a pip
-  resolution error several steps later. 3.10 is the real floor: `yamllint` and `ansible-lint`
-  both declare `requires-python >= 3.10`, while the checker itself is standard library only and
-  runs on 3.8. Nothing is installed system-wide and no `sudo` is needed on either path, which
-  matters on a runner shared with other workflows.
-
-- FIXED: the QA gate reported `Rule Coverage` as SKIP, having compared nothing. This role uses
-  two variable prefixes - `win22stig_*` for tunables and `wn22_<family>_<id>` for rule toggles -
-  and the checker keys every check off one of them, so no single invocation is honest. Naming
-  `-b win22stig` lets Unused Variables see the tunables, but supplying `-b` at all bypasses the
-  shared detector for one that cannot return `stig_win`, so Rule
-  Coverage found no toggles. Letting it auto-detect fixes Rule Coverage but leaves Unused
-  Variables blind to an undefined `win22stig_*` tunable, which is the class that hid an undefined
-  variable in this fleet's firewall remediation. The gate now runs both ways and requires both
-  to pass. The root cause is in the checker: `_detect_benchmark_type` cannot return `stig_win`.
+- `README.md`: rewrote the `Pipeline Testing` section. The previous text described an audit-on-devel
+  pipeline this role does not run, and claimed collections are resolved from the requirements file,
+  which no pipeline step does. It now records the ansible-core floor, the Azure target and its
+  teardown, the branches each pipeline gates on, and the fork restriction on the job holding the
+  cloud credentials. The two pipeline-status badges are dropped, matching the rest of the Windows
+  Fleet. `Local Testing` is unchanged and still accurate.
+- REMOVED: **`update_galaxy.yml`.** It ran once, on 2025-09-03, and failed. The repository holds no
+  `GALAXY_API_KEY`, and no Windows Server 2022 STIG role is published on Ansible Galaxy, so it was
+  not the mechanism keeping anything current.
 
 - FIXED: **seven NIST tags were misspelled, so selecting by them matched nothing.** A stray `R` in
   `NIST800-53R_4_AC-3` (twice), a trailing `s` on `NIST800-53_4_AC-3s` and
@@ -240,7 +210,7 @@ host.** Each was host proven on the fleet test host.
   each is now that form.
 
 - FIXED: **17 tags used `NIST800-53-` where the rest use `NIST800-53_`.** The two forms are distinct
-  tag strings, so `--tags` selection silently missed the minority spelling. Normalised to the
+  tag strings, so `--tags` selection silently missed the minority spelling. Normalized to the
   underscore separator. Ten duplicate tag entries within a single `tags:` list were removed at the
   same time, nine of them pre-existing and one produced by the corrections above resolving to a
   tag the task already carried. Control identifier tags are untouched: `SV-`, `V-`, `CCI-` and
@@ -301,7 +271,7 @@ Found while auditing the Windows Fleet; this was present here too.
 Updated to DISA STIG Windows Server 2022 Version 2, Release 9 (benchmark date 01 July 2026),
 sourced from `U_MS_Windows_Server_2022_STIG_V2R9_Manual-xccdf.xml`. Rule coverage is 279 of 279.
 
-- BREAKING: role behaviour variables and security tunables standardized on the `win22stig_`
+- BREAKING: role behavior variables and security tunables standardized on the `win22stig_`
   prefix. The `wn22stig_` names are no longer read. Rule toggles keep the `wn22_<control id>` form.
 - BREAKING: `win22stig_cat1_patch`, `win22stig_cat2_patch` and `win22stig_cat3_patch` renamed to
   `win22stig_cat1_controls`, `win22stig_cat2_controls` and `win22stig_cat3_controls` to match the
@@ -390,10 +360,6 @@ sourced from `U_MS_Windows_Server_2022_STIG_V2R9_Manual-xccdf.xml`. Rule coverag
 - FIXED: WN22-AU-000330 tested for `Success` before enabling IPsec Driver failure auditing, so
   the change was skipped whenever success auditing happened to be on already.
   Addresses ansible-lockdown/Windows-2022-STIG#16.
-- REMOVED: `.github/workflows/export_badges_public.yml`. It could never run in a private repo:
-  it triggers only on `main`/`devel`, neither of which exists here, and its job is gated on
-  `github.repository_visibility == 'public'`. Badge export for this repo is handled by
-  `export_badges_private.yml`, which fires on `latest`. Public mirrors carry their own copy.
 - CHANGED: runtime-discovered values now use the fleet `discovered_` prefix instead of
   `wn22_`, matching the Linux roles and the Windows Fleet. 93 registers and
   set_fact values were renamed, for example `wn22_00_000020_audit_dc` becomes
