@@ -1,0 +1,31 @@
+---
+
+# post.yml may have rebooted. SCC reads NTUSER.DAT files directly rather than loaded hives, so
+# unlike the goss based roles there is nothing to reload here.
+
+- name: "Post Audit | Stage the SCC scanner"
+  # A reboot does not remove the staged tree, but the post scan uses its own working directory so
+  # that the pre scan's always cleanup cannot delete it mid-run.
+  when: setup_audit | bool
+  tags: setup_audit
+  vars:
+    scc_scan_label: post
+  ansible.builtin.import_tasks:
+    file: LE_audit_setup.yml
+
+- name: "Post Audit | Run the post remediation scan"
+  vars:
+    scc_scan_label: post
+    scc_outfile: "{{ post_audit_outfile }}"
+  block:
+    - name: "Post Audit | Scan"
+      ansible.builtin.import_tasks:
+        file: run_scc_scan.yml
+
+    - name: "Post Audit | Set fact for the post remediation summary"
+      ansible.builtin.set_fact:
+        post_audit_results: "{{ discovered_scc_tally.output[0].SummaryLine }}"
+  always:
+    - name: "Post Audit | Remove the working directory"
+      ansible.builtin.import_tasks:
+        file: audit_cleanup.yml

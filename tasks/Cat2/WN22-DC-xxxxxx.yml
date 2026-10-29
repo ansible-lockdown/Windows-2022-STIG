@@ -583,10 +583,10 @@
     - CCI-000768
     - CCI-001948
     - SRG-OS-000105-GPOS-00052
-    - SRG-OS-000106-GPOS-00053
     - SRG-OS-000107-GPOS-00054
     - SRG-OS-000108-GPOS-00055
     - SRG-OS-000375-GPOS-00160
+    - SRG-OS-000705-GPOS-00150
     - SV-254415r1210275_rule
     - V-254415
     - NIST800-53_IA-2_1
@@ -797,26 +797,6 @@
     users: Guests
     action: set
 
-- name: "MEDIUM | WN22-DC-000405 | PATCH | Windows Server 2022 must be configured for certificate-based authentication for domain controllers."
-  when:
-    - wn22_dc_000405 | bool
-    - "'controller' in ansible_facts['windows_domain_role']"
-  tags:
-    - WN22-DC-000405
-    - CAT2
-    - CCI-000213
-    - SRG-OS-000080-GPOS-00048
-    - SV-271426r1137691_rule
-    - V-271426
-    - NIST800-53_AC-3
-    - NIST800-53_A_AC-3_1
-    - NIST800-53_4_AC-3
-  ansible.windows.win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\Services\Kdc
-    value: StrongCertificateBindingEnforcement
-    data: "{{ win22stig_strong_certificate_binding_enforcement_value }}"
-    datatype: dword
-
 - name: "MEDIUM | WN22-DC-000406 | AUDIT | Windows Server 2022 must be configured for named-based strong mappings for certificates."
   when:
     - wn22_dc_000406 | bool
@@ -872,7 +852,7 @@
     - CAT2
     - CCI-002235
     - SRG-OS-000324-GPOS-00125
-    - SV-254426r958726_rule
+    - SV-254426r1256695_rule
     - V-254426
     - NIST800-53_4_AC-6_10
   ansible.windows.win_user_right:

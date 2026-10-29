@@ -3,7 +3,7 @@
 # defaults file for Windows-2022-STIG
 
 ## metadata for Audit benchmark
-benchmark_version: 'v2.9.0'
+benchmark_version: 'v2.10.0'
 
 ## Benchmark name used by auditing control role
 benchmark: Windows-2022-STIG
@@ -24,6 +24,17 @@ win22stig_cat3_controls: true
 
 # skip_reboot true warns that a reboot is outstanding instead of performing it.
 skip_reboot: true
+
+# win22stig_load_user_hives controls whether prelim loads the Default profile and every profile
+# listed in ProfileList under HKEY_USERS, so the per-user control can reach a profile whose owner
+# is not signed in. The hives the role loads are released again at the end of the run.
+#
+# Set false to leave those profiles untouched. The per-user control then falls back to the
+# Default profile alone and warns about the profiles it could not read, which is the behavior
+# this role had before the hives were loaded.
+#
+# Ignored on a domain controller, where the role does not mount profiles at all.
+win22stig_load_user_hives: true
 
 # We've defined complexity-high as cannot automatically remediate
 # the rule in question.  In the future, this might mean that the remediation
@@ -268,7 +279,6 @@ wn22_dc_000370: true
 wn22_dc_000380: true
 wn22_dc_000390: true
 wn22_dc_000400: true
-wn22_dc_000405: true
 wn22_dc_000406: true
 wn22_dc_000410: true
 wn22_dc_000420: true
@@ -455,15 +465,6 @@ win22stig_system_event_log_max_size: 32768
 # Default: Administrators,Authenticated Users,Enterprise Domain Controllers
 win22stig_senetworklogonright_dc: Administrators,Authenticated Users,Enterprise Domain Controllers
 
-# WN22-DC-000405
-# Windows Server 2022 must be configured for certificate-based authentication for domain controllers.
-# Active Directory domain services elevation of privilege vulnerability could allow a user rights to the system,
-# such as administrative and other high-level capabilities. This applies to domain controllers. This is not
-# applicable for member servers.Value Name: StrongCertificateBindingEnforcement 1 or 2
-# Value 1 = Compatibility Mode
-# Value 2 = Full Enforcement
-win22stig_strong_certificate_binding_enforcement_value: 2
-
 # WN22-DC-000430
 # The password for the krbtgt account on a domain must be reset at least every 180 days.
 # The default setting here matches the STIG requirements. If you would like to
@@ -647,4 +648,4 @@ win22stig_dodownloadmode: 1
 # Automated tools may only search for the titles defined above. If an organization-defined title is used, a manual review will be required.
 # WN22-SO-000140 checks the banner TITLE, not the body. Automated tools search only for the
 # titles listed, so this must be one of them - not the banner text.
-win22stig_legalnoticecaption: "DoD Notice and Consent Banner"
+win22stig_legalnoticecaption: "DoW Notice and Consent Banner"

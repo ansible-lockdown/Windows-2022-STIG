@@ -1,0 +1,71 @@
+---
+
+# Collect the audit output to a centralized location.
+#
+# Each scan writes two files on the node: a .md summary and a .zip holding SCC's full result set,
+# including the XCCDF results XML and the CKL and CKLB checklists.
+
+- name: "POST | FETCH | Build the list of audit files to collect"
+  # audit_only produces no post scan, so those paths do not exist. Listing them anyway relies on
+  # failed_when: false to hide the miss, which also hides a real failure.
+  ansible.builtin.set_fact:
+    audit_output_files: >-
+      {{ [pre_audit_outfile ~ '.md', pre_audit_outfile ~ '.zip'] +
+         ([] if audit_only | bool else [post_audit_outfile ~ '.md', post_audit_outfile ~ '.zip']) }}
+
+# The trailing slash is load bearing. With flat: true a dest without one is treated as a
+# FILENAME, so every item overwrites the last and only the final fetch survives. Normalized here
+# rather than relying on whoever sets audit_output_destination to remember.
+- name: "POST | FETCH | Fetch files and copy to controller"
+  when: audit_output_collection_method == 'fetch'
+  ansible.builtin.fetch:
+    src: "{{ item }}"
+    dest: "{{ audit_output_destination | regex_replace('/$', '') }}/"
+    flat: true
+  # No changed_when override: the module's own result is what the warning below reads. Forcing
+  # changed made a failed collection indistinguishable from a successful one.
+  failed_when: false
+  register: discovered_audit_fetch_state
+  loop: "{{ audit_output_files }}"
+  loop_control:
+    label: "{{ item }}"
+
+# Copies to another location on the managed node itself, so audit_output_destination
+# must be a Windows path when this method is chosen.
+- name: "POST | FETCH | Copy files to location available to managed node"
+  when: audit_output_collection_method == 'copy'
+  ansible.windows.win_copy:
+    src: "{{ item }}"
+    dest: '{{ audit_output_destination }}\'
+    remote_src: true
+  failed_when: false
+  register: discovered_audit_copy_state
+  loop: "{{ audit_output_files }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: "POST | FETCH | Warn if the audit output could not be collected"
+  # Keyed on 'msg' being set, which is the only reliable signal here. failed_when: false above
+  # suppresses the failed flag, so a broken copy and a good one both report failed=False; and the
+  # loop's aggregate .changed says nothing about individual items. A successful copy carries no
+  # msg, a failed one carries the reason:
+  #   failed copy -> failed=False changed=False msg="Cannot copy src file: ..."
+  #   good copy   -> failed=False changed=True  msg not set
+  when: discovered_audit_collection_failures | length > 0
+  vars:
+    warn_control_id: FETCH_AUDIT_FILES
+    discovered_audit_collection_state: >-
+      {{ (discovered_audit_copy_state if audit_output_collection_method == 'copy'
+          else discovered_audit_fetch_state).results | default([]) }}
+    discovered_audit_collection_failures: >-
+      {{ discovered_audit_collection_state | selectattr('msg', 'defined') | list }}
+  block:
+    - name: "POST | FETCH | Warn if the audit output could not be collected | Message"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Unable to write to {{ audit_output_destination }} for audit file collection"
+          - "{{ discovered_audit_collection_failures | map(attribute='item') | list }}"
+
+    - name: "POST | FETCH | Warn if the audit output could not be collected | Warning Count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml

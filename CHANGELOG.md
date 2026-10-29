@@ -1,5 +1,196 @@
 # Changes to WIN22STIG
 
+## Based on STIG v2.10.0 - V2R10 alignment
+
+Benchmark: **Windows Server 2022 STIG V2R10**, Release 10, 10 August 2026. 278 rules, down from
+279.
+
+- CHANGED: **the role targets V2R10.** `benchmark_version` is `v2.10.0` and the README banner and
+  download link follow. The bundled SCC content and the role are on the same revision, so a
+  finding is a role defect rather than a revision difference; `defaults/main/audit.yml` says so,
+  and says it will stop being true the moment either side moves.
+
+- FIXED: **six identifier and naming defects that predate this release.** `WN22-DC-000310` carried
+  `SRG-OS-000106-GPOS-00053`, which appears in no revision of this benchmark, and was missing
+  `SRG-OS-000705-GPOS-00150`, which the rule does carry; its tag set now matches exactly.
+  `WN22-MS-000100` was named with `WN22-MS-000090`'s title, describing the batch job right where
+  the control configures the service right. `WN22-00-000400` was named "on the SMB server", which
+  is `WN22-00-000390`'s title, while its remediation correctly writes the client key. One task name
+  had been truncated to `Warn Count."`, losing its severity, control ID and title, so it could not
+  be selected by name or recognized in a run log. `WN22-DC-000070`'s warn-count task had lost its
+  severity prefix. And `WN22-00-000150` set `warn_control_id` as a variable on a `debug` task
+  instead of importing `warning_facts.yml`, so its warning was never counted and the control never
+  reached the end-of-run summary, unlike its neighbor.
+
+- FIXED: **`WN22-00-000050` told the operator the wrong number.** Its title and the warning message
+  it prints both said passwords must be at least 15 characters; the benchmark requires 14, in V2R9
+  and V2R10 alike. The control is audit only, so that message is the entire deliverable and it was
+  instructing a stricter policy than the STIG asks for.
+
+- FIXED: **the certificate controls no longer match on hardcoded thumbprints.** `WN22-PK-000020`
+  and `WN22-PK-000030` pinned five 40-character thumbprints between them, and V2R10 drops that
+  validation entirely, stating its certificate list is not exhaustive. `WN22-PK-000010` never
+  required it in the first place: the word does not appear in its check text in V2R9 or V2R10, so
+  the role has been over-enforcing that control against the benchmark it already shipped against.
+  All three now match on subject or issuer and on the certificate being unexpired, which is what
+  V2R10 asks for. A host holding a valid certificate DISA has since rotated is no longer reported
+  as a finding.
+
+- CHANGED: **`win22stig_legalnoticecaption` now defaults to `DoW Notice and Consent Banner`.**
+  V2R10 names that wording, or `US Department of War Warning Statement`, or an
+  organization-defined equivalent. The previous default remains acceptable to the benchmark under
+  that last clause, so a site that has pinned its own caption needs no change; the role's default
+  simply follows DISA. The banner body is untouched and carries no renamed string.
+
+- REMOVED: **`WN22-DC-000405` is withdrawn in V2R10**, because the setting it configured no longer
+  exists in Windows Server. The task, its `wn22_dc_000405` toggle and its documentation block are
+  gone, and so is `win22stig_strong_certificate_binding_enforcement_value`, which that task was the
+  only consumer of. Dropping a variable an inventory may set is a breaking change: a playbook
+  passing it will now have no effect rather than failing, so remove it from any inventory that
+  carries it. Rule coverage moves from 279 of 279 to 278 of 278.
+
+- CHANGED: **the ten controls DISA revised in V2R10 carry their new rule identifiers, and the six
+  it retitled carry its wording.** The rename is DOD to DoW throughout, and it is partial: DISA
+  rewrote the prose while leaving certificate Common Names as `DoD`, so the V2R10 check text for
+  `WN22-PK-000020` still matches on `*DoD Interoperability*`. Only task names changed here. Every
+  `-Like` pattern the role matches certificates with is byte-identical to before, which was
+  verified rather than assumed, because a blanket rename would make those patterns match nothing
+  and the controls would report compliant while checking for a certificate that cannot be found.
+  Each name was rewritten to the benchmark's own title rather than hand-edited, which also
+  corrected drift that predated the bump.
+
+- FIXED: **the README named removed variables that never existed.** "Breaking changes in this
+  release" gave the four removed duplicates a `win22stig_` prefix; the previous release defined
+  them as `wn22stig_app_maxsize`, `wn22stig_sec_maxsize`, `wn22stig_sys_maxsize` and
+  `wn22stig_krbtgt_pass_age`.
+
+- ADDED: **the role can now measure the host as well as harden it.** With `run_audit` it scans
+  with the DISA SCAP Compliance Checker before and after remediation, and `audit_only` scans
+  without applying anything. Both are off by default, alongside `setup_audit` to stage the scanner
+  and `fetch_audit_output` to collect the result sets, so a plain hardening run is unchanged. The
+  shape follows the rest of the fleet: settings in `defaults/main/audit.yml`, stages in
+  `pre_remediation_audit.yml`, `post_remediation_audit.yml` and `fetch_audit_output.yml`. Results
+  are read from the scanner's CKLB output, so findings are keyed by control ID and map directly
+  onto the task that addresses them. Both scans run rather than only the second, because a
+  post-remediation score on its own cannot separate a role that fixed findings from a host that was
+  already compliant. The scanner bundle is pinned to the SHA-256 DISA publishes for it, enforced
+  even when the archive is already on disk, so bumping `scc_version` without re-pinning fails the
+  run by design. The benchmark identifier is read from the shipped content rather than derived by
+  analogy, and the setup asserts that exactly one benchmark is enabled: an unknown name is rejected
+  while the scanner still exits 0, which would leave a scan that evaluated nothing looking like a
+  success. `audit_only` ends the run for the host
+  that finished scanning rather than the whole play, so a scan across an inventory measures every
+  host instead of stopping at the first, and it releases the mounted profile hives on that path
+  because an early exit does not unwind through an `always` section.
+  The audit does not run on a domain controller, matching the registry hive handling, because
+  neither has been exercised against one. `audit_only` has a single exit, gated on nothing but
+  `audit_only` itself and tagged `always`, so it holds on every path where the scan does not
+  happen: check mode, a domain controller, or a tag filter selecting neither audit tag. When that
+  exit lived inside the scan import it was skipped along with it, and the run fell through into
+  the remediation the operator had asked it not to perform; the host is now told no scan was
+  taken and stops. The directory holding the result sets is taken out of the ProgramData ACL in its
+  own right, not only the working tree that is deleted at the end of each stage: those sets are a
+  full host configuration dump naming accounts and carrying their SIDs, and ProgramData grants
+  `BUILTIN\Users` read. That hardening sits with the scan rather than with the scanner staging,
+  because staging is optional and the writes are not, so a run reusing a scanner staged earlier
+  still gets the restricted ACL. `docs/README_SCC_QuickStart.md` covers the command line
+  traps, the profile choice, the manual checks and why domain controllers and member servers
+  score against different denominators.
+
+- ADDED: **the role now mounts user profile hives so the per-user control can reach them.**
+  `WN22-UC-000010` is evaluated against each user's own profile hive, so a profile whose owner is
+  not signed in is not mounted, invisible to the control, and could only be reported as unchecked.
+  `prelim.yml` now mounts the Default profile and every profile listed in `ProfileList` under
+  `HKEY_USERS`, and releases them again from an `always` section so a failing control or an early
+  exit does not leave a profile mounted until the host reboots. Profiles that were already mounted
+  when the run started are subtracted and left alone, so a signed-in user does not lose their
+  profile mid-run. `ProfileList` rather than `Win32_UserAccount`: the latter returns local accounts
+  only, so a domain account holding a profile on the machine would be missed, and it reads
+  `ProfileImagePath` rather than assuming `C:\Users\<account name>`, which is wrong for any renamed
+  profile. Governed by `win22stig_load_user_hives`, default `true`; set it `false` to leave those
+  profiles untouched and fall back to the Default profile alone. Domain controllers are excluded,
+  because a controller's `ProfileList` carries domain administrator profiles and mounting those on
+  a live controller is a different proposition; that exclusion is deliberate and untested rather
+  than an assumption it would work. `WN22-UC-000010`'s Default profile fallback is now conditional
+  for the same reason the hive load exists: `win_regedit`'s `hive:` option would mount
+  `C:\Users\Default\NTUSER.DAT` a second time and Windows refuses that with "used by another
+  process", failing the run.
+
+- FIXED: **the account lockout trio aborted the play on a stock Server 2022.** Windows validates
+  `LockoutDuration >= ResetLockoutCount` on every secedit import rather than only at the end, and
+  `community.windows.win_security_policy` performs one export and import per invocation. A host
+  that ships at duration 30 and window 30, which is the Server 2022 default, therefore rejected a
+  duration of 15 with `Failed to import secedit.ini file ... The parameter is incorrect` and ended
+  the run at `WN22-AC-000010`. Which order is safe depends on the host rather than the role:
+  raising the pair needs the duration written first, lowering it needs the window written first.
+  `WN22-AC-000010` now reads the pair back after the threshold is applied and lowers the reset
+  counter only when it would otherwise block the duration, following the shape already used
+  elsewhere in the Windows Fleet. That reconcile writes `ResetLockoutCount`, which is
+  `WN22-AC-000030`'s remediation key, so it carries that control's identifiers alongside
+  `WN22-AC-000010`'s and a run filtered to either tag reaches it. Host proven on Server 2022 Standard, build 20348: a box at 30/30
+  now reaches 15/15 with no failure. The read uses cmdlets, operators and `$Matches` alone, with no
+  .NET method calls, so it still runs where PowerShell is in Constrained Language Mode, and it
+  exports to a path that does not already exist, because secedit otherwise drops the `[Unicode]`
+  header from its export.
+
+  The same run confirmed the constraint the file had recorded only as a question: with the lockout
+  threshold at `Never`, both the duration and the reset counter are refused outright, which is why
+  `WN22-AC-000020` must stay ahead of the other two.
+
+- FIXED: **four feature removals did not request a reboot.** `WN22-00-000350`, `WN22-00-000360`,
+  `WN22-00-000370` and `WN22-00-000410` remove a Windows feature but carried no `notify`, while
+  the four structurally identical controls beside them notify `Change_requires_reboot`. A run that
+  removed only those features reported success and left the host needing a reboot nobody was told
+  about. All eight now notify.
+
+- FIXED: **`WN22-PK-000010` warned that a compliant host was missing a certificate.** The control
+  probed for DoD Root CA 3, 4, 5 and 6 and raised a warning for any it did not find. The benchmark's
+  check content names Root CA 3, 5 and 6 only, in v2.9.0 and v2.10.0 alike, so a host carrying
+  exactly the required set was told it was missing Root CA 4 and the control contributed a warning
+  against a system that meets the requirement. The Root CA 4 probe, its warning and its term in the
+  warning count are removed, and the reason is recorded in the task file so it is not restored as an
+  apparent omission.
+
+- CHANGED: **`site.yml` names its play.** The play was anonymous and carried `# noqa: name[play]`
+  to silence the lint rule rather than satisfy it. It is now `Run Windows Server 2022 STIG
+  Benchmark` and the suppression is gone. `.qa_config.yml` keeps its three skipped checks, but the
+  stated reason for two of them no longer held: it asserted there was no working audit for this
+  role. The audit checks remain skipped because they look for a goss-paired layout this role does
+  not use, `templates/lockdown_audit.yml.j2` and `vars/audit.yml`, where the audit settings here
+  are operator tunable and live in `defaults/main/audit.yml`. The rationale now says that, rather
+  than resting on a premise that has changed.
+
+- FIXED: **the README tag example cited a rule identifier that does not exist.** It gave
+  `SV-254238r848530_rule` for `WN22-00-000010`; that string appears nowhere in the role and has no
+  match in the benchmark, where the rule is `SV-254238r991589_rule`. Corrected, and the four NIST
+  and audit tags the real task carries are now shown, so the example reproduces an actual task.
+
+- REMOVED: **a README claim about python3 interpreter compatibility.** It described prerequisites
+  that configure the system for a default python3 interpreter. Nothing in the role does that:
+  there is no interpreter handling anywhere in `tasks/`, `defaults/`, `vars/` or `handlers/`. The
+  sentence is a leftover from a Linux role and means nothing on Windows.
+
+- FIXED: **the pipelines could not return an audit report, and could still collide on the shared
+  runner.** Neither workflow had an artifact upload step and the Azure instance is destroyed
+  unconditionally, so a result set written on the runner was unreachable and then gone; both now
+  upload the collected sets with a bounded retention, which also stops them accumulating unseen on
+  a persistent self-hosted runner where they name accounts and carry their SIDs. The playbook
+  invocation passes the audit flags, since every audit variable defaults false and CI would
+  otherwise never exercise the feature. Both workflows now also declare two concurrency groups,
+  because the two collisions want opposite handling: a per pull request group at workflow level
+  cancels a run the operator has already superseded, while a constant group on the job holding
+  `tofu apply` does not cancel, so a second pull request queues behind the one holding the state
+  rather than being cancelled mid-apply and stranding an Azure instance. A single group cannot do
+  both.
+
+- FIXED: **pipeline credentials were appended to disk and never removed.** Both validation
+  workflows wrote `sensitive_info.json` with `>>`, so a second run in the same workspace appended
+  a second JSON object to the first and produced a file OpenTofu cannot parse, and no step ever
+  deleted it. On a persistent self-hosted runner the plaintext Windows credentials stayed in the
+  workspace until some later checkout happened to clean it. The redirect now truncates, and a
+  removal step runs under `if: always()` so it fires on failure and when `ENABLE_DEBUG` keeps the
+  instance alive.
+
 ## Based on STIG v2.9.0 - ALD Windows Alignment Updates
 
 ### Breaking changes

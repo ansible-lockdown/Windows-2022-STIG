@@ -1,5 +1,11 @@
 ---
 
+# Order is fixed: WN22-AC-000020 sets the threshold, then WN22-AC-000010 the duration, then
+# WN22-AC-000030 the reset counter, which Windows requires to be no greater than the duration.
+# Applying WN22-AC-000020 is what enables lockout, and Windows then auto-populates duration and
+# reset to 30, so the reconcile step below re-reads the pair after WN22-AC-000020 and lowers the
+# reset counter only when it would block WN22-AC-000010.
+
 - name: "MEDIUM | WN22-AC-000020 | PATCH | Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less."
   when:
     - wn22_ac_000020 | bool
@@ -37,7 +43,82 @@
         key: LockoutBadCount
         value: "{{ win22stig_lockoutbadcount }}"
 
-# The below task is dependent on WN22-AC-000020, maybe custom fail when known error if WN22-AC-000020 not set? "The key 'ResetLockoutCount' in section 'System Access' is not a valid key, cannot set this value"
+# Reconcile the pair Windows auto-populated above, before the duration is written. Without this a
+# stock Server 2022, which lands at duration 30 and reset 30 once the threshold is set, rejects a
+# duration of 15 with "Failed to import secedit.ini file ... The parameter is incorrect", because
+# secedit validates LockoutDuration >= ResetLockoutCount on every import rather than only at the
+# end. Host proven on Server 2022 Standard, build 20348.
+- name: "MEDIUM | WN22-AC-000010 | PATCH | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater. | Reconcile the reset counter."
+  when:
+    - wn22_ac_000010 | bool
+    - not discovered_account_policy_is_domain_scoped | bool
+  #
+  # This block writes ResetLockoutCount, which is WN22-AC-000030's remediation key, so it carries
+  # that control's identifiers as well as WN22-AC-000010's. Without them a run filtered to
+  # --tags WN22-AC-000030 would skip the reconcile and leave the duration unwritable. It stays
+  # gated on wn22_ac_000010 alone because the write is a precondition of the duration rather than
+  # the AC-000030 remediation: disabling wn22_ac_000030 does not prevent it, since on a host above
+  # the target the duration cannot be written at all until the window comes down.
+  tags:
+    - WN22-AC-000010
+    - WN22-AC-000030
+    - CAT2
+    - CCI-000044
+    - CCI-002238
+    - SRG-OS-000021-GPOS-00005
+    - SRG-OS-000329-GPOS-00128
+    - SV-254285r958736_rule
+    - SV-254287r958388_rule
+    - V-254285
+    - V-254287
+    - NIST800-53_AC-7_a
+    - NIST800-53_A_AC-7_1_ii
+    - NIST800-53_4_AC-7_a
+    - NIST800-53_4_AC-7_b
+  block:
+    - name: "MEDIUM | WN22-AC-000010 | AUDIT | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater. | Read the lockout policy as the threshold control left it."
+      ansible.windows.win_shell: |
+        $ErrorActionPreference = 'Stop'
+        # Cmdlets, operators and $Matches only - no .NET method calls - so this still
+        # runs where PowerShell is in Constrained Language Mode. secedit must write to
+        # a path that does not already exist or the export drops its [Unicode] header.
+        $cfg = Join-Path $env:TEMP "stig_lockout_$PID.inf"
+        Remove-Item -LiteralPath $cfg -Force -ErrorAction SilentlyContinue
+        secedit /export /areas SECURITYPOLICY /cfg $cfg /quiet | Out-Null
+        $content = Get-Content -LiteralPath $cfg
+        Remove-Item -LiteralPath $cfg -Force -ErrorAction SilentlyContinue
+        $duration = 0
+        $reset = 0
+        foreach ($line in $content) {
+          if ($line -match '^LockoutDuration\s*=\s*(\d+)') { $duration = $Matches[1] }
+          if ($line -match '^ResetLockoutCount\s*=\s*(\d+)') { $reset = $Matches[1] }
+        }
+        "$duration $reset"
+      changed_when: false
+      # Matches every other discovery probe in the role. Without it a failed secedit /export
+      # makes the Get-Content throw under $ErrorActionPreference = 'Stop' and aborts the play at
+      # the very control this reconcile exists to unbreak. The guard below handles a bad read.
+      failed_when: false
+      check_mode: false
+      register: discovered_lockout_policy
+
+    - name: "MEDIUM | WN22-AC-000010 | AUDIT | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater. | Set the current lockout facts."
+      # A probe that failed leaves no usable stdout, so fall back to the two values rather than
+      # index into an empty split. Both default to 0, which makes the reconcile below a no-op and
+      # leaves the duration write to fail loudly on its own terms if the host needs it.
+      when: discovered_lockout_policy.stdout | default('', true) | trim | split | length == 2
+      ansible.builtin.set_fact:
+        discovered_win22stig_current_lockout_duration: "{{ discovered_lockout_policy.stdout.split()[0] | int }}"
+        discovered_win22stig_current_lockout_reset: "{{ discovered_lockout_policy.stdout.split()[1] | int }}"
+
+    - name: "MEDIUM | WN22-AC-000010 | PATCH | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater. | Lower the reset counter so the duration can be applied."
+      when:
+        - discovered_win22stig_current_lockout_reset | default(0) | int > win22stig_lockoutduration | int
+        - win22stig_resetlockoutcount | int <= discovered_win22stig_current_lockout_duration | default(0) | int
+      community.windows.win_security_policy:
+        section: System Access
+        key: ResetLockoutCount
+        value: "{{ win22stig_resetlockoutcount }}"
 
 - name: "MEDIUM | WN22-AC-000010 | PATCH | Windows Server 2022 account lockout duration must be configured to 15 minutes or greater."
   when:
@@ -122,7 +203,7 @@
     - CAT2
     - CCI-004061
     - SRG-OS-000077-GPOS-00045
-    - SV-254288r1000156_rule
+    - SV-254288r1256690_rule
     - V-254288
     - NIST800-53_IA-5_1_e
     - NIST800-53_A_IA-5_1_1_vi

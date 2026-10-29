@@ -35,7 +35,7 @@
       vars:
         warn_control_id: "WN22-00-000180"
 
-- name: "LOW | WN22-00-000440 | AUDIT | The Windows Server 2022 time service must synchronize with an appropriate DoD time source."
+- name: "LOW | WN22-00-000440 | AUDIT | The Windows Server 2022 time service must synchronize with an appropriate DoW time source."
   when: wn22_00_000440 | bool
   tags:
     - WN22-00-000440
@@ -43,15 +43,15 @@
     - CCI-004923
     - CCI-001891
     - SRG-OS-000355-GPOS-00143
-    - SV-254281r1051090_rule
+    - SV-254281r1256689_rule
     - V-254281
     - NIST800-53_4_AU-8_1_a
   block:
-    - name: "LOW | WN22-00-000440 | AUDIT | The Windows Server 2022 time service must synchronize with an appropriate DoD time source."
+    - name: "LOW | WN22-00-000440 | AUDIT | The Windows Server 2022 time service must synchronize with an appropriate DoW time source."
       ansible.builtin.debug:
         msg: "Warning!! This is a manual task. The Windows Server 2022 time service must synchronize with an appropriate DoD time source. "
 
-    - name: "LOW | WN22-00-000440 | AUDIT | The Windows Server 2022 time service must synchronize with an appropriate DoD time source. | import reusable task."
+    - name: "LOW | WN22-00-000440 | AUDIT | The Windows Server 2022 time service must synchronize with an appropriate DoW time source. | import reusable task."
       ansible.builtin.import_tasks: warning_facts.yml
       vars:
         warn_control_id: "WN22-00-000440"

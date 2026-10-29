@@ -1,0 +1,140 @@
+---
+
+# Run one SCC scan and tally it. Imported by both pre_remediation_audit.yml and
+# post_remediation_audit.yml, which set scc_scan_label and scc_outfile first.
+#
+# Results are read from SCC's CKLB output, which is JSON and carries rule_version in WN22-* form,
+# the same control IDs this role uses for its task names and tags, so a finding maps directly onto
+# the task that addresses it.
+
+- name: "Run SCC Scan | Ensure the result set directory exists and is restricted"
+  # Created and ACL'd here rather than alongside the scanner staging, because staging is gated on
+  # setup_audit while the writes below are gated on run_audit. A run that reuses a scanner staged
+  # earlier would otherwise write the result sets into a directory this run never hardened, and
+  # ProgramData grants BUILTIN\Users (OI)(CI)(RX). The sets are a full host configuration dump
+  # naming local and domain accounts and carrying their SIDs.
+  ansible.windows.win_file:
+    path: "{{ audit_log_dir }}"
+    state: directory
+
+- name: "Run SCC Scan | Stop the result set directory inheriting the ProgramData ACL"
+  ansible.windows.win_acl_inheritance:
+    path: "{{ audit_log_dir }}"
+    state: absent
+    reorganize: false
+
+- name: "Run SCC Scan | Restrict the result set directory to SYSTEM and Administrators"
+  ansible.windows.win_acl:
+    path: "{{ audit_log_dir }}"
+    user: "{{ item }}"
+    rights: FullControl
+    type: allow
+    inherit: ContainerInherit, ObjectInherit
+    propagation: None
+    state: present
+  loop:
+    - NT AUTHORITY\SYSTEM
+    - BUILTIN\Administrators
+  loop_control:
+    label: "{{ audit_log_dir }} -> {{ item }}"
+
+- name: "Run SCC Scan | Run the scan for {{ scc_scan_label }}"
+  # Asynchronous by necessity: a full benchmark scan outruns any sane WinRM read timeout.
+  ansible.windows.win_shell: '& "{{ scc_exe }}" -u "{{ scc_userdir }}" -q'
+  async: 5400
+  poll: 30
+  changed_when: true
+  # SCC exits non-zero when it finds failures. Failing the play because the scan found something
+  # is wrong; failing silently when the scanner aborted is also wrong.
+  failed_when: discovered_scc_run.rc not in [0, 1, 2]
+  register: discovered_scc_run
+
+- name: "Run SCC Scan | Tally the CKLB output for {{ scc_scan_label }}"
+  ansible.windows.win_powershell:
+    script: |
+      $ErrorActionPreference = 'Stop'
+      $session = Get-ChildItem "{{ scc_userdir }}\Sessions" -Directory |
+                 Sort-Object LastWriteTime -Descending | Select-Object -First 1
+      $cklb = Get-ChildItem $session.FullName -Recurse -Filter *.cklb | Select-Object -First 1
+      if (-not $cklb) { throw "No CKLB produced under $($session.FullName)" }
+
+      $stig  = (Get-Content $cklb.FullName -Raw | ConvertFrom-Json).stigs[0]
+      $rules = @($stig.rules)
+
+      # An empty rule set would tally as total=0 and report 0% as if it were a real measurement.
+      # Scoping is asserted during setup; this catches a scan that enumerated the benchmark but
+      # evaluated nothing.
+      if ($rules.Count -eq 0) {
+        throw "CKLB $($cklb.Name) contains no rule results: the scan evaluated nothing"
+      }
+
+      # CKLB status vocabulary -> the XCCDF words people expect in a report.
+      $label = @{
+        'not_a_finding'  = 'pass'
+        'open'           = 'fail'
+        'not_reviewed'   = 'notchecked'
+        'not_applicable' = 'notapplicable'
+      }
+      $count = @{}
+      foreach ($k in $label.Values) { $count[$k] = 0 }
+      foreach ($r in $rules) {
+        $k = $label[$r.status]
+        if (-not $k) { $k = $r.status }
+        $count[$k] = [int]$count[$k] + 1
+      }
+
+      $total  = $rules.Count
+      $scored = [int]$count['pass'] + [int]$count['fail']
+      $pct    = if ($scored) { [math]::Round(100 * $count['pass'] / $scored, 1) } else { 0 }
+
+      $md = New-Object System.Text.StringBuilder
+      [void]$md.AppendLine("## SCC scan - {{ scc_scan_label }}")
+      [void]$md.AppendLine("")
+      [void]$md.AppendLine("Host ``$env:COMPUTERNAME``, benchmark ``$($stig.stig_id)``, " +
+                           "$($stig.release_info), profile ``{{ scc_profile }}``.")
+      [void]$md.AppendLine("")
+      [void]$md.AppendLine("| state | count | share |")
+      [void]$md.AppendLine("|---|---:|---:|")
+      foreach ($k in 'pass','fail','notchecked','notapplicable') {
+        $c = [int]$count[$k]
+        $s = if ($total) { [math]::Round(100 * $c / $total, 1) } else { 0 }
+        [void]$md.AppendLine("| $k | $c | $s% |")
+      }
+      [void]$md.AppendLine("| **total** | **$total** | |")
+      [void]$md.AppendLine("")
+      [void]$md.AppendLine("Compliance (pass / pass+fail): **$($count['pass'])/$scored = $pct%**")
+      [void]$md.AppendLine("")
+
+      $open = @($rules | Where-Object { $_.status -eq 'open' })
+      $cat1 = @($open | Where-Object { $_.severity -eq 'high' })
+      [void]$md.AppendLine("### Open findings: $($open.Count) ($($cat1.Count) CAT I)")
+      [void]$md.AppendLine("")
+      if ($open.Count) {
+        [void]$md.AppendLine("| severity | control | title |")
+        [void]$md.AppendLine("|---|---|---|")
+        foreach ($r in ($open | Sort-Object @{E={$_.severity}}, @{E={$_.rule_version}})) {
+          $t = $r.rule_title -replace '\|', '\'
+          if ($t.Length -gt 90) { $t = $t.Substring(0, 90) + '...' }
+          [void]$md.AppendLine("| $($r.severity) | $($r.rule_version) | $t |")
+        }
+      }
+
+      # Out-File -Encoding utf8 emits a BOM on PowerShell 5.1, which renders as a stray glyph at
+      # the top of anything that displays the file. Write without one.
+      [System.IO.File]::WriteAllText("{{ scc_outfile }}.md", $md.ToString(),
+                                     (New-Object System.Text.UTF8Encoding $false))
+
+      # The session path, not the Sessions parent: zipping the parent would sweep in any earlier
+      # session still on disk.
+      Compress-Archive -Path $session.FullName -DestinationPath "{{ scc_outfile }}.zip" -Force
+
+      [PSCustomObject]@{
+        SummaryLine = "pass $($count['pass']), fail $($count['fail']), notchecked $($count['notchecked']), notapplicable $($count['notapplicable']), compliance $pct%"
+        Summary     = $md.ToString()
+      }
+  changed_when: false
+  register: discovered_scc_tally
+
+- name: "Run SCC Scan | Show the tally for {{ scc_scan_label }}"
+  ansible.builtin.debug:
+    msg: "{{ discovered_scc_tally.output[0].Summary | split('\n') }}"

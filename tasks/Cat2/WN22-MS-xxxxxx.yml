@@ -193,7 +193,7 @@
         users: Guests
         action: set
 
-- name: "MEDIUM | WN22-MS-000100 | PATCH | Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems."
+- name: "MEDIUM | WN22-MS-000100 | PATCH | Windows Server 2022 Deny log on as a service user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts. No other groups or accounts must be assigned this right."
   when:
     - wn22_ms_000100 | bool
     - ansible_facts['windows_domain_role'] == "Member server"

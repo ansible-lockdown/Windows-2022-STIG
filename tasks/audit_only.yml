@@ -1,0 +1,41 @@
+---
+
+# Scan and stop. Replaces the standalone scan playbook: the audit is the whole point of the run,
+# so nothing is remediated and the play ends here.
+
+- name: "Audit Only | Collect the audit output"
+  when: fetch_audit_output | bool
+  tags: fetch_audit_output
+  ansible.builtin.import_tasks:
+    file: fetch_audit_output.yml
+
+- name: "Audit Only | Warn when no scan was taken"
+  # Reached whenever the scan above was skipped: check mode, a domain controller, or a tag filter
+  # that selected neither audit tag. Saying so beats printing "not run" with no explanation.
+  when: pre_audit_results is not defined
+  ansible.builtin.debug:
+    msg:
+      - "Warning!! audit_only was requested but no scan was taken on this host."
+      - "The audit does not run under check mode or on a domain controller. Nothing was applied."
+
+- name: "Audit Only | Show the audit results"
+  when: pre_audit_results is defined
+  ansible.builtin.debug:
+    msg: "{{ audit_results.split('\n') }}"
+
+- name: "Audit Only | Unload the registry hives loaded by prelim"
+  # The early exit below does not unwind, so neither the unload in main.yml nor any always
+  # section downstream is reached. The scan needs the hives mounted, so this is the first point
+  # after it where releasing them is safe.
+  when:
+    - win22stig_load_user_hives | bool
+    - "'controller' not in ansible_facts['windows_domain_role'] | default('', true)"
+  tags: always
+  ansible.builtin.import_tasks:
+    file: unload_hives.yml
+
+- name: "Audit Only | End this host's run, audit_only is set"
+  # end_host, not end_play. end_play stops the play for every host in the inventory, so the
+  # first host to arrive here would cancel the scan for all the others and the run would still
+  # report success. The early exit has to be per host.
+  ansible.builtin.meta: end_host
