@@ -60,7 +60,7 @@
     - NIST800-53_A_AU-9_1
     - NIST800-53_4_AU-9
   block:
-    - name: "MEDIUM | WN22-AU-000030 | PATCH | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Get Default Log Locations."
+    - name: "MEDIUM | WN22-AU-000030 | AUDIT | Windows 2022 permissions for the Application event log must prevent access by non-privileged accounts. | Get Default Log Locations."
       ansible.windows.win_shell: Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\ | Select-Object File | ft -HideTableHeaders
       changed_when: false
       failed_when: false

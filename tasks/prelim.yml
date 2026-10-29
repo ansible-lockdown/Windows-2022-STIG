@@ -92,7 +92,7 @@
 #
 # Both present misleadingly as "the specified credentials were rejected by the server": the port
 # keeps answering and the service keeps running, only authentication is refused. Do not diagnose
-# either as a network or service fault. Host proven on the sibling Windows 11 role 2026-09-16,
+# either as a network or service fault. Host proven elsewhere in the Windows Fleet 2026-09-16,
 # where every remote transport failed after the equivalent control applied, including SSH public
 # key and WinRM certificate authentication, leaving the console as the only way in.
 - name: "PRELIM | Control Connection Scope"
@@ -184,3 +184,77 @@
   tags: always
   ansible.builtin.set_fact:
     prelim_feature_names: "{{ prelim_windows_features.stdout_lines | default([], true) | map('trim') | select | list }}"
+
+# The per-user control loops the hives mounted under HKEY_USERS, so a profile whose owner is not
+# signed in is invisible to it and the control can only warn about it. Load the Default profile
+# and every profile listed in ProfileList so the control covers them, and release them again at
+# the end of the run.
+#
+# Nothing here fails the run. A hive locked by a signed-in user, or a profile directory without an
+# NTUSER.DAT, is skipped and simply does not get mounted.
+#
+# Domain controllers are excluded. A controller's ProfileList carries domain administrator
+# profiles, and mounting and releasing those on a live controller is a materially different
+# proposition from a member server. The exclusion is deliberate and untested rather than an
+# assumption that it would work.
+- name: "PRELIM | Load the Default and per-user registry hives"
+  when:
+    - win22stig_load_user_hives | bool
+    - not ansible_check_mode
+    - "'controller' not in ansible_facts['windows_domain_role'] | default('', true)"
+  tags: always
+  block:
+    - name: "PRELIM | Record the hives loaded before the role loads any"
+      ansible.windows.win_shell: (Get-ChildItem "REGISTRY::HKEY_USERS").name | Where-Object {$_ -notlike "*_classes"}
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: prelim_hku_baseline
+
+    - name: "PRELIM | Set fact for the hives already loaded"
+      # The baseline the unload step subtracts, so a hive that was already mounted is left alone.
+      ansible.builtin.set_fact:
+        discovered_hku_preloaded_list: "{{ prelim_hku_baseline.stdout | regex_replace('HKEY_USERS\\\\', '') | split }}"
+
+    - name: "PRELIM | Load the Default user hive"
+      # The profile every new account is created from, so settings written here are inherited.
+      ansible.windows.win_command: REG LOAD HKU\DEFAULT C:\Users\Default\NTUSER.DAT
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+    - name: "PRELIM | Enumerate user profiles from ProfileList"
+      # ProfileList, not Win32_UserAccount. Win32_UserAccount returns local accounts only, so a
+      # domain account with a profile on this machine is missed entirely, and the per-user control
+      # then leaves its hive unread. The benchmark's ntuser checks read every profile directory,
+      # so a missed profile is a finding.
+      #
+      # ProfileImagePath is also the real location: it must not be assumed to be
+      # C:\Users\<account name>, which is wrong whenever a profile was renamed or created against
+      # a name collision.
+      ansible.windows.win_shell: |
+        Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList" |
+          ForEach-Object {
+            $sid  = $_.PSChildName
+            $path = (Get-ItemProperty $_.PSPath -Name ProfileImagePath -EA SilentlyContinue).ProfileImagePath
+            if ($sid -like 'S-1-5-21-*' -and $path -and (Test-Path "$path\NTUSER.DAT")) {
+              "$sid|$path"
+            }
+          }
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: prelim_user_profiles
+
+    - name: "PRELIM | Set fact for user profile SIDs and paths"
+      # Filtered on S-1-5-21-* so the service SIDs (S-1-5-18/19/20) are left alone, and on
+      # NTUSER.DAT existing so a stale ProfileList entry cannot produce a failed REG LOAD.
+      ansible.builtin.set_fact:
+        discovered_user_profile_list: "{{ prelim_user_profiles.stdout_lines | default([], true) | map('trim') | select | map('split', '|') | list }}"
+
+    - name: "PRELIM | Load each user hive by SID"
+      ansible.windows.win_command: REG LOAD HKU\{{ item.0 }} "{{ item.1 }}\NTUSER.DAT"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      loop: "{{ discovered_user_profile_list }}"

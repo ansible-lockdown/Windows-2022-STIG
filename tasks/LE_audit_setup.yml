@@ -1,0 +1,108 @@
+---
+
+# Stage SCAP Compliance Checker on the target.
+#
+# The target pulls the bundle itself rather than having it pushed: a win_copy of the payload over
+# WinRM takes minutes where this takes seconds. Set scc_bundle_url to an internal mirror on a host
+# without outbound access.
+
+- name: "LE Audit Setup | Create the audit working directory"
+  ansible.windows.win_file:
+    path: "{{ scc_root }}"
+    state: directory
+
+# ProgramData grants BUILTIN\Users (OI)(CI)(RX), and that reaches files, so without this every
+# local user could read the result sets. They name local and domain accounts and carry their SIDs.
+# Users also hold (CI)(WD,AD) on containers, which is container-only and cannot overwrite an
+# existing binary, but removing it closes the file-planting surface as well.
+- name: "LE Audit Setup | Stop the working directory inheriting the ProgramData ACL"
+  ansible.windows.win_acl_inheritance:
+    path: "{{ scc_root }}"
+    state: absent
+    reorganize: false
+
+- name: "LE Audit Setup | Restrict the working directory to SYSTEM and Administrators"
+  ansible.windows.win_acl:
+    path: "{{ scc_root }}"
+    user: "{{ item }}"
+    rights: FullControl
+    type: allow
+    inherit: ContainerInherit, ObjectInherit
+    propagation: None
+    state: present
+  loop:
+    - NT AUTHORITY\SYSTEM
+    - BUILTIN\Administrators
+  loop_control:
+    label: "{{ scc_root }} -> {{ item }}"
+
+- name: "LE Audit Setup | Create the scanner results directory"
+  # SCC exits rather than creating its -u directory, so it must exist first. Created after the
+  # ACL work on scc_root so it inherits the restricted set.
+  ansible.windows.win_file:
+    path: "{{ scc_userdir }}"
+    state: directory
+
+- name: "LE Audit Setup | Download the SCC bundle on the target"
+  ansible.windows.win_get_url:
+    url: "{{ scc_bundle_url }}"
+    dest: '{{ scc_root }}\scc_bundle.zip'
+    force: false
+    # DISA publishes a SHA-256 for every artifact in the release, and defaults/main/audit.yml
+    # pins the one for this bundle. win_get_url validates the TLS certificate by default, so
+    # this is content integrity on top of an authenticated transport rather than instead of it.
+    # An empty scc_bundle_sha256 skips the check, for a mirror that repackages the archive.
+    checksum: "{{ scc_bundle_sha256 | default(omit, true) }}"
+    checksum_algorithm: sha256
+
+- name: "LE Audit Setup | Expand the outer bundle"
+  community.windows.win_unzip:
+    src: '{{ scc_root }}\scc_bundle.zip'
+    dest: '{{ scc_root }}\bundle'
+    creates: '{{ scc_root }}\bundle\scc-{{ scc_version }}_Windows'
+
+- name: "LE Audit Setup | Expand the portable SCC tree"
+  community.windows.win_unzip:
+    src: '{{ scc_root }}\bundle\scc-{{ scc_version }}_Windows\scc-{{ scc_version }}_Windows.zip'
+    dest: '{{ scc_root }}\scc'
+    creates: '{{ scc_root }}\scc\scc_{{ scc_version }}'
+
+- name: "LE Audit Setup | Scope the scan to a single benchmark"
+  # All 40 bundled benchmarks are enabled on a fresh install. Each flag is invoked alone because
+  # they are not [Combinable]: passing -u alongside --enableBenchmark makes SCC read the flag
+  # itself as the benchmark name, enable nothing, and still exit 0.
+  ansible.windows.win_shell: |
+    & "{{ scc_exe }}" --disableAll
+    & "{{ scc_exe }}" --enableBenchmark {{ scc_benchmark }}
+    & "{{ scc_exe }}" --setProfile {{ scc_profile }} {{ scc_benchmark }}
+  changed_when: true
+
+- name: "LE Audit Setup | Read back which benchmarks are enabled"
+  # Read back in an invocation of its own. Folded in above, SCC's own
+  # "Benchmark '<name>' not found." error shares the stdout the assert searches, so an
+  # unrecognized name satisfies the check written to catch it.
+  ansible.windows.win_shell: |
+    & "{{ scc_exe }}" --listAllBenchmarks | Select-String -SimpleMatch "[ Enabled"
+  changed_when: false
+  register: discovered_scc_scope
+
+- name: "LE Audit Setup | Select which outputs SCC writes"
+  # --setOpt is [Chainable], so the pairs go in one invocation.
+  vars:
+    scc_report_options_effective: "{{ scc_report_options | combine(scc_report_options_override | default({}, true)) }}"
+  ansible.windows.win_shell: |
+    & "{{ scc_exe }}" {% for k, v in scc_report_options_effective.items() %}--setOpt {{ k }} {{ v }} {% endfor %}
+  changed_when: true
+
+- name: "LE Audit Setup | Confirm exactly one benchmark is enabled"
+  # The only guard against the silent scoping failure above. Without it a scan of nothing
+  # reports success.
+  vars:
+    scc_enabled_lines: "{{ discovered_scc_scope.stdout_lines | map('trim') | select() | list }}"
+  ansible.builtin.assert:
+    that:
+      - scc_enabled_lines | length == 1
+      - scc_benchmark in scc_enabled_lines[0]
+    fail_msg: >-
+      Expected {{ scc_benchmark }} to be the one enabled benchmark, got
+      {{ scc_enabled_lines | length }} enabled: {{ scc_enabled_lines | join(', ') }}

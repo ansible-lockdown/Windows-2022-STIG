@@ -1,0 +1,49 @@
+---
+
+# Per-repo configuration for tools/Repo_QA_Checker.
+# Windows roles differ structurally from the Linux Ansible-Lockdown roles the checker was
+# written against. Everything below narrows the checker to what is meaningful here; it does
+# not lower the bar on anything the role is actually expected to satisfy.
+
+# Registers use the wn22_ namespace with the control ID retained, e.g. wn22_au_000070_audit.
+# The control ID is kept because stripping it would collapse 92 registers into a handful of
+# names. prelim_ is used for discovery facts, matching the rest of the Ansible-Lockdown roles.
+register_prefixes:
+  - discovered_
+  - prelim_
+
+# Windows vocabulary that is correct but not in the checker's dictionary.
+# NOTE: the checker lowercases the scanned word before comparing it against this list, so an
+# entry written in uppercase can never match. Keep every entry lowercase.
+spelling_exceptions:
+  - adml
+  - admx
+  - auditpol
+  - gpresult
+  - gpttmpl
+  - hkcu
+  - hklm
+  - hku
+  - lgpo
+  - netlogon
+  - policydefinitions
+  - secedit
+  - sysvol
+
+# Checks with no meaning for this role. Each is structurally inapplicable, not merely noisy:
+#   audit_template  - looks for templates/lockdown_audit.yml.j2. This role audits by running an
+#                     external scanner against the published benchmark content, so it renders no
+#                     audit template and has none to check.
+#   audit_vars      - expects the audit_* variable family in vars/audit.yml, the layout used by a
+#                     role paired with a goss audit repo. This role does have an audit, but its
+#                     settings are operator tunable and therefore live in defaults/main/audit.yml,
+#                     so the check would report a false absence rather than a real gap.
+#   shell_pipefail  - POSIX 'set -o pipefail' and args.executable; meaningless against
+#                     ansible.windows.win_shell
+skip_checks:
+  - audit_template
+  - audit_vars
+  - shell_pipefail
+
+# There is no molecule/ directory in a Windows role; CI builds a live Azure instance instead.
+fqcn_exclude_paths: []

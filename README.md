@@ -2,7 +2,7 @@
 
 ## Configure a Windows 2022 system to be [DISA STIG](https://public.cyber.mil/stigs/downloads/) compliant
 
-### Based on [Windows DISA STIG Version 2, Rel 9 released on July 1st, 2026](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V2R9_STIG.zip)
+### Based on [Windows DISA STIG Version 2, Rel 10 released on August 10th, 2026](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V2R10_STIG.zip)
 
 ---
 
@@ -87,13 +87,55 @@ The control found in the defaults main also needs to reflect true so as this wil
 ## Coming From A Previous Release
 
 STIG releases always contain changes, so it is highly recommended to review the new references and available variables. This has changed significantly since the initial release of ansible-lockdown.
-This is now compatible with python3 if it is found to be the default interpreter. This does come with prerequisites that configure the system accordingly.
 
 Further details can be seen in the [Changelog](./CHANGELOG.md)
 
-## Auditing (new)
+## Auditing
 
-Currently, this release does not have an auditing tool.
+The role can scan the host with the DISA SCAP Compliance Checker before and after remediation, so
+the difference between the two runs shows what the role actually changed. SCC is downloaded to the
+target, scoped to the Windows Server 2022 benchmark, run, and its checklists and HTML report are
+written to `audit_log_dir`.
+
+Every audit control defaults to off, so an ordinary hardening run is unchanged. The rest of
+`defaults/main/audit.yml` is settings with working defaults. Enable a scan with:
+
+```bash
+# scan, remediate, scan again
+ansible-playbook -i inventory site.yml -e setup_audit=true -e run_audit=true
+
+# scan and stop, changing nothing on the host
+ansible-playbook -i inventory site.yml -e setup_audit=true -e audit_only=true
+```
+
+Settings live in `defaults/main/audit.yml`. See [docs/README_SCC_QuickStart.md](docs/README_SCC_QuickStart.md)
+for the operator guide: variables, profiles, SCC command line behavior and how to read the output.
+
+The scanner bundle is pinned to the SHA-256 that DISA publishes for it, and the download is
+rejected if it does not match. Bumping `scc_version` without re-pinning fails the run by design.
+
+## Per-user controls and the registry hives
+
+The benchmark's per-user rules are evaluated against each user's own profile hive. A profile whose
+owner is not signed in is not mounted, so a control that reads `HKEY_USERS` cannot see it and can
+only report that it was unable to check.
+
+So `prelim.yml` mounts the Default profile and every profile listed in `ProfileList` under
+`HKEY_USERS`, and the per-user control covers those too. This is governed by
+`win22stig_load_user_hives`, which defaults to `true`.
+
+The hives the role mounts are released again at the end of the run, including when the run fails
+or ends early. Hives that were already mounted when the role started are left alone, so a
+signed-in user does not lose their profile mid-run. A profile that exists on disk but cannot be
+loaded is reported as a warning rather than silently skipped.
+
+Setting `win22stig_load_user_hives` to `false` leaves those profiles untouched, and the control
+falls back to the Default profile alone.
+
+**Domain controllers are excluded from the hive loading and from the audit.** A controller's
+`ProfileList` carries domain administrator profiles, and mounting and releasing those on a live
+controller is a different proposition from a member server. The exclusion is deliberate and has
+not been tested against a controller.
 
 ## Compliance facts
 
@@ -145,8 +187,9 @@ to skip writing it.
 - Running Ansible/Tower setup. This role requires ansible-core 2.16.1 or newer; the role asserts this at run time.
 - Python3 Ansible run environment
 - pywinrm
+- `ansible.windows` >= 3.7.0 and `community.windows` >= 3.3.0
 
-`pywinrm` is required on the controller host that executes Ansible; it is the connection library Ansible uses to reach a Windows target.
+`pywinrm` is required on the controller host that executes Ansible; it is the connection library Ansible uses to reach a Windows target. The two collections are pinned in `collections/requirements.yml` and declared in `meta/main.yml`; install them with `ansible-galaxy collection install -r collections/requirements.yml`.
 
 ## Role Variables
 
@@ -177,8 +220,8 @@ both change, so the general prefix rule above does not cover these.
 `win22stig_create_gpos` / `win22stig_create_domain` / `win22stig_ansible_remediation` switches
 are gone. Every control the GPO path implemented is implemented by the remediation path.
 
-**4. Removed duplicate variables.** `win22stig_app_maxsize`, `win22stig_sec_maxsize`,
-`win22stig_sys_maxsize` and `win22stig_krbtgt_pass_age` were dead duplicates that no task read.
+**4. Removed duplicate variables.** `wn22stig_app_maxsize`, `wn22stig_sec_maxsize`,
+`wn22stig_sys_maxsize` and `wn22stig_krbtgt_pass_age` were dead duplicates that no task read.
 Use `win22stig_application_event_log_max_size`, `win22stig_security_event_log_max_size`,
 `win22stig_system_event_log_max_size` and `win22stig_krbtgt_account_pass_age` instead.
 
@@ -194,8 +237,12 @@ tags:
       - CAT2
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-254238r848530_rule
+      - SV-254238r991589_rule
       - V-254238
+      - audit
+      - NIST800-53_CM-6_b
+      - NIST800-53_A_CM-6_1_iv
+      - NIST800-53_4_CM-6_b
 ```
 
 ## Community Contribution
@@ -225,6 +272,6 @@ uses:
 
 ## Credits and Thanks
 
-Massive thanks to the fantastic community and all its members.
+Thank you to the fantastic community and all its members.
 
-This includes a huge thanks and credit to the original authors and maintainers.
+This includes a huge thank you and credit to the original authors and maintainers.

@@ -1,5 +1,74 @@
 # Changes to WIN22STIG
 
+## Based on STIG v2.10.0 - V2R10 alignment
+
+Benchmark: **Windows Server 2022 STIG V2R10**, Release 10, 10 August 2026. 278 rules, down from
+279.
+
+- CHANGED: **the role targets V2R10.** `benchmark_version` is `v2.10.0` and the README banner and
+  download link follow. `defaults/main/audit.yml` previously documented a gap between the role at
+  V2R9 and the scanner content at V2R10, and explained how to read a finding across it. That gap
+  is closed: the bundled SCC content and the role are now on the same revision, so a finding is a
+  role defect rather than a revision difference. The note now says that, and says it will stop
+  being true the moment either side moves.
+
+- FIXED: **six identifier and naming defects that predate this release.** `WN22-DC-000310` carried
+  `SRG-OS-000106-GPOS-00053`, which appears in no revision of this benchmark, and was missing
+  `SRG-OS-000705-GPOS-00150`, which the rule does carry; its tag set now matches exactly.
+  `WN22-MS-000100` was named with `WN22-MS-000090`'s title, describing the batch job right where
+  the control configures the service right. `WN22-00-000400` was named "on the SMB server", which
+  is `WN22-00-000390`'s title, while its remediation correctly writes the client key. One task name
+  had been truncated to `Warn Count."`, losing its severity, control ID and title, so it could not
+  be selected by name or recognized in a run log. `WN22-DC-000070`'s warn-count task had lost its
+  severity prefix. And `WN22-00-000150` set `warn_control_id` as a variable on a `debug` task
+  instead of importing `warning_facts.yml`, so its warning was never counted and the control never
+  reached the end-of-run summary, unlike its neighbor.
+
+- FIXED: **`WN22-00-000050` told the operator the wrong number.** Its title and the warning message
+  it prints both said passwords must be at least 15 characters; the benchmark requires 14, in V2R9
+  and V2R10 alike. The control is audit only, so that message is the entire deliverable and it was
+  instructing a stricter policy than the STIG asks for.
+
+- FIXED: **the certificate controls no longer match on hardcoded thumbprints.** `WN22-PK-000020`
+  and `WN22-PK-000030` pinned five 40-character thumbprints between them, and V2R10 drops that
+  validation entirely, stating its certificate list is not exhaustive. `WN22-PK-000010` never
+  required it in the first place: the word does not appear in its check text in V2R9 or V2R10, so
+  the role has been over-enforcing that control against the benchmark it already shipped against.
+  All three now match on subject or issuer and on the certificate being unexpired, which is what
+  V2R10 asks for. A host holding a valid certificate DISA has since rotated is no longer reported
+  as a finding.
+
+- CHANGED: **`win22stig_legalnoticecaption` now defaults to `DoW Notice and Consent Banner`.**
+  V2R10 names that wording, or `US Department of War Warning Statement`, or an
+  organization-defined equivalent. The previous default remains acceptable to the benchmark under
+  that last clause, so a site that has pinned its own caption needs no change; the role's default
+  simply follows DISA. The banner body is untouched and carries no renamed string.
+
+- REMOVED: **`WN22-DC-000405` is withdrawn in V2R10**, because the setting it configured no longer
+  exists in Windows Server. The task, its `wn22_dc_000405` toggle and its documentation block are
+  gone, and so is `win22stig_strong_certificate_binding_enforcement_value`, which that task was the
+  only consumer of. Dropping a variable an inventory may set is a breaking change: a playbook
+  passing it will now have no effect rather than failing, so remove it from any inventory that
+  carries it. Rule coverage moves from 279 of 279 to 278 of 278.
+
+- CHANGED: **the ten controls DISA revised in V2R10 carry their new rule identifiers, and the six
+  it retitled carry its wording.** The rename is DOD to DoW throughout, and it is partial: DISA
+  rewrote the prose while leaving certificate Common Names as `DoD`, so the V2R10 check text for
+  `WN22-PK-000020` still matches on `*DoD Interoperability*`. Only task names changed here. Every
+  `-Like` pattern the role matches certificates with is byte-identical to before, which was
+  verified rather than assumed, because a blanket rename would make those patterns match nothing
+  and the controls would report compliant while checking for a certificate that cannot be found.
+  Each name was rewritten to the benchmark's own title rather than hand-edited, which also
+  corrected drift that predated the bump.
+
+- FIXED: **the README named old variables that never existed.** "Breaking changes in this release"
+  now gives the names the previous release defined: the category switches were
+  `win2022stig_cat<N>_patch`, and the removed duplicates were `wn22stig_app_maxsize`,
+  `wn22stig_sec_maxsize`, `wn22stig_sys_maxsize` and `wn22stig_krbtgt_pass_age`. It also lists the
+  `win2022stig_` renames and the three typo corrections it had omitted. The Auditing section no
+  longer says the role targets V2R9, and Pipeline Testing describes the branches, runners and
+  fork guard the validation workflows actually use.
+
 ## Based on STIG v2.9.0 - ALD Windows Alignment Updates
 
 ### Breaking changes

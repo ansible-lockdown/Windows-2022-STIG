@@ -1,0 +1,179 @@
+---
+
+name: Repo QA
+
+on:  # yamllint disable-line rule:truthy
+  # Pull requests only. There is no push or schedule trigger: a push to a release branch
+  # arrives through a pull request anyway, and the weekly cron reported drift on a build
+  # nobody was watching. Use workflow_dispatch to check drift deliberately.
+  #
+  # Branch lists cover both repository models so this file needs no edit when it is overlaid
+  # to the public mirror, matching the convention the pipeline workflows used: this private
+  # role has `latest` and `benchmark_v2r*`, the public mirror has `devel` and `main`.
+  pull_request:
+    branches:
+      - latest
+      - benchmark*
+      - devel
+      - main
+  # Allow manual running of workflow
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    # Static QA gate, roughly 90s. This role has no Molecule scenario, so unlike the Linux roles
+    # this is the only check that reads role content on every pull request: the two pipeline
+    # workflows provisioned Azure infrastructure and were the runtime counterpart until they were
+    # removed from this repo, leaving this as the only automated check of any kind here.
+    #
+    # Runs on the self-hosted runner. This job takes no secrets and asks only for contents: read,
+    # but note the runner persists between jobs, unlike a hosted VM, so the linter install below
+    # is deliberately isolated.
+    runs-on: self-hosted
+    timeout-minutes: 15
+
+    steps:
+      # Checked out under a subdirectory so the checker's own source cannot be mistaken for role
+      # content by the scanner.
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          path: role
+
+      # Checked out rather than pip-installed on purpose: several checks load helpers from the
+      # tool's scripts/ directory at runtime via importlib, and that directory is not packaged
+      # (no __init__.py, and pyproject declares no packages/py-modules). A module-only install
+      # would silently degrade audit_vars, shell_pipefail and rule_coverage. Pinned to a release
+      # tag so a checker change cannot alter this repo's CI result on its own.
+      #
+      # 2.8.4 is the floor, not a preference. 2.8.3 resolves a role's defaults as the single file
+      # defaults/main.yml and aborts before running any check when it is absent
+      # ("Error: 'defaults/main.yml' not found. Are you in an Ansible role directory?"). This role
+      # now keeps its defaults in a defaults/main/ directory, so 2.8.3 cannot run against it at
+      # all. 2.8.4 also teaches the tool the Cat<N> task directories and the Windows toggle shape,
+      # both of which this role relies on.
+      - name: Check out the QA checker
+        uses: actions/checkout@v7
+        with:
+          repository: frederickw082922/Repo_QA_Checker
+          ref: "2.8.4"
+          path: qa-checker
+
+      # The linters set the floor, not the checker: yamllint 1.38.0 and ansible-lint 26.8.0 both
+      # declare requires-python >= 3.10, while the checker itself is standard library only and runs
+      # on 3.8.
+      #
+      # The runner's own interpreter is preferred. actions/setup-python succeeds on a self-hosted
+      # runner only if it can reach the GitHub python-versions releases and write the tool cache,
+      # neither of which is guaranteed, so it is the fallback rather than the first move. Nothing
+      # is installed system-wide and no sudo is required on either path.
+      - name: Select a Python interpreter
+        run: |
+          if command -v python3 >/dev/null 2>&1 \
+             && python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)'; then
+            echo "PY=$(command -v python3)" >> "$GITHUB_ENV"
+            echo "Using the runner's $(python3 -V)"
+          else
+            echo "No runner python3 >= 3.10 found; falling back to actions/setup-python"
+          fi
+
+      - name: Set up Python
+        if: env.PY == ''
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      # Fails here, naming the version it found, rather than three steps later with a pip
+      # resolution error that does not say why.
+      - name: Confirm the interpreter meets the linters' floor
+        run: |
+          PY="${PY:-$(command -v python || true)}"
+          if [ -z "${PY}" ]; then
+            echo "::error::No Python interpreter is available on this runner. yamllint and ansible-lint require Python >= 3.10."
+            exit 1
+          fi
+          echo "PY=${PY}" >> "$GITHUB_ENV"
+          if ! "${PY}" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)'; then
+            echo "::error::yamllint and ansible-lint require Python >= 3.10; ${PY} is $("${PY}" -V 2>&1)"
+            exit 1
+          fi
+          "${PY}" -V
+
+      # yamllint and ansible-lint are optional dependencies of the checker, guarded by
+      # shutil.which - when absent those two checks report SKIP rather than failing, so omitting
+      # them would quietly remove 2 of the checks that can emit FAIL.
+      # A virtualenv, which a hosted runner would not need. This runner persists between jobs, so
+      # installing into its interpreter would leak these pinned versions into every other workflow
+      # sharing the box, and a bare `pip install` into a system interpreter is refused outright on
+      # current Debian and Ubuntu (externally-managed-environment). Prepending the venv to PATH
+      # also puts yamllint and ansible-lint where the checker's shutil.which lookup finds them.
+      - name: Install linters
+        run: |
+          "${PY}" -m venv "${RUNNER_TEMP}/qa-venv"
+          "${RUNNER_TEMP}/qa-venv/bin/python" -m pip install --upgrade pip
+          "${RUNNER_TEMP}/qa-venv/bin/pip" install "yamllint==1.38.0" "ansible-lint==26.8.0"
+          echo "${RUNNER_TEMP}/qa-venv/bin" >> "$GITHUB_PATH"
+
+      # Two runs, because this role uses two variable prefixes and the checker keys every check
+      # off one of them. Neither invocation alone is honest:
+      #
+      #   auto-detected: the shared detector returns ('wn22', 'stig_win') and Rule Coverage really does
+      #     compare the rule toggles. But Unused Variables then keys on that toggle prefix and is
+      #     blind to an undefined win22stig_* tunable - the class that hid an undefined variable in
+      #     the firewall remediation of this role.
+      #   -b win22stig: Unused Variables sees the tunables, but supplying -b at all bypasses the
+      #     shared detector for one that can only return 'cis' or 'stig', never 'stig_win'. Rule
+      #     Coverage then finds no toggles and reports SKIP, having compared nothing.
+      #
+      # So both run and both must pass. The root cause is in the checker: _detect_benchmark_type
+      # cannot return 'stig_win', so an explicit -b can never reach the Windows toggle shape.
+      #
+      # --strict is load-bearing, not cosmetic: every finding this role produces is WARN
+      # severity, so without it a real regression exits 0 and passes silently.
+      #
+      # .qa_baseline.json absorbs 2 known findings, keyed per finding on (file, description), so
+      # a NEW finding in an already-baselined check still fails. What is in it and why:
+      #   - win22stig_audit_complex and win22stig_audit_disruptive, declared here and in the
+      #     sibling Windows roles but implemented in none of them. A fleet decision to implement
+      #     or remove, not a defect in this role.
+      # The benchmark_version entry this comment used to list is gone: it was an artifact of the
+      # checker auto-detecting the variable prefix, and the run now names win22stig explicitly.
+      # Regenerate the baseline only deliberately, never to silence a fresh finding.
+      #
+      # audit_template, audit_vars and shell_pipefail are skipped through skip_checks in
+      # .qa_config.yml rather than on this command line: all three are goss/POSIX-coupled and
+      # structurally inapplicable to a Windows role. Spelling and grammar are skipped here,
+      # matching the Linux roles.
+      - name: Run Ansible Lockdown QA check (tunable prefix)
+        working-directory: role
+        run: |
+          python ../qa-checker/Ansible_Lockdown_QA_Repo_Check.py \
+            -d . \
+            -b win22stig \
+            --strict \
+            --console \
+            --no-progress \
+            --no-report \
+            --skip spelling,grammar \
+            --baseline .qa_baseline.json
+
+      # Rule Coverage is the check this second run exists for. It is reached only by letting the
+      # shared detector pick the toggle prefix and the stig_win shape.
+      - name: Run Ansible Lockdown QA check (rule coverage)
+        working-directory: role
+        run: |
+          python ../qa-checker/Ansible_Lockdown_QA_Repo_Check.py \
+            -d . \
+            --strict \
+            --console \
+            --no-progress \
+            --no-report \
+            --skip spelling,grammar \
+            --baseline .qa_baseline.json

@@ -16,7 +16,7 @@ To become an approved contributor:
 2) Ask in the community channel for contributor access, and tell us what you would like to work on
 3) A maintainer will confirm no one is already working on it, walk you through the conventions, and grant you access
 
-**Issues are still open to everyone.** You do not need approval to raise a bug report, and a well described issue is a genuinely valuable contribution. Please include the branch you are on, your Ansible version, the control affected, and the actual against expected behaviour. If you have already worked out a fix, describe it in the issue and we will credit you in the changelog when it is applied.
+**Issues are still open to everyone.** You do not need approval to raise a bug report, and a well described issue is a genuinely valuable contribution. Please include the branch you are on, your Ansible version, the control affected, and the actual against expected behavior. If you have already worked out a fix, describe it in the issue and we will credit you in the changelog when it is applied.
 
 Rules
 -----
