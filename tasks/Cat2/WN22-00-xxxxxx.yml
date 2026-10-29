@@ -118,7 +118,7 @@
       vars:
         warn_control_id: "WN22-00-000040"
 
-- name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 15 characters in length."
+- name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 14 characters in length."
   when: wn22_00_000050 | bool
   tags:
     - WN22-00-000050
@@ -132,11 +132,11 @@
     - NIST800-53A_IA-5_1_1_i
     - NIST800-53A_4_IA-5_1_a
   block:
-    - name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 15 characters in length. | Message out"
+    - name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 14 characters in length. | Message out"
       ansible.builtin.debug:
-        msg: "Warning!! This is a manual task. Windows Server 2022 manually managed application account passwords must be at least 15 characters in length."
+        msg: "Warning!! This is a manual task. Windows Server 2022 manually managed application account passwords must be at least 14 characters in length."
 
-    - name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 15 characters in length. | Warn Count."
+    - name: "MEDIUM | WN22-00-000050 | AUDIT | Windows Server 2022 manually managed application account passwords must be at least 14 characters in length. | Warn Count."
       ansible.builtin.import_tasks: warning_facts.yml
       vars:
         warn_control_id: "WN22-00-000050"
@@ -383,6 +383,9 @@
           - "Warning!! This is a manual task to audit. Windows Server 2022 icacls program files x86 needs to meet"
           - "the STIG requirements. Please check the report below and compare the STIG requirements."
           - "{{ discovered_00_000150_program_files_86_audit.stdout_lines }}"
+
+    - name: "MEDIUM | WN22-00-000150 | AUDIT | Permissions for program file directories must conform to minimum requirements. | Warn Count."
+      ansible.builtin.import_tasks: warning_facts.yml
       vars:
         warn_control_id: "WN22-00-000150"
 
@@ -569,7 +572,7 @@
           - The accounts listed do not require a password and are currently enabled
           - "{{ discovered_00_000200_audit_dm_sa.stdout.split('\n') }}"
 
-    - name: Warn Count."
+    - name: "MEDIUM | WN22-00-000200 | AUDIT | Windows Server 2022 accounts must require passwords. | Warn Count."
       when:
         - not discovered_00_000200_audit_dc is skipped
         - discovered_00_000200_audit_dc.stdout != "" or
@@ -830,7 +833,7 @@
       check_mode: false
       register: discovered_00_000280_firewall_audit
 
-    - name: "MEDIUM | wn22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message No Windows Firewall Enabled"
+    - name: "MEDIUM | WN22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message No Windows Firewall Enabled"
       when:
         - "'Domain profile is disabled' in discovered_00_000280_firewall_audit.stdout_lines | string"
         - "'Private profile is disabled' in discovered_00_000280_firewall_audit.stdout_lines | string"
@@ -842,7 +845,7 @@
           - "Please check for 3rd party firewall and verify the configuration requirements conform to firewall STIG standards."
           - "{{ discovered_00_000280_firewall_audit.stdout_lines }}"
 
-    - name: "MEDIUM | wn22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message Windows Firewall On"
+    - name: "MEDIUM | WN22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message Windows Firewall On"
       when:
         - "'Domain profile is enabled' in discovered_00_000280_firewall_audit.stdout_lines | string"
         - "'Private profile is enabled' in discovered_00_000280_firewall_audit.stdout_lines | string"
@@ -854,7 +857,7 @@
           - "Please check the firewall and verify the configuration requirements conform to firewall STIG standards."
           - "{{ discovered_00_000280_firewall_audit.stdout_lines }}"
 
-    - name: "MEDIUM | wn22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message Windows Firewall Not Completely On"
+    - name: "MEDIUM | WN22-00-000280 | AUDIT | Windows Server 2022 must have a host-based firewall installed and enabled. | Warning Message Windows Firewall Not Completely On"
       when: "'Domain profile is enabled' not in discovered_00_000280_firewall_audit.stdout_lines | string or 'Private profile is enabled' not in discovered_00_000280_firewall_audit.stdout_lines | string or 'Public profile is enabled' not in discovered_00_000280_firewall_audit.stdout_lines | string"
       ansible.builtin.debug:
         msg:
@@ -875,7 +878,7 @@
     - CAT2
     - CCI-000016
     - SRG-OS-000002-GPOS-00002
-    - SV-254267r958364_rule
+    - SV-254267r1256686_rule
     - V-254267
     - audit
     - NIST800-53_4_AC-2_2
@@ -1053,6 +1056,7 @@
   ansible.windows.win_feature:
     name: Simple-TCPIP
     state: absent
+  notify: Change_requires_reboot
 
 - name: "MEDIUM | WN22-00-000360 | PATCH | Windows Server 2022 must not have the Telnet Client installed."
   when:
@@ -1071,6 +1075,7 @@
   ansible.windows.win_feature:
     name: Telnet-Client
     state: absent
+  notify: Change_requires_reboot
 
 - name: "MEDIUM | WN22-00-000370 | PATCH | Windows Server 2022 must not have the TFTP Client installed."
   when:
@@ -1089,6 +1094,7 @@
   ansible.windows.win_feature:
     name: TFTP-Client
     state: absent
+  notify: Change_requires_reboot
 
 - name: "MEDIUM | WN22-00-000380 | PATCH | Windows Server 2022 must not have the Server Message Block (SMB) v1 protocol installed."
   when:
@@ -1153,7 +1159,7 @@
       vars:
         warn_control_id: "WN22-00-000390"
 
-- name: "MEDIUM | WN22-00-000400 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server."
+- name: "MEDIUM | WN22-00-000400 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB client."
   when: wn22_00_000400 | bool
   tags:
     - WN22-00-000400
@@ -1166,7 +1172,7 @@
     - NIST800-53_A_CM-7_1_ii
     - NIST800-53_4_CM-7_a
   block:
-    - name: "MEDIUM | WN22-00-000400 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server - mrxsmb10 | Registry Edit."
+    - name: "MEDIUM | WN22-00-000400 | PATCH | Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB client - mrxsmb10 | Registry Edit."
       ansible.windows.win_regedit:
         path: HKLM:\SYSTEM\CurrentControlSet\Services\mrxsmb10
         state: present
@@ -1214,6 +1220,7 @@
   ansible.windows.win_feature:
     name: PowerShell-V2
     state: absent
+  notify: Change_requires_reboot
 
 - name: "MEDIUM | WN22-00-000420 | AUDIT | Windows Server 2022 FTP servers must be configured to prevent anonymous logons."
   when: wn22_00_000420 | bool

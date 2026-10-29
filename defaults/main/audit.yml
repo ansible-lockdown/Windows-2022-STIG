@@ -1,0 +1,190 @@
+---
+
+#### Audit Configuration Settings ####
+
+# This role remediates. It can also measure, by scanning the host with SCAP Compliance Checker
+# before and after remediation, so the delta shows what the role actually changed.
+#
+# The audit is part of the role rather than a separate playbook, matching the rest of the
+# Lockdown fleet. Every control below defaults false, so a plain hardening run is unchanged.
+
+#############################
+
+## Audit control
+
+# Stage SCC on the target. Needed the first time; a later run against the same host can reuse a
+# staged copy, though the role removes its working directory when it finishes.
+setup_audit: false
+
+# Scan before and after remediation. Both, not just the second: a post-remediation score on its
+# own cannot separate a role that fixed findings from a host that was already compliant.
+run_audit: false
+
+# Scan and stop, applying nothing. The play ends after the scan.
+audit_only: false
+
+# Collect the result sets, using audit_output_collection_method below.
+fetch_audit_output: false
+
+#############################
+
+## Collecting the audit output
+# Method of getting the result set off the scanned host.
+## options are
+# fetch - fetches from the managed node to the ansible controller
+# copy  - copies the files to another location on the managed node itself
+audit_output_collection_method: fetch
+
+# Location to put the audit files.
+# NOTE this means two different things depending on the method above:
+#   fetch -> a path on the ANSIBLE CONTROLLER
+#   copy  -> a path on the WINDOWS MANAGED NODE, e.g. C:\ProgramData\audit_summaries
+# Filenames carry the host and a timestamp frozen once per run, so the pre and post sets do not
+# collide and successive runs do not overwrite each other.
+# The default matches the default method of fetch. Keep the trailing slash: the fetch
+# normalizes it, but a bare path reads as a filename to ansible.builtin.fetch.
+#
+# Setting a Windows path for the copy method: do NOT use -e key=value. That form interprets
+# backslash escapes, so C:\ProgramData\audit_summaries silently becomes C:\ProgramData<BEL>udit_
+# summaries and the collection writes nowhere. Set it in inventory or group_vars, or pass
+# -e '{"audit_output_destination":"C:\\ProgramData\\audit_summaries"}'.
+audit_output_destination: ./results/
+
+#############################
+
+## The scanner
+# SCAP Compliance Checker release. The download URL, both nested zip names and the binary path
+# all derive from this, so a version bump is a single edit.
+scc_version: "5.15"
+
+# Override to point at an internal mirror.
+scc_bundle_url: https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/scc-{{ scc_version }}_Windows_bundle.zip
+
+# Integrity pin for the bundle, enforced by default. win_get_url validates the TLS certificate,
+# so the download is already authenticated; this is content integrity on top of that, and it is
+# what stops a mirror serving a different archive.
+#
+# DISA publishes a digest for every artifact in the release at
+# https://dl.dod.cyber.mil/wp-content/uploads/stigs/txt/SCC_{{ scc_version }}_Checksums.txt
+# The value below is the published SHA-256 for scc-5.15_Windows_bundle.zip, confirmed against a
+# copy downloaded to a target.
+#
+# This is version specific: bumping scc_version without updating this fails every run until it is
+# re-pinned. That is the intended behavior, not a defect. Take the new value from the checksums
+# file above. Set scc_bundle_sha256 to an empty string to skip the check against a mirror that
+# repackages the archive.
+scc_bundle_sha256: a537a0f9a39ccc2231818709f8bb5f8f9b9cbfc2ec0d44dbbfabbe35d4f558ba
+
+## The benchmark
+#
+# The SCC 5.15 bundle ships this benchmark as DISA Server 2022 V2R10, Release 10, dated
+# 10 Aug 2026, and this role now targets V2R10 as well. Scanner and role are on the same revision,
+# so a finding is a role defect rather than a revision difference, which was not true before this
+# release and is the main reason a scan is now worth acting on directly.
+#
+# That equivalence is not permanent. The moment DISA publishes V2R11, or the bundled SCC content
+# moves, the gap reopens and a finding has to be read against the rule text again. Check the DISA
+# banner inside the content, not the bundled filename and not the xccdf:version element: both of
+# those carry NIWC's SCAP packaging version rather than the DISA revision.
+#
+# The identifier below is read from the content itself, not inferred. The bundle's forty content
+# streams follow no single naming pattern: some carry an MS_ prefix, some a Microsoft_ prefix and
+# some no prefix at all, so a name derived by analogy with another stream is wrong. SCC rejects an
+# unknown name, enables nothing, and still exits 0, leaving the scan to evaluate nothing. The setup
+# tasks assert that exactly one benchmark is enabled for that reason.
+scc_benchmark: MS_Windows_Server_2022_STIG
+
+# Counted from the Server 2022 datastream in the SCC 5.15 bundle: the content declares eleven
+# profiles, the nine MAC-N by Classified/Public/Sensitive combinations plus CAT_I_Only and
+# Disable_Slow_Rules. All nine MAC profiles select the same 278 rules and differ only in severity
+# weighting, so the choice among them does not affect coverage.
+#
+# CAT_I_Only selects no rules at all and must never be used as a fast CAT I gate: it returns a
+# clean and meaningless result.
+scc_profile: MAC-2_Sensitive
+
+## Which outputs SCC writes, applied with --setOpt before the scan.
+#
+# The deliverables are the All Settings HTML report and the DISA CKL checklist. CKLB is kept
+# because the tally reads it: it is JSON, where CKL is XML, so dropping it would mean parsing
+# XML in PowerShell instead of ConvertFrom-Json.
+#
+# Everything else is off to keep the result set small. Note the All Settings report is a full
+# configuration dump of the scanned host, so it is also the most sensitive thing here.
+#
+# Run `cscc --listOpt` on a staged copy for the full list of options.
+#
+# To change one setting, use scc_report_options_override rather than restating this whole dict.
+# Ansible's default hash behavior is 'replace', so redefining scc_report_options drops every key
+# you leave out and those revert to SCC's own defaults. The task combines the two.
+#   -e '{"scc_report_options_override": {"keepXCCDFXML": 0}}'
+scc_report_options_override: {}
+
+# Every name and datatype below was validated against `cscc --listOpt` on SCC 5.15.
+scc_report_options:
+  # Wanted
+  allSettingsHTMLReport: 1
+  saveDISACKL: 1
+  # Required: the tally parses the CKLB, which is JSON. CKL is XML. Do not disable.
+  saveDISACKLB: 1
+  # The XCCDF results XML is the canonical machine readable form and most downstream
+  # tooling expects it, so it stays.
+  keepXCCDFXML: 1
+  # Everything else off. All four non-compliance variants, not just some: SCC exposes
+  # HTML, Text and a summary form of each, and turning off a subset leaves the rest.
+  nonComplianceHTMLReport: 0
+  nonComplianceTextReport: 0
+  nonComplianceSummaryHTMLReport: 0
+  nonComplianceSummaryTextReport: 0
+  allSettingsTextReport: 0
+  allSettingsSummaryHTMLReport: 0
+  allSettingsSummaryTextReport: 0
+  # The Summary Viewer is an index page linking the other reports. With only two
+  # reports produced it earns little, and it is another HTML file to ship.
+  enableSummaryViewer: 0
+  keepARFXML: 0
+  keepCPEXML: 0
+  keepOCILXML: 0
+  # xs:integer, not a boolean: 3 means do not keep. Setting 0 here does the opposite
+  # of what it looks like.
+  keepOVALXML: 3
+
+# Keep the SCC working directory after a scan stage instead of deleting it. Off by default: each
+# stage leaves roughly 100 MB behind. Set it when a scan fails and you need the session tree,
+# including SCC's own logs, to work out why.
+scc_keep_working_dir: false
+
+#############################
+
+## Derived paths, not settings
+
+# scc_scan_label is set per stage by pre_remediation_audit.yml and post_remediation_audit.yml,
+# giving each scan its own working directory. Cleanup runs in an always block, so a shared root
+# would mean one scan's teardown deleting the other's tree mid-run. Both scans hit the same host
+# in the same play, so that is routine here rather than an edge case.
+scc_scan_label: audit
+scc_root: 'C:\ProgramData\scc_pipeline_{{ scc_scan_label }}'
+scc_exe: '{{ scc_root }}\scc\scc_{{ scc_version }}\lib64\cscc64.exe'
+scc_userdir: '{{ scc_root }}\run'
+
+# Where result sets are written on the scanned node. Each scan leaves a markdown summary and a
+# zip holding SCC's full output, including the XCCDF results XML and the CKL and CKLB checklists.
+audit_log_dir: 'C:\ProgramData\audit_logs'
+
+# Frozen once per run in pre_remediation_audit.yml. now() re-evaluates on every reference, which
+# would otherwise give the scan and the fetch two different filenames.
+audit_timestamp: "{{ discovered_audit_timestamp | default('unset') }}"
+
+# Named to match the rest of the fleet, which drops into a shared directory: without the
+# benchmark and version a Windows result set is ambiguous next to the Linux ones.
+pre_audit_outfile: '{{ audit_log_dir }}\{{ inventory_hostname_short }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_{{ audit_timestamp }}'
+post_audit_outfile: '{{ audit_log_dir }}\{{ inventory_hostname_short }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_{{ audit_timestamp }}'
+
+# Reported at the end of the run.
+# `| bool` throughout: these can arrive from the command line as the strings "true"/"false", and
+# a non-empty string is truthy, so a bare `not audit_only` is False either way.
+audit_results: |
+  The{% if not audit_only | bool %} pre remediation{% endif %} audit results are: {{ pre_audit_results | default('not run') }}
+  {% if not audit_only | bool %}The post remediation audit results are: {{ post_audit_results | default('not run') }}{% endif %}
+
+  Full breakdown can be found in {{ audit_log_dir }}

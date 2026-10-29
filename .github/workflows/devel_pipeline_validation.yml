@@ -24,6 +24,14 @@ on:  # yamllint disable-line rule:truthy
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 # This section contains all the jobs below that are running in the workflow.
+# Supersede an earlier run of the same pull request. This cancels work the operator has already
+# replaced. Serializing DIFFERENT pull requests against the shared OpenTofu state is a separate
+# concern, handled by the job level group below, which queues rather than cancels: cancelling a
+# run mid-apply leaves cloud resources behind.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # This will create messages for the first time contributors and direct them to the Discord server
   welcome:
@@ -50,6 +58,15 @@ jobs:
             Please join in the conversation happening on the [Discord Server](https://www.lockdownenterprise.com/discord) as well.
 
   build-azure-windows:
+    # One tofu apply at a time across the whole repository. The group is deliberately constant:
+    # keying it on the pull request number would give every pull request its own group and leave
+    # concurrent runs racing over OpenTofu state and cloud resources, which is the collision this
+    # is here to stop. cancel-in-progress is false so a waiting run queues behind the one holding
+    # the state, rather than being cancelled mid-apply and leaving an Azure instance behind.
+    concurrency:
+      group: ${{ github.workflow }}-tofu
+      cancel-in-progress: false
+
     # Use the AWS self-hosted runner
     # Only run for pull requests raised from a branch in this repository.
     # pull_request_target exposes repository secrets, so a fork PR must never
@@ -76,6 +93,7 @@ jobs:
       TF_VAR_repository: ${{ github.event.repository.name }}
       ANSIBLE_VERSION: ${{ vars.ANSIBLE_RUNNER_VERSION }}
       ENABLE_DEBUG: ${{ vars.ENABLE_DEBUG }}
+      RESULTS_DIR: ${{ github.workspace }}/scan_results
 
     defaults:
       run:
@@ -110,7 +128,9 @@ jobs:
       # Sensitive Data Stored And Passed To OpenTofu
       # Default Working Dir Defined In Defaults Above.
       - name: Save Sensitive Info
-        run: echo "{\"username\":\"${WIN_USERNAME}\",\"password\":\"${WIN_PASSWORD}\"}" >> sensitive_info.json
+        # Single '>' truncates. With '>>' a second run in the same workspace appended a
+        # second JSON object to the first and produced a file OpenTofu cannot parse.
+        run: echo "{\"username\":\"${WIN_USERNAME}\",\"password\":\"${WIN_PASSWORD}\"}" > sensitive_info.json
 
       # Show the Os Var and Benchmark Type And Load
       - name: DEBUG - Show IaC files
@@ -165,7 +185,21 @@ jobs:
           ANSIBLE_HOST_KEY_CHECKING: "false"
           ANSIBLE_DEPRECATION_WARNINGS: "false"
         run: |
-          /opt/ansible_${{ env.ANSIBLE_VERSION }}_venv/bin/ansible-playbook -i hosts.yml ../../../site.yml
+          /opt/ansible_${{ env.ANSIBLE_VERSION }}_venv/bin/ansible-playbook -i hosts.yml ../../../site.yml \
+            -e setup_audit=true -e run_audit=true -e fetch_audit_output=true \
+            -e audit_output_destination="${RESULTS_DIR}"
+
+      # The role fetches the result sets to RESULTS_DIR on the runner. Without this they would
+      # accumulate there unseen: a self-hosted runner is persistent, and the sets name local and
+      # domain accounts and carry their SIDs. Uploading makes them visible and bounds retention.
+      - name: Upload audit results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: scc-results-${{ github.run_id }}
+          path: ${{ env.RESULTS_DIR }}
+          if-no-files-found: ignore
+          retention-days: 30
 
       # Destroy The Azure Test System
       - name: Tofu Destroy
@@ -175,3 +209,11 @@ jobs:
           OSVAR: ${{ vars.OSVAR }}
           TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
         run: tofu destroy -var-file "${OSVAR}.tfvars" --auto-approve
+
+      - name: Remove Sensitive Info
+        # Runs whatever happened above, including on failure and when ENABLE_DEBUG keeps the
+        # instance alive. The runner is self-hosted and persistent, so without this the
+        # plaintext Windows credentials stay in the workspace until some later checkout
+        # happens to clean it.
+        if: always()
+        run: rm -f sensitive_info.json

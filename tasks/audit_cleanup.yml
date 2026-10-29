@@ -1,0 +1,16 @@
+---
+
+# Remove the SCC working directory for one scan stage.
+#
+# Imported from an always: block so a failed scan cannot strand roughly 100 MB of scanner on the
+# host. This is separate from audit_log_dir, which deliberately persists: the result sets are the
+# output, and audit_output_collection_method: copy exists to leave them on the node.
+
+- name: "Audit Cleanup | Remove the working directory for {{ scc_scan_label }}"
+  # scc_keep_working_dir leaves the tree in place so a failed scan can be diagnosed. The cleanup
+  # runs from an always: block, so without this a scan that produced no results also destroys the
+  # evidence of why. Roughly 100 MB per stage is left on the host when it is set.
+  when: not scc_keep_working_dir | bool
+  ansible.windows.win_file:
+    path: "{{ scc_root }}"
+    state: absent

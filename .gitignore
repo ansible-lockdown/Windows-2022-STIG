@@ -54,3 +54,9 @@ prompt.md
 
 # ansible-lint cache
 .ansible/
+
+# fetched audit output (SCC All Settings is a full host configuration dump)
+results/
+
+# the workflows write result sets here on a persistent runner
+scan_results/

@@ -50,6 +50,15 @@
       with_items: "{{ discovered_uc_000010_audit.stdout_lines | default([], true) }}"
 
     - name: "MEDIUM | WN22-UC-000010 | PATCH | Windows Server 2022 must preserve zone information when saving attachments. | Clear In The Default Profile"
+      # Only when the role has not already mounted the Default profile. prelim.yml loads
+      # C:\Users\Default\NTUSER.DAT as HKU\DEFAULT, and win_regedit's hive: option loads the very
+      # same file a second time, which Windows refuses with "used by another process" and the task
+      # fails the run. When the hives are loaded the task above already covers the Default profile,
+      # because HKU\DEFAULT is one of the hives it enumerates, so this is the fallback for a run
+      # with win22stig_load_user_hives disabled or on a domain controller.
+      when: >-
+        not win22stig_load_user_hives | bool
+        or 'controller' in ansible_facts['windows_domain_role'] | default('', true)
       ansible.windows.win_regedit:
         hive: C:\Users\Default\NTUSER.DAT
         path: HKLM:\ANSIBLE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments

@@ -1,0 +1,20 @@
+{
+  "tool_version": "2.8.4",
+  "date": "2026-09-03T12:24:01.935083",
+  "findings": [
+    {
+      "file": "defaults/main/main.yml",
+      "line": 36,
+      "description": "Defined but never referenced: 'win22stig_audit_complex'",
+      "severity": "warning",
+      "check": "unused_vars"
+    },
+    {
+      "file": "defaults/main/main.yml",
+      "line": 45,
+      "description": "Defined but never referenced: 'win22stig_audit_disruptive'",
+      "severity": "warning",
+      "check": "unused_vars"
+    }
+  ]
+}

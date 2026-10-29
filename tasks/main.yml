@@ -53,29 +53,79 @@
   ansible.builtin.import_tasks:
     file: prelim.yml
 
-- name: Include CAT I controls
-  when: win22stig_cat1_controls | bool
-  tags:
-    - CAT1
-    - high
-  ansible.builtin.import_tasks:
-    file: Cat1/main.yml
+- name: Audit and apply the controls, releasing the user hives whatever the outcome
+  # The unload belongs in an always section, not in sequence after the controls. A failing control
+  # or a failing scan aborts the remaining tasks, and a plain import would be one of them, leaving
+  # the profiles prelim mounted in place until the host reboots.
+  #
+  # audit_only is the one path this does not cover: it ends the host's run from inside the pre
+  # remediation audit, and meta does not unwind through always. That path unloads the hives
+  # itself, in audit_only.yml.
+  block:
+    - name: Run the pre remediation audit
+      # Measures the host before anything is applied.
+      #
+      # Skipped under check mode for the same reason as the post remediation audit below: staging
+      # the scanner writes a directory, re-ACLs it and unpacks the bundle onto the target, none of
+      # which a --check run may do. Without the guard, win_file reports the working directory
+      # created without creating it and the ACL task that follows fails the play on a path that
+      # was never made.
+      when:
+        - run_audit | bool or audit_only | bool
+        - not ansible_check_mode
+        - "'controller' not in ansible_facts['windows_domain_role'] | default('', true)"
+      tags:
+        - run_audit
+        - audit_only
+      ansible.builtin.import_tasks:
+        file: pre_remediation_audit.yml
 
-- name: Include CAT II controls
-  when: win22stig_cat2_controls | bool
-  tags:
-    - CAT2
-    - medium
-  ansible.builtin.import_tasks:
-    file: Cat2/main.yml
+    - name: Stop here when audit_only is set
+      # The single exit for audit_only, and it is deliberately gated on nothing else. The scan
+      # above is skipped under check mode, on a domain controller, and by a tag filter selecting
+      # neither run_audit nor audit_only. When the exit lived inside that import it was skipped
+      # with it, and audit_only then fell through into a full CAT I, II and III remediation on a
+      # host the operator asked only to measure. Tagged always so no tag filter can drop it.
+      when: audit_only | bool
+      tags: always
+      ansible.builtin.import_tasks:
+        file: audit_only.yml
 
-- name: Include CAT III controls
-  when: win22stig_cat3_controls | bool
-  tags:
-    - CAT3
-    - low
-  ansible.builtin.import_tasks:
-    file: Cat3/main.yml
+    - name: Include CAT I controls
+      when: win22stig_cat1_controls | bool
+      tags:
+        - CAT1
+        - high
+      ansible.builtin.import_tasks:
+        file: Cat1/main.yml
+
+    - name: Include CAT II controls
+      when: win22stig_cat2_controls | bool
+      tags:
+        - CAT2
+        - medium
+      ansible.builtin.import_tasks:
+        file: Cat2/main.yml
+
+    - name: Include CAT III controls
+      when: win22stig_cat3_controls | bool
+      tags:
+        - CAT3
+        - low
+      ansible.builtin.import_tasks:
+        file: Cat3/main.yml
+
+  always:
+    - name: Unload the registry hives loaded by prelim
+      # Tagged always so a tag-filtered run that loaded hives still unloads them. The check mode
+      # guard lives at the top of unload_hives.yml rather than here, so a future caller cannot
+      # omit it.
+      when:
+        - win22stig_load_user_hives | bool
+        - "'controller' not in ansible_facts['windows_domain_role'] | default('', true)"
+      tags: always
+      ansible.builtin.import_tasks:
+        file: unload_hives.yml
 
 - name: Add ansible file showing Benchmark and levels applied
   when: create_benchmark_facts | bool
@@ -89,6 +139,32 @@
   tags: always
   ansible.builtin.import_tasks:
     file: post.yml
+
+- name: Run the post remediation audit
+  when:
+    - run_audit | bool
+    - not audit_only | bool
+    - not ansible_check_mode
+    - "'controller' not in ansible_facts['windows_domain_role'] | default('', true)"
+  tags: run_audit
+  ansible.builtin.import_tasks:
+    file: post_remediation_audit.yml
+
+- name: Collect the audit output
+  when:
+    - fetch_audit_output | bool
+    - run_audit | bool
+    - not ansible_check_mode
+    - "'controller' not in ansible_facts['windows_domain_role'] | default('', true)"
+  tags: fetch_audit_output
+  ansible.builtin.import_tasks:
+    file: fetch_audit_output.yml
+
+- name: Show the audit results
+  when: run_audit | bool
+  tags: run_audit
+  ansible.builtin.debug:
+    msg: "{{ audit_results.split('\n') }}"
 
 - name: If Warnings found Output count and control IDs affected
   when: warn_count != 0

@@ -1,0 +1,52 @@
+---
+
+# now() re-evaluates on every reference, which would give the scan and the fetch two different
+# filenames. Freeze it once.
+- name: "Pre Audit Setup | Freeze a timestamp for the audit output filenames"
+  when: discovered_audit_timestamp is not defined
+  ansible.builtin.set_fact:
+    discovered_audit_timestamp: "{{ now(utc=true, fmt='%Y%m%d%H%M%S') }}"
+
+- name: "Pre Audit Setup | Stage the SCC scanner"
+  when: setup_audit | bool
+  tags: setup_audit
+  vars:
+    scc_scan_label: pre
+  ansible.builtin.import_tasks:
+    file: LE_audit_setup.yml
+
+- name: "Pre Audit | Confirm the scanner is staged"
+  # setup_audit defaults false, so a run with run_audit alone expects a scanner left from an
+  # earlier pass. Fail with the reason rather than an opaque path error mid-scan.
+  vars:
+    scc_scan_label: pre
+  block:
+    - name: "Pre Audit | Check for the SCC binary"
+      ansible.windows.win_stat:
+        path: "{{ scc_exe }}"
+      changed_when: false
+      register: discovered_scc_binary
+
+    - name: "Pre Audit | Assert the SCC binary is present"
+      ansible.builtin.assert:
+        that: discovered_scc_binary.stat.exists
+        fail_msg: >-
+          Audit requested but SCC is not staged at {{ scc_exe }}.
+          Re-run with setup_audit: true.
+
+- name: "Pre Audit | Run the pre remediation scan"
+  vars:
+    scc_scan_label: pre
+    scc_outfile: "{{ pre_audit_outfile }}"
+  block:
+    - name: "Pre Audit | Scan"
+      ansible.builtin.import_tasks:
+        file: run_scc_scan.yml
+
+    - name: "Pre Audit | Set fact for the pre remediation summary"
+      ansible.builtin.set_fact:
+        pre_audit_results: "{{ discovered_scc_tally.output[0].SummaryLine }}"
+  always:
+    - name: "Pre Audit | Remove the working directory"
+      ansible.builtin.import_tasks:
+        file: audit_cleanup.yml
