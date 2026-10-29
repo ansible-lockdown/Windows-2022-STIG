@@ -33,6 +33,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # This will create messages for the first time contributors and direct them to the Discord server
+  welcome:
+    # The type of runner that the job will run on.
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      # Pinned rather than tracking @main. The hyphenated repo-token and pr-message inputs were
+      # renamed upstream, so the welcome comment had silently stopped posting. issue_message is
+      # supplied because the v3.1.0 runtime calls getInput for it with required: true, even though
+      # its own action.yml does not mark it required, and the job fails without it.
+      - uses: actions/first-interaction@v3.1.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_message: |-
+            Thank you for opening your first issue and for taking the time to help improve Ansible-Lockdown!
+            Please join in the conversation happening on the [Discord Server](https://www.lockdownenterprise.com/discord) as well.
+          pr_message: |-
+            Congrats on opening your first pull request and thank you for taking the time to help improve Ansible-Lockdown!
+            Please join in the conversation happening on the [Discord Server](https://www.lockdownenterprise.com/discord) as well.
+
   build-azure-windows:
     # One tofu apply at a time across the whole repository. The group is deliberately constant:
     # keying it on the pull request number would give every pull request its own group and leave
